@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#F4F4F4</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="white">#fff</color>
+    <color name="icon_inactive">#8B8B8B</color>
+    <color name="icon_active">#C71923</color>
+
+
+    //additional colors from other projects
+
+    <color name="black">#000000</color>
+    <color name="red">#ff0000</color>
+    <color name="green">#008577</color>
+    <color name="grey">#7e7e7e</color>
+    <color name="creamy">#fcfffe</color>
+    <color name="tour_green">#195939</color>
+    <color name="tour_price_color">#515151</color>
+
+    <color name="buttonColor">#5281ff</color>
+    <color name="pink">#D81B60</color>
+    <color name="back">#cecece</color>
+    <color name="line">#ececec</color>
+    <color name="bck_fb">#40599b</color>
+    <color name="bck_google">#e1442c</color>
+    <color name="bck">#f1f1f1</color>
+    <color name="noitem_back">#f7f7f7</color>
+    <color name="shimmercolor">#DFDDDF</color>
+    <color name="reys_type_bck">#e2e2e2</color>
+    <color name="tabback">#cacaca</color>
+
+    //addition colors
+    <color name="chip_color1">#cc6b81</color>
+    <color name="chip_color2">#14a895</color>
+    <color name="chip_color3">#2484ef</color>
+    <color name="chip_color4">#a854d4</color>
+    <color name="chip_color5">#8f8f8f</color>
+    <color name="chip_color6">#8cf9eb</color>
+    <color name="chip_color7">#e4b5fc</color>
+    <color name="chip_color8">#93c6fd</color>
+    <color name="colorWhite">#fff</color>
+    <color name="progressback">#7d000000</color>
+    <color name="account_color">#000</color>
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_news_feed">Lenta</string>
+    <string name="menu_top">Top</string>
+    <string name="menu_favourites">Tanlanganlar</string>
+    <string name="menu_media">Media</string>
+</resources>

@@ -1,0 +1,92 @@
+package edu.azimjon.project.zamin.fragment;
+
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.adapter.FavouriteNewsAdapter;
+import edu.azimjon.project.zamin.databinding.WindowFavouritesBinding;
+import edu.azimjon.project.zamin.model.FavouriteNewsModel;
+import edu.azimjon.project.zamin.mvp.presenter.PresenterFavouriteNews;
+import edu.azimjon.project.zamin.mvp.view.IFragmentFavouriteNews;
+
+public class FragmentFavourites extends Fragment implements IFragmentFavouriteNews {
+
+    //TODO: Constants here
+
+
+    //TODO: variables here
+    WindowFavouritesBinding binding;
+    PresenterFavouriteNews presenterFavouriteNews;
+
+    //adapters
+    FavouriteNewsAdapter favouriteNewsAdapter;
+
+
+    //#####################################################################
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenterFavouriteNews = new PresenterFavouriteNews(this);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.window_favourites, container, false);
+
+        return binding.getRoot();
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //initialize adapters and append to lists
+
+        binding.listFavourite.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        favouriteNewsAdapter = new FavouriteNewsAdapter(getContext(), new ArrayList<FavouriteNewsModel>());
+        binding.listFavourite.setAdapter(favouriteNewsAdapter);
+
+
+        //*****************************************************************************
+
+        presenterFavouriteNews.init();
+    }
+
+    //TODO: override methods
+
+
+
+    //#################################################################
+
+
+    //TODO: all methods from interface
+
+
+    @Override
+    public void initFavourites(List<FavouriteNewsModel> items) {
+        favouriteNewsAdapter.init_items(items);
+    }
+
+
+    //#################################################################
+
+    //TODO: Additional methods
+
+
+    //#################################################################
+
+}

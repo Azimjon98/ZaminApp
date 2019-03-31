@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="model"
+            type="edu.azimjon.project.zamin.model.NewsSimpleModel" />
+
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp">
+
+        <RelativeLayout
+            android:id="@+id/image_lay"
+            android:layout_width="104dp"
+            android:layout_height="78dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/bck_news_category"
+            android:fitsSystemWindows="true">
+
+
+            <ImageView
+                android:id="@+id/news_img"
+                android:layout_width="104dp"
+                android:layout_height="78dp"
+                android:scaleType="centerCrop"
+                imageUrl="@{model.imageUrl}" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/news_text"
+            android:layout_alignParentStart="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:layout_toStartOf="@id/image_lay"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="4sp"
+            android:maxLines="3"
+            android:text="@{model.title}"
+            android:textColor="#212121"
+            android:textSize="18sp"
+            android:textStyle="normal" />
+
+        <RelativeLayout
+            android:id="@+id/lay_additional"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_below="@id/image_lay"
+            android:layout_marginTop="12dp">
+
+            <LinearLayout
+                android:id="@+id/lay_news_date"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif"
+                    android:text="@{model.date}"
+                    android:textColor="#9e9e9e"
+                    android:textSize="15dp"
+                    android:textStyle="normal" />
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="4dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/bck_round_shape"
+                    android:backgroundTint="#9e9e9e" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="sans-serif"
+                    android:text="@{model.categoryId}"
+                    android:textColor="#d32f2f"
+                    android:textSize="15dp"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/bookmark_inactive" />
+
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/lay_additional"
+            android:layout_marginTop="16dp"
+            android:background="#e5e5e5" />
+
+
+        <View
+            android:id="@+id/clicker"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignTop="@id/image_lay"
+            android:layout_alignBottom="@id/lay_additional"
+            android:background="@drawable/custom_ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:translationZ="2dp" />
+
+    </RelativeLayout>
+</layout>

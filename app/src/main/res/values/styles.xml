@@ -1,0 +1,59 @@
+<resources>
+
+    <!-- Splash Screen theme. -->
+    <style name="SplashScreen" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <!-- Base navigation theme. -->
+    <style name="ContentTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <!--<item name="android:fontFamily">@font/myfont_medium</item>-->
+        <!--<item name="android:actionBarTabTextStyle">@font/myfont_medium</item>-->
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!--<style name="basetoolbartitle" parent="Base.TextAppearance.Widget.AppCompat.Toolbar.Title">-->
+        <!--<item name="android:textSize">18sp</item>-->
+        <!--<item name="android:fontFamily">@font/myicon_semibold</item>-->
+    <!--</style>-->
+
+    <!--<style name="mytoolbar_subtitle" parent="Base.TextAppearance.Widget.AppCompat.Toolbar.Subtitle">-->
+        <!--<item name="android:textSize">8sp</item>-->
+        <!--<item name="android:fontFamily">@font/myfont_regular</item>-->
+    <!--</style>-->
+
+    <style name="TabStyle" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">17dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="bottomview" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--<item name="android:fontFamily">@font/myfont_regular</item>-->
+        <!--<item name="android:actionBarTabTextStyle">@font/myfont_regular</item>-->
+        <item name="android:textAllCaps">false</item>
+        <!--<item name="android:textSize">5dp</item>-->
+        <item name="colorPrimary">@color/icon_active</item>
+    </style>
+
+</resources>

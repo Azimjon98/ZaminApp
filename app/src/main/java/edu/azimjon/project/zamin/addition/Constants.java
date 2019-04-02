@@ -17,6 +17,9 @@ public class Constants {
     public static final int STATE_NO_CONNECTION = 201;
     public static final int STATE_NO_ITEMS = 202;
     public static final int STATE_ERROR_MESSEGE = 203;
+    public static final int NETWORK_STATE_CONNECTED = 101;
+    public static final int NETWORK_STATE_NO_CONNECTION = 102;
+
 
 
     //dependency urls

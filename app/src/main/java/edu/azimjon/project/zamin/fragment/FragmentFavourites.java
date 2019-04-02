@@ -1,11 +1,14 @@
 package edu.azimjon.project.zamin.fragment;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +18,13 @@ import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.FavouriteNewsAdapter;
+import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.databinding.WindowFavouritesBinding;
 import edu.azimjon.project.zamin.model.FavouriteNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterFavouriteNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentFavouriteNews;
+import edu.azimjon.project.zamin.room.dao.FavouriteNewsDao;
+import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 public class FragmentFavourites extends Fragment implements IFragmentFavouriteNews {
 
@@ -31,6 +37,10 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
     //adapters
     FavouriteNewsAdapter favouriteNewsAdapter;
+
+    //TODO room components
+    FavouriteNewsDao dao;
+    LiveData<List<FavouriteNewsModel>> allData;
 
 
     //#####################################################################
@@ -63,11 +73,13 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
         //*****************************************************************************
 
+        //room init
+        initRoom();
+
         presenterFavouriteNews.init();
     }
 
     //TODO: override methods
-
 
 
     //#################################################################
@@ -86,6 +98,23 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
     //TODO: Additional methods
 
+    //initialize live data and observable here
+    void initRoom() {
+        dao = FavouriteNewsDatabase.getInstance(getContext()).getDao();
+        allData = dao.getAll();
+        allData.observe(this, new Observer<List<FavouriteNewsModel>>() {
+            @Override
+            public void onChanged(@Nullable List<FavouriteNewsModel> tourModels) {
+                Log.d(Constants.MY_LOG, "in favourite onChanged");
+                favouriteNewsAdapter.init_items(tourModels);
+//                if (tourModels.size() == 0)
+//                    binding.setHas(false);
+//                else
+//                    binding.setHas(true);
+
+            }
+        });
+    }
 
     //#################################################################
 

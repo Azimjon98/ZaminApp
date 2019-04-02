@@ -40,6 +40,7 @@ public class ImageBindingAdapters {
         if ("no_image".equals(url))
             return;
 
+
         MyApplicationComponent component = null;
         try {
             component = MyApplication.getInstance().getMyApplicationComponent();
@@ -59,6 +60,15 @@ public class ImageBindingAdapters {
             Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
             e.printStackTrace();
         }
+
+    }
+
+    @BindingAdapter("giveCornerRadius")
+    public static void giveCornerRadius(ImageView view, String url) {
+
+
+        //make image view with corners
+        view.setBackgroundResource(R.drawable.make_imageview_with_corners);
 
     }
 

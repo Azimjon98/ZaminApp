@@ -14,8 +14,10 @@ import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.databinding.ItemAudioNewsBinding;
+import edu.azimjon.project.zamin.databinding.ItemGalleryNewsBinding;
 import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyHolder> {
 
@@ -32,7 +34,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyHolder
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemAudioNewsBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
+        ItemGalleryNewsBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
                 R.layout.item_audio_news, parent, false);
 
 
@@ -42,6 +44,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyHolder
     @Override
     public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
         lastPosition = i;
+
+        if (i == items.size() - 1){
+            myHolder.binding.getRoot().setPadding(0,0,0, MyUtil.dpToPx(64));
+        }
     }
 
 
@@ -72,12 +78,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyHolder
     }
 
     public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ItemNewsCategoryBinding binding;
+        ItemGalleryNewsBinding binding;
 
         int count = 0;
 
 
-        public MyHolder(ItemAudioNewsBinding binding) {
+        public MyHolder(ItemGalleryNewsBinding binding) {
             super(binding.getRoot());
 
 

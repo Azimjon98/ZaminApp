@@ -16,6 +16,8 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
 import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
+import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
+import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,24 +49,10 @@ public class ModelNewsFeed {
     }
 
     public void getAllItems() {
-
+        getEnabledCategories();
         getMainNews();
         getLastNews();
 
-        System.out.println(retrofit != null);
-//        presenterNewsContent.initCategories(Arrays.asList(new NewsCategoryModel(),
-//                new NewsCategoryModel(),
-//                new NewsCategoryModel(),
-//                new NewsCategoryModel(),
-//                new NewsCategoryModel(),
-//                new NewsCategoryModel()));
-//
-//        presenterNewsContent.initMainNews(Arrays.asList(new NewsSimpleModel(),
-//                new NewsSimpleModel(),
-//                new NewsSimpleModel(),
-//                new NewsSimpleModel(),
-//                new NewsSimpleModel(),
-//                new NewsSimpleModel()));
 
         presenterNewsFeed.initLastNews(Arrays.asList(new NewsSimpleModel(),
                 new NewsSimpleModel(),
@@ -84,6 +72,24 @@ public class ModelNewsFeed {
     }
 
     //TODO: Networking(getting response from server)
+
+    //getting all enabled categories
+    private void getEnabledCategories() {
+        Thread th = new Thread(() -> {
+            try {
+                CategoryNewsDao categoryNewsDao = CategoryNewsDatabase.getInstance(MyApplication.getInstance()).getDao();
+
+                presenterNewsFeed.initCategories(categoryNewsDao.getAllEnabledCategories());
+
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        });
+        th.start();
+
+    }
+
 
     //getting main news(pager news)
     private void getMainNews() {

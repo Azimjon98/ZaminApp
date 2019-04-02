@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
@@ -20,6 +21,9 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import java.io.File;
+import java.io.FileInputStream;
 
 public class MyUtil {
 
@@ -123,5 +127,25 @@ public class MyUtil {
             context = ((ContextWrapper) context).getBaseContext();
         }
         return null;
+    }
+
+    //check file to exists before using this method
+    public static String readFileAsString(String filePath) {
+
+        try (FileInputStream fis = new FileInputStream(new File(filePath))) {
+            char current;
+            StringBuilder builder = new StringBuilder();
+            while (fis.available() > 0) {
+                builder.append(String.valueOf((char) fis.read()));
+            }
+
+            return builder.toString();
+
+        } catch (Exception e) {
+            Log.d("TourGuide", e.toString());
+        }
+
+
+        return "";
     }
 }

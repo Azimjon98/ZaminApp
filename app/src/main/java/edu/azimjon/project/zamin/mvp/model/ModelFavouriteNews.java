@@ -14,11 +14,11 @@ public class ModelFavouriteNews {
     }
 
     public void getAllItems(){
-        presenterFavouriteNews.initFavourites(Arrays.asList(new FavouriteNewsModel(),
-                new FavouriteNewsModel(),
-                new FavouriteNewsModel(),
-                new FavouriteNewsModel(),
-                new FavouriteNewsModel()));
+//        presenterFavouriteNews.initFavourites(Arrays.asList(new FavouriteNewsModel(),
+//                new FavouriteNewsModel(),
+//                new FavouriteNewsModel(),
+//                new FavouriteNewsModel(),
+//                new FavouriteNewsModel()));
 
     }
 

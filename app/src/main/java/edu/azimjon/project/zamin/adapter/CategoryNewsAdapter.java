@@ -22,7 +22,7 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
     ArrayList<NewsCategoryModel> items;
     Context context;
 
-    int lastPosition = -1;
+    private int lastPosition = -1;
 
     public CategoryNewsAdapter(Context context, ArrayList<NewsCategoryModel> items) {
         this.context = context;

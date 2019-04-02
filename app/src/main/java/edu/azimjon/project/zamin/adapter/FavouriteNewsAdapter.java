@@ -14,6 +14,7 @@ import java.util.List;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.databinding.ItemFavouriteNewsBinding;
 import edu.azimjon.project.zamin.model.FavouriteNewsModel;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 public class FavouriteNewsAdapter extends RecyclerView.Adapter<FavouriteNewsAdapter.MyHolder> {
     ArrayList<FavouriteNewsModel> items;
@@ -39,6 +40,10 @@ public class FavouriteNewsAdapter extends RecyclerView.Adapter<FavouriteNewsAdap
     @Override
     public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
         lastPosition = i;
+
+        if (i == items.size() - 1){
+            myHolder.binding.getRoot().setPadding(0,0,0, MyUtil.dpToPx(64));
+        }
     }
 
 

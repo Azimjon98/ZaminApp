@@ -11,18 +11,29 @@ public class NewsCategoryModel {
 
     String name;
 
-    int imageUrl;
+    String categoryId;
+
+    String imageUrl;
 
     boolean isEnabled;
 
-    public NewsCategoryModel(){}
+    public NewsCategoryModel() {
+        isEnabled = true;
+    }
 
-
-    public NewsCategoryModel(String name, int imageUrl, boolean isEnabled) {
+    public NewsCategoryModel(String name, String categoryId, String imageUrl) {
         this();
         this.name = name;
+        this.categoryId = categoryId;
         this.imageUrl = imageUrl;
-        this.isEnabled = isEnabled;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 
     public void setId(int id) {
@@ -33,7 +44,7 @@ public class NewsCategoryModel {
         this.name = name;
     }
 
-    public void setImageUrl(int imageUrl) {
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
@@ -49,7 +60,7 @@ public class NewsCategoryModel {
         return name;
     }
 
-    public int getImageUrl() {
+    public String getImageUrl() {
         return imageUrl;
     }
 

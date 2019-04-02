@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,16 +25,19 @@ import edu.azimjon.project.zamin.adapter.TopNewsPagerAdapter;
 import edu.azimjon.project.zamin.adapter.CategoryNewsAdapter;
 import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
 import edu.azimjon.project.zamin.databinding.WindowNewsFeedBinding;
+import edu.azimjon.project.zamin.events.MyNetworkEvents;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsFeed;
 
 import static com.arlib.floatingsearchview.util.Util.dpToPx;
+import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
 public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, ViewPager.OnPageChangeListener {
 
     //TODO: Constants here
+    boolean isConnected_to_Net = true;
 
 
     //TODO: variables here
@@ -170,6 +176,17 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
     }
 
     //#################################################################
+
+
+    //TODO: From EVENTBUS
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void on_network_changed(MyNetworkEvents.NetworkStateChangedEvent event) {
+        if (event.isState() == NETWORK_STATE_CONNECTED && !isConnected_to_Net)
+            presenterNewsFeed.init();
+
+        isConnected_to_Net = event.isState() == NETWORK_STATE_CONNECTED;
+    }
 
 
 }

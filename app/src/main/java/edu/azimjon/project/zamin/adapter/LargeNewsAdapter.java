@@ -91,7 +91,7 @@ public class LargeNewsAdapter extends RecyclerView.Adapter<LargeNewsAdapter.MyHo
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, items.get(getAdapterPosition()).getNewsId());
-            Navigation.findNavController(v).navigate(R.id.action_fragmentContent_to_fragmentNewsContent, bundle);
+            Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }
 }

@@ -85,6 +85,6 @@ public class TopNewsPagerAdapter extends PagerAdapter implements View.OnClickLis
     public void onClick(View v) {
         Bundle bundle = new Bundle();
         bundle.putString(KEY_NEWS_ID, newsID);
-        Navigation.findNavController(v).navigate(R.id.action_fragmentContent_to_fragmentNewsContent, bundle);
+        Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
     }
 }

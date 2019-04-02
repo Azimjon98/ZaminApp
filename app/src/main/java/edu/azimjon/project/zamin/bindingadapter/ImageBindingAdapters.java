@@ -37,7 +37,9 @@ public class ImageBindingAdapters {
 
     @BindingAdapter("imageUrl")
     public static void loadImage(ImageView view, String url) {
-        if ("no_image".equals(url))
+        if (url == null)
+            return;
+        if ("no_image".equals(url) || url.trim().isEmpty())
             return;
 
 

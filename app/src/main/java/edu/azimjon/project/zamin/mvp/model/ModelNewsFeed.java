@@ -32,7 +32,7 @@ public class ModelNewsFeed {
     PresenterNewsFeed presenterNewsFeed;
     private int offsetMain;
     private int offsetLast;
-    private String limit = "6";
+    private String limit = "10";
 
     public ModelNewsFeed(PresenterNewsFeed presenterNewsFeed) {
         offsetMain = 1;
@@ -53,13 +53,6 @@ public class ModelNewsFeed {
         getMainNews();
         getLastNews();
 
-
-        presenterNewsFeed.initLastNews(Arrays.asList(new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel()));
 
         presenterNewsFeed.initAudioNews(Arrays.asList(new NewsSimpleModel(),
                 new NewsSimpleModel(),
@@ -135,7 +128,33 @@ public class ModelNewsFeed {
                             parsingLastNews(json);
 
 
-                            offsetMain++;
+                            offsetLast++;
+                        } else {
+                            Log.d(API_LOG, "getLastNews onFailure: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        Log.d(API_LOG, "getLastNews onFailure: " + t.getMessage());
+                    }
+                });
+    }
+
+    public void getlLastNewsContinue() {
+        retrofit.create(MyRestService.class)
+                .getNewsData(String.valueOf(offsetLast),
+                        limit,
+                        "uz")
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        if (response.isSuccessful()) {
+                            JsonObject json = response.body();
+                            parsingLastNewsContinue(json);
+
+
+                            offsetLast++;
                         } else {
                             Log.d(API_LOG, "getLastNews onFailure: " + response.message());
                         }
@@ -160,7 +179,7 @@ public class ModelNewsFeed {
 
     }
 
-    //parsing main news(pager news)
+    //parsing last news(pager news)
     private void parsingLastNews(JsonObject json) {
         List<NewsSimpleModel> items = ParserSimpleNewsModel.parse(json);
 
@@ -168,6 +187,16 @@ public class ModelNewsFeed {
         presenterNewsFeed.initLastNews(items);
 
     }
+
+    //parsing last news continue(pager news)
+    private void parsingLastNewsContinue(JsonObject json) {
+        List<NewsSimpleModel> items = ParserSimpleNewsModel.parse(json);
+
+        //sending data to view
+        presenterNewsFeed.addLastNewsContinue(items);
+
+    }
+
 
 
 }

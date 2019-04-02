@@ -1,136 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
     </data>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="16dp"
-    android:layout_marginEnd="16dp"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <RelativeLayout
-        android:id="@+id/image_lay"
-        android:background="@drawable/bck_news_category"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
-        android:layout_height="160dp">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp">
 
-        <ImageView
-            android:id="@+id/news_img"
-            android:fitsSystemWindows="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/image_temp"
+        <RelativeLayout
+            android:id="@+id/image_lay"
             android:layout_width="match_parent"
-            android:layout_height="160dp" />
+            android:layout_height="160dp"
+            android:background="@drawable/bck_news_category"
+            android:fitsSystemWindows="true">
 
-        <ImageView
-            android:background="@color/black"
-            android:alpha="0.5"
-            android:fitsSystemWindows="true"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            <ImageView
+                android:id="@+id/news_img"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_temp" />
 
-        <ImageView
-            android:layout_width="36dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_play_video"
-            android:layout_height="36dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.5"
+                android:background="@color/black"
+                android:fitsSystemWindows="true" />
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_play_video" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="4dp"
+                android:fontFamily="sans-serif"
+                android:text="4:26"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
 
         <TextView
+            android:id="@+id/news_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/image_lay"
+            android:layout_marginTop="16dp"
+            android:ellipsize="end"
             android:fontFamily="sans-serif"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="4dp"
-            android:layout_marginEnd="8dp"
-            android:textSize="14sp"
-            android:textColor="@color/white"
-            android:text="4:26"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:lineSpacingExtra="6sp"
+            android:maxLines="3"
+            android:text="Президент фармони: БАА фуқаролари учун визасиз режим белгиланди"
+            android:textColor="#212121"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/news_text"
-        android:textSize="18sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="bold"
-        android:textColor="#212121"
-        android:maxLines="3"
-        android:ellipsize="end"
-        android:lineSpacingExtra="4sp"
-        android:layout_marginTop="16dp"
-        android:layout_below="@id/image_lay"
-        android:text="Президент фармони: БАА фуқаролари учун визасиз режим белгиланди"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <RelativeLayout
-        android:id="@+id/lay_additional"
-        android:layout_below="@id/news_text"
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_marginTop="12dp">
-
-        <LinearLayout
-            android:id="@+id/lay_news_date"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="sans-serif"
-                android:text="10:39 19 mart 2019"
-                android:textColor="#9e9e9e"
-                android:textSize="15dp"
-                android:textStyle="normal" />
-
-            <View
-                android:layout_width="4dp"
-                android:layout_height="4dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="4dp"
-                android:background="@drawable/bck_round_shape"
-                android:backgroundTint="#9e9e9e" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="4dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="O'zbekiston"
-                android:textColor="#d32f2f"
-                android:textSize="15dp"
-                android:textStyle="normal" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="24dp"
+        <RelativeLayout
+            android:id="@+id/lay_additional"
+            android:layout_width="match_parent"
             android:layout_height="24dp"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/bookmark_inactive" />
+            android:layout_below="@id/news_text"
+            android:layout_marginTop="12dp">
+
+            <LinearLayout
+                android:id="@+id/lay_news_date"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif"
+                    android:text="10:39 19 mart 2019"
+                    android:textColor="#9e9e9e"
+                    android:textSize="14dp"
+                    android:textStyle="normal" />
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="4dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/bck_round_shape"
+                    android:backgroundTint="#9e9e9e" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="sans-serif"
+                    android:text="O'zbekiston"
+                    android:textColor="#d32f2f"
+                    android:textSize="14dp"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:padding="2dp"
+                android:src="@drawable/bookmark_inactive" />
+
+
+        </RelativeLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/lay_additional"
+            android:layout_marginTop="16dp"
+            android:background="#e5e5e5" />
 
 
     </RelativeLayout>
-
-
-    <View
-        android:layout_marginTop="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/lay_additional"
-        android:background="#e5e5e5" />
-
-
-
-
-</RelativeLayout>
 </layout>

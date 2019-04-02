@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:toold="http://schemas.android.com/tools">
 
     <data>
 
         <import type="android.view.View" />
 
         <variable
-            name="img_url"
-            type="int"/>
+            name="model"
+            type="edu.azimjon.project.zamin.model.NewsCategoryModel" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -31,13 +31,20 @@
                 android:fitsSystemWindows="true">
 
                 <ImageView
-                    imageUrl="@{img_url}"
                     android:id="@+id/category_img"
+                    imageUrl="@{model.imageUrl}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/image_temp"
                     android:fitsSystemWindows="true"
-                    android:src="#CCD32F2F" />
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/image_temp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="0.8"
+                    android:fitsSystemWindows="true"
+                    android:src="#D32F2F" />
 
                 <TextView
                     android:id="@+id/category_name"
@@ -46,9 +53,10 @@
                     android:layout_alignParentBottom="true"
                     android:layout_margin="8dp"
                     android:fontFamily="sans-serif"
-                    android:text="O'zbekiston"
+                    android:text="@{model.name}"
                     android:textColor="@color/white"
-                    android:textSize="14dp" />
+                    android:textSize="14sp"
+                    toold:text="O'zbekiston" />
 
 
             </RelativeLayout>

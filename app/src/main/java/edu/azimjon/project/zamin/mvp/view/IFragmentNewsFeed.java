@@ -16,4 +16,6 @@ public interface IFragmentNewsFeed {
     void initAudioNews(List<NewsSimpleModel> items);
 
     void initVideoNews(List<NewsSimpleModel> items);
+
+    void addLastNewsContinue(List<NewsSimpleModel> items);
 }

@@ -43,6 +43,7 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         lastPosition = position;
 
+        holder.binding.setModel(items.get(position));
     }
 
     @Override
@@ -51,7 +52,7 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
 //        holder.card.clearAnimation();
     }
 
-    public void init_items(List<NewsCategoryModel> items){
+    public void init_items(List<NewsCategoryModel> items) {
         clear_items();
         this.items.addAll(items);
         this.notifyDataSetChanged();
@@ -76,15 +77,14 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
 
         public MyHolder(ItemNewsCategoryBinding binding) {
             super(binding.getRoot());
-
-            binding.cardNewsCategory.setOnClickListener(this::onClick);
+            this.binding = binding;
 
         }
 
 
         @Override
         public void onClick(View v) {
-            Navigation.findNavController(v).navigate(R.id.action_fragmentContent_to_fragmentNewsContent);
+            Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent);
         }
     }
 }

@@ -21,6 +21,10 @@ public class PresenterNewsFeed {
         modelNewsFeed.getAllItems();
     }
 
+    public void getLastNewsContinue() {
+        modelNewsFeed.getlLastNewsContinue();
+    }
+
 
     //TODO: callBack methods from Model to View
 
@@ -42,6 +46,10 @@ public class PresenterNewsFeed {
 
     public void initVideoNews(List<NewsSimpleModel> items) {
         mainView.initVideoNews(items);
+    }
+
+    public void addLastNewsContinue(List<NewsSimpleModel> items) {
+        mainView.addLastNewsContinue(items);
     }
 
     //########################################################################

@@ -1,5 +1,6 @@
 package edu.azimjon.project.zamin.retrofit;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
@@ -35,7 +36,7 @@ public interface MyRestService {
                                         @Query("lang") String lang);
 
     @GET("category.php")
-    Call<JsonObject> getAllCategories(@Query("lang") String lang);
+    Call<JsonArray> getAllCategories(@Query("lang") String lang);
 
 
     @GET("tags.php")

@@ -60,6 +60,11 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<MediumNewsAdapter.My
         this.notifyDataSetChanged();
     }
 
+    public void add_items(List<NewsSimpleModel> items) {
+        this.items.addAll(items);
+        this.notifyDataSetChanged();
+    }
+
     public void clear_items() {
         this.items.clear();
         this.notifyDataSetChanged();
@@ -89,7 +94,7 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<MediumNewsAdapter.My
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, items.get(getAdapterPosition()).getNewsId());
-            Navigation.findNavController(v).navigate(R.id.action_fragmentContent_to_fragmentNewsContent, bundle);
+            Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }
 

@@ -7,9 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.LinearLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -20,21 +23,28 @@ import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.AudioNewsAdapter;
+import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.adapter.SmallNewsAdapter;
 import edu.azimjon.project.zamin.adapter.TopNewsPagerAdapter;
 import edu.azimjon.project.zamin.adapter.CategoryNewsAdapter;
 import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
+import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.databinding.WindowNewsFeedBinding;
 import edu.azimjon.project.zamin.events.MyNetworkEvents;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsFeed;
+import edu.azimjon.project.zamin.util.MyOnScrollListener;
 
 import static com.arlib.floatingsearchview.util.Util.dpToPx;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
 public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, ViewPager.OnPageChangeListener {
+
+    public static interface MyInterface {
+        void scrollEnded();
+    }
 
     //TODO: Constants here
     boolean isConnected_to_Net = true;
@@ -54,6 +64,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
     AudioNewsAdapter audioNewsAdapter;
 
     VideoNewsAdapter videoNewsAdapter;
+
+    MediumNewsAdapter lastContinueNewsAdapter;
 
     //#####################################################################
 
@@ -102,7 +114,17 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
         videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         binding.listVideoNews.setAdapter(videoNewsAdapter);
 
+        binding.listLastNewsContinue.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        lastContinueNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        binding.listLastNewsContinue.setAdapter(lastContinueNewsAdapter);
+
         //*****************************************************************************
+
+
+        binding.listLastNewsContinue.addOnScrollListener(new MyOnScrollListener(() -> {
+            presenterNewsFeed.getLastNewsContinue();
+            smallNewsAdapter.showLoadingItem();
+        }));
 
         presenterNewsFeed.init();
     }
@@ -143,7 +165,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
     @Override
     public void initLastNews(List<NewsSimpleModel> items) {
-        smallNewsAdapter.init_items(items);
+        smallNewsAdapter.init_items(items.subList(0, 4));
+        lastContinueNewsAdapter.init_items(items.subList(4, 10));
     }
 
     @Override
@@ -154,6 +177,11 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
     @Override
     public void initVideoNews(List<NewsSimpleModel> items) {
         videoNewsAdapter.init_items(items);
+    }
+
+    @Override
+    public void addLastNewsContinue(List<NewsSimpleModel> items) {
+        lastContinueNewsAdapter.add_items(items);
     }
 
     //#################################################################

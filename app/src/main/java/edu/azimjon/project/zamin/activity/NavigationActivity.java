@@ -71,6 +71,7 @@ public class NavigationActivity extends AppCompatActivity {
 
                 NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
 
+                //there are a connection to net
                 if (activeNetwork != null
                         && activeNetwork.isConnectedOrConnecting()) {
                     EventBus.getDefault().post(new MyNetworkEvents.NetworkStateChangedEvent(NETWORK_STATE_CONNECTED));
@@ -85,6 +86,7 @@ public class NavigationActivity extends AppCompatActivity {
     };
 
     //TODO: NETWORKING STATES
+
     private void check_categories_database() {
         try {
             MyApplication.getInstance().
@@ -92,15 +94,14 @@ public class NavigationActivity extends AppCompatActivity {
                     .getRetrofitApp()
                     .create(MyRestService.class)
                     .getAllCategories("uz")
-                    .enqueue(new Callback<JsonObject>() {
+                    .enqueue(new Callback<JsonArray>() {
                         @Override
-                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                             if (response.isSuccessful()) {
-                                JsonArray array = response.body().getAsJsonArray();
 
                                 //Creating a categories array from server
                                 List<NewsCategoryModel> categories = new ArrayList<>();
-                                for (JsonElement element : array) {
+                                for (JsonElement element : response.body()) {
                                     JsonObject category = element.getAsJsonObject();
 
                                     NewsCategoryModel model = new NewsCategoryModel(
@@ -123,7 +124,7 @@ public class NavigationActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<JsonObject> call, Throwable t) {
+                        public void onFailure(Call<JsonArray> call, Throwable t) {
                             Log.d(API_LOG, "onFailure: " + t.getMessage());
                         }
                     });

@@ -23,6 +23,7 @@ public class ParserSimpleNewsModel {
 
     public ParserSimpleNewsModel(Fragment fragment) {
 
+        //FIXME: fix this for using in thread
 //        allFavouriteIds = FavouriteNewsDatabase
 //                .getInstance(fragment.getContext())
 //                .getDao()

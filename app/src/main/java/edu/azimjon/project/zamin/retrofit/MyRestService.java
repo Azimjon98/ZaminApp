@@ -21,11 +21,19 @@ public interface MyRestService {
                                  @Query("main") String main);
 
 
+
+
     @GET(".")
     Call<JsonObject> getNewsWithCategory(@Query("offset") String offset,
                                          @Query("limit") String limit,
                                          @Query("lang") String lang,
                                          @Query("category") String category);
+
+    @GET(".")
+    Call<JsonObject> getTopNews(@Query("offset") String offset,
+                                @Query("limit") String limit,
+                                @Query("tagname") String popular,
+                                @Query("lang") String lang);
 
     @GET("article.php")
     Call<JsonObject> getNewsContentWithId(@Query("id") String id,
@@ -44,5 +52,7 @@ public interface MyRestService {
                                         @Query("limit") String limit,
                                         @Query("tagname") String tagname,
                                         @Query("lang") String lang);
+
+
 
 }

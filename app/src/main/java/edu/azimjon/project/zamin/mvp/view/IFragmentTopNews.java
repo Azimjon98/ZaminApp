@@ -7,5 +7,7 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 
 public interface IFragmentTopNews {
 
-    void initNews(List<NewsSimpleModel> items);
+    void addNews(List<NewsSimpleModel> items);
+
+
 }

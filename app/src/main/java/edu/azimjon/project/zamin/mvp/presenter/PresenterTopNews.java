@@ -9,25 +9,26 @@ import edu.azimjon.project.zamin.mvp.view.IFragmentTopNews;
 
 public class PresenterTopNews {
 
-    IFragmentTopNews mainView;
+    public IFragmentTopNews mainView;
+    ModelTopNews modelTopNews;
 
     public PresenterTopNews(IFragmentTopNews fragmentNewsFeed) {
         mainView = fragmentNewsFeed;
+        modelTopNews = new ModelTopNews(this);
+
     }
 
     public void init() {
-        ModelTopNews modelTopNews = new ModelTopNews(this);
-        modelTopNews.getAllItems();
-
+        modelTopNews.getTopNews();
     }
 
-
-    public void initNews(List<NewsSimpleModel> items) {
-        mainView.initNews(items);
-
+    public void getContinue() {
+        modelTopNews.getTopNews();
     }
 
-
+    public void addNews(List<NewsSimpleModel> items) {
+        mainView.addNews(items);
+    }
 
 
 }

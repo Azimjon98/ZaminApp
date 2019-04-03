@@ -1,5 +1,9 @@
 package edu.azimjon.project.zamin.mvp.model;
 
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.Observer;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
@@ -10,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
@@ -18,21 +23,26 @@ import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
 import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
+import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
-import static edu.azimjon.project.zamin.parser.ParserSimpleNewsModel.parse;
 
 public class ModelNewsFeed {
+    MyApplication application;
 
     Retrofit retrofit;
     PresenterNewsFeed presenterNewsFeed;
     private int offsetMain;
     private int offsetLast;
     private String limit = "10";
+
+    //parser variables
+    ParserSimpleNewsModel simpleModelParser;
+
 
     public ModelNewsFeed(PresenterNewsFeed presenterNewsFeed) {
         offsetMain = 1;
@@ -41,11 +51,15 @@ public class ModelNewsFeed {
         this.presenterNewsFeed = presenterNewsFeed;
 
         try {
-            retrofit = MyApplication.getInstance().getMyApplicationComponent().getRetrofitApp();
+            application = MyApplication.getInstance();
+            retrofit = application.getMyApplicationComponent().getRetrofitApp();
         } catch (ClassNotFoundException e) {
             System.out.println("myError : " + e);
             e.printStackTrace();
         }
+
+        simpleModelParser = new ParserSimpleNewsModel((Fragment) presenterNewsFeed.mainView);
+
     }
 
     public void getAllItems() {
@@ -153,7 +167,6 @@ public class ModelNewsFeed {
                             JsonObject json = response.body();
                             parsingLastNewsContinue(json);
 
-
                             offsetLast++;
                         } else {
                             Log.d(API_LOG, "getLastNews onFailure: " + response.message());
@@ -172,7 +185,7 @@ public class ModelNewsFeed {
 
     //parsing main news(pager news)
     private void parsingMainNews(JsonObject json) {
-        List<NewsSimpleModel> items = ParserSimpleNewsModel.parse(json);
+        List<NewsSimpleModel> items = simpleModelParser.parse(json);
 
         //sending data to view
         presenterNewsFeed.initMainNews(items);
@@ -181,7 +194,7 @@ public class ModelNewsFeed {
 
     //parsing last news(pager news)
     private void parsingLastNews(JsonObject json) {
-        List<NewsSimpleModel> items = ParserSimpleNewsModel.parse(json);
+        List<NewsSimpleModel> items = simpleModelParser.parse(json);
 
         //sending data to view
         presenterNewsFeed.initLastNews(items);
@@ -190,13 +203,11 @@ public class ModelNewsFeed {
 
     //parsing last news continue(pager news)
     private void parsingLastNewsContinue(JsonObject json) {
-        List<NewsSimpleModel> items = ParserSimpleNewsModel.parse(json);
+        List<NewsSimpleModel> items = simpleModelParser.parse(json);
 
         //sending data to view
         presenterNewsFeed.addLastNewsContinue(items);
-
     }
-
 
 
 }

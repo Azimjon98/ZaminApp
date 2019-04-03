@@ -9,7 +9,7 @@ import edu.azimjon.project.zamin.mvp.view.IFragmentNewsContent;
 
 public class PresenterNewsContent {
 
-    IFragmentNewsContent mainView;
+    public IFragmentNewsContent mainView;
     ModelNewsContent modelNewsContent;
 
     public PresenterNewsContent(IFragmentNewsContent fragmentNewsContent) {
@@ -21,6 +21,10 @@ public class PresenterNewsContent {
         modelNewsContent.getAllItems(newsId);
     }
 
+    public void getContinue() {
+        modelNewsContent.getLastNews();
+    }
+
 
     //TODO: callBack methods from Model to View
 
@@ -29,8 +33,8 @@ public class PresenterNewsContent {
     }
 
 
-    public void initLastNews(List<NewsSimpleModel> items) {
-        mainView.initLastNews(items);
+    public void addLastNews(List<NewsSimpleModel> items) {
+        mainView.addLastNews(items);
     }
 
 

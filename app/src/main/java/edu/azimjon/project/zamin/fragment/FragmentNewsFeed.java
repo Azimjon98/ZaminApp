@@ -38,6 +38,7 @@ import edu.azimjon.project.zamin.mvp.view.IFragmentNewsFeed;
 import edu.azimjon.project.zamin.util.MyOnScrollListener;
 
 import static com.arlib.floatingsearchview.util.Util.dpToPx;
+import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
 public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, ViewPager.OnPageChangeListener {
@@ -45,6 +46,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
     public static interface MyInterface {
         void scrollEnded();
     }
+
 
     //TODO: Constants here
     boolean isConnected_to_Net = true;
@@ -115,16 +117,21 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
         binding.listVideoNews.setAdapter(videoNewsAdapter);
 
         binding.listLastNewsContinue.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        lastContinueNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        lastContinueNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>(),
+                () -> {
+                    //method for continue getting data from server
+                    Log.d(MY_LOG, "onLastItem");
+//                    presenterNewsFeed.getLastNewsContinue();
+                });
         binding.listLastNewsContinue.setAdapter(lastContinueNewsAdapter);
 
         //*****************************************************************************
 
 
-        binding.listLastNewsContinue.addOnScrollListener(new MyOnScrollListener(() -> {
-            presenterNewsFeed.getLastNewsContinue();
-            smallNewsAdapter.showLoadingItem();
-        }));
+//        binding.listLastNewsContinue.addOnScrollListener(new MyOnScrollListener(lastContinueNewsAdapter, () -> {
+//            presenterNewsFeed.getLastNewsContinue();
+//            smallNewsAdapter.showLoadingItem();
+//        }));
 
         presenterNewsFeed.init();
     }

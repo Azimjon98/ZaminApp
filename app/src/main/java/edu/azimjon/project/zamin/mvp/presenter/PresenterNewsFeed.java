@@ -9,7 +9,7 @@ import edu.azimjon.project.zamin.mvp.view.IFragmentNewsFeed;
 
 public class PresenterNewsFeed {
 
-    IFragmentNewsFeed mainView;
+    public IFragmentNewsFeed mainView;
     ModelNewsFeed modelNewsFeed;
 
     public PresenterNewsFeed(IFragmentNewsFeed fragmentNewsFeed) {

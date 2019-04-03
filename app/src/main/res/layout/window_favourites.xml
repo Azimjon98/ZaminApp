@@ -6,54 +6,64 @@
         <import type="android.view.View" />
     </data>
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent"
-            android:background="@color/white">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/text_title"
-                android:layout_marginStart="24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="4sp"
-                android:text="Sizning Xabarlaringiz"
-                android:textColor="#212121"
-                android:textSize="24dp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/text_1"
-                android:layout_marginStart="24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingMultiplier="1.1"
-                android:text="Zamin siz uchun muhim habarlarni saqlab turadi"
-                android:textColor="#757575"
-                android:textSize="18dp"
-                android:textStyle="normal" />
 
-            <android.support.v7.widget.RecyclerView
-                android:layout_marginTop="16dp"
-                android:background="@color/white"
-                android:id="@+id/list_favourite"
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical">
 
-            </android.support.v7.widget.RecyclerView>
+                <TextView
+                    android:id="@+id/text_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="sans-serif"
+                    android:lineSpacingExtra="4sp"
+                    android:text="Sizning Xabarlaringiz"
+                    android:textColor="#212121"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-        </LinearLayout>
-    </ScrollView>
+                <TextView
+                    android:id="@+id/text_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="sans-serif"
+                    android:lineSpacingMultiplier="1.2"
+                    android:text="Zamin siz uchun muhim habarlarni saqlab turadi"
+                    android:textColor="#757575"
+                    android:textSize="17sp"
+                    android:textStyle="normal" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list_favourite"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/white">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+    </RelativeLayout>
+
 
 </layout>

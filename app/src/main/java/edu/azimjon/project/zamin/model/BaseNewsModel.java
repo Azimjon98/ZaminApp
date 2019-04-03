@@ -1,6 +1,7 @@
 package edu.azimjon.project.zamin.model;
 
-public class BaseNewsModel {
+
+public abstract class BaseNewsModel {
 
     String newsId;
 

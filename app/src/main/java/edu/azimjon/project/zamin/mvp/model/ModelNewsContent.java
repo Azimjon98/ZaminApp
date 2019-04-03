@@ -1,10 +1,10 @@
 package edu.azimjon.project.zamin.mvp.model;
 
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
 
-import java.util.Arrays;
 import java.util.List;
 
 import edu.azimjon.project.zamin.application.MyApplication;
@@ -23,10 +23,16 @@ import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
 
 public class ModelNewsContent {
 
+    ParserSimpleNewsModel parserSimpleNewsModel;
+
     Retrofit retrofit;
     PresenterNewsContent presenterNewsContent;
 
+    String limit = "4";
+    int offset;
+
     public ModelNewsContent(PresenterNewsContent presenterNewsContent) {
+        offset = 1;
 
         this.presenterNewsContent = presenterNewsContent;
 
@@ -36,22 +42,13 @@ public class ModelNewsContent {
             System.out.println("myError : " + e);
             e.printStackTrace();
         }
+
+        parserSimpleNewsModel = new ParserSimpleNewsModel(((Fragment) presenterNewsContent.mainView));
     }
 
     public void getAllItems(String newsId) {
-
         getContent(newsId);
         getLastNews();
-
-        System.out.println(retrofit != null);
-
-        presenterNewsContent.initLastNews(Arrays.asList(new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel()));
-
 
     }
 
@@ -84,11 +81,11 @@ public class ModelNewsContent {
     }
 
     //getting main news(pager news)
-    private void getLastNews() {
+    public void getLastNews() {
 
         retrofit.create(MyRestService.class)
-                .getNewsData(String.valueOf("1"),
-                        "4",
+                .getNewsData(String.valueOf(offset),
+                        limit,
                         "uz")
                 .enqueue(new Callback<JsonObject>() {
                     @Override
@@ -97,7 +94,7 @@ public class ModelNewsContent {
                             JsonObject json = response.body();
                             parsingLastNews(json);
 
-
+                            offset++;
                         } else {
                             Log.d(API_LOG, "getLastNews onFailure: " + response.message());
                         }
@@ -124,12 +121,10 @@ public class ModelNewsContent {
 
     //parsing main news(pager news)
     private void parsingLastNews(JsonObject json) {
-        List<NewsSimpleModel> items = ParserSimpleNewsModel.parse(json);
+        List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
 
         //sending data to view
-        presenterNewsContent.initLastNews(items);
+        presenterNewsContent.addLastNews(items);
 
     }
-
-
 }

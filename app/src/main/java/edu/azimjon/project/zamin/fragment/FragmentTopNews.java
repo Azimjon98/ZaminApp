@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentTopNews;
+
+import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
 
 public class FragmentTopNews extends Fragment implements IFragmentTopNews {
 
@@ -57,7 +60,11 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
         //initialize adapters and append to lists
 
         binding.listTopNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>(),
+                () -> {
+                    Log.d(MY_LOG, "onScrolled");
+                    presenterTopNews.getContinue();
+                });
         binding.listTopNews.setAdapter(mediumNewsAdapter);
 
 
@@ -69,7 +76,6 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
     //TODO: override methods
 
 
-
     //#################################################################
 
 
@@ -77,8 +83,9 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
 
 
     @Override
-    public void initNews(List<NewsSimpleModel> items) {
-        mediumNewsAdapter.init_items(items);
+    public void addNews(List<NewsSimpleModel> items) {
+        mediumNewsAdapter.add_items(items);
+
     }
 
 

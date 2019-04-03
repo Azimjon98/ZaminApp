@@ -6,19 +6,22 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.AbsListView;
 
+import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.fragment.FragmentNewsFeed;
 
 public class MyOnScrollListener extends RecyclerView.OnScrollListener {
 
     FragmentNewsFeed.MyInterface myInterface;
+    RecyclerView.Adapter adapter;
 
     boolean is_scrolling = false;
 
     int total_items, visible_items, scrollout_items;
 
-    public MyOnScrollListener(FragmentNewsFeed.MyInterface m){
-
+    public MyOnScrollListener(RecyclerView.Adapter adapter, FragmentNewsFeed.MyInterface m) {
+        this.adapter = adapter;
+        this.myInterface = m;
     }
 
 
@@ -30,6 +33,7 @@ public class MyOnScrollListener extends RecyclerView.OnScrollListener {
         if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
             is_scrolling = true;
         }
+
     }
 
     @Override
@@ -39,7 +43,7 @@ public class MyOnScrollListener extends RecyclerView.OnScrollListener {
 
         total_items = recyclerView.getLayoutManager().getItemCount();
         visible_items = recyclerView.getLayoutManager().getChildCount();
-        scrollout_items = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+        scrollout_items = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
         Log.d(Constants.MY_LOG, "total_items: " + total_items + " " +
                 "visible_items: " + visible_items + " " +
                 "scrollout_items: " + scrollout_items);

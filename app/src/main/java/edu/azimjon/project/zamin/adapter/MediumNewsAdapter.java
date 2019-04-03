@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +16,23 @@ import java.util.List;
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.databinding.ItemNewsMainMediumBinding;
+import edu.azimjon.project.zamin.interfaces.IScrollStateChanged;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
+import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
 
 public class MediumNewsAdapter extends RecyclerView.Adapter<MediumNewsAdapter.MyHolder> {
     ArrayList<NewsSimpleModel> items;
     Context context;
+    IScrollStateChanged scrollStateChanged;
 
     int lastPosition = -1;
 
-    public MediumNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
+    public MediumNewsAdapter(Context context, ArrayList<NewsSimpleModel> items, IScrollStateChanged scrollStateChanged) {
         this.context = context;
         this.items = items;
+        this.scrollStateChanged = scrollStateChanged;
     }
 
     @NonNull
@@ -42,9 +47,15 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<MediumNewsAdapter.My
 
     @Override
     public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
+        Log.d(MY_LOG, "onBindViewHolder: " + i);
         myHolder.binding.setModel(items.get(i));
 
+
         lastPosition = i;
+
+        if (lastPosition == items.size() - 1) {
+            scrollStateChanged.lastItemBinded();
+        }
     }
 
 

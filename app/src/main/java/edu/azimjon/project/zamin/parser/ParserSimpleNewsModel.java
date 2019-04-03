@@ -19,14 +19,14 @@ import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 //Simple news model parser
 public class ParserSimpleNewsModel {
     //list of ids which are favourite
-    List<Integer> allFavouriteIds;
+    List<String> allFavouriteIds;
 
     public ParserSimpleNewsModel(Fragment fragment) {
-//
-//        allFavouriteIds = FavouriteNewsDatabase
-//                .getInstance(fragment.getContext())
-//                .getDao()
-//                .getAllIds();
+
+        allFavouriteIds = FavouriteNewsDatabase
+                .getInstance(fragment.getContext())
+                .getDao()
+                .getAllIds();
 
 
     }
@@ -51,6 +51,10 @@ public class ParserSimpleNewsModel {
             model.setImageUrl(article.getAsJsonPrimitive("urlToImage").getAsString());
             model.setViewedCount(article.getAsJsonPrimitive("viewed").getAsString());
 
+
+            if (allFavouriteIds.contains(model.getNewsId())) {
+                model.setWished(true);
+            }
 
             items.add(model);
 

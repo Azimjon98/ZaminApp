@@ -65,7 +65,7 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         if (savedId == -1) {
             fragmentNewsFeed = new FragmentNewsFeed();
             manager.beginTransaction()
-                    .replace(R.id.fr_container, fragmentNewsFeed, fragmentNewsFeed.getClass().getSimpleName().toString())
+                    .replace(R.id.fr_container, fragmentNewsFeed, fragmentNewsFeed.getClass().getSimpleName())
                     .commit();
 
         } else {
@@ -73,25 +73,25 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
                 case R.id.menu_news_feed:
                     fragmentNewsFeed = new FragmentNewsFeed();
                     manager.beginTransaction()
-                            .replace(R.id.fr_container, fragmentNewsFeed, fragmentNewsFeed.getClass().getSimpleName().toString())
+                            .replace(R.id.fr_container, fragmentNewsFeed, fragmentNewsFeed.getClass().getSimpleName())
                             .commit();
                     break;
                 case R.id.menu_topnews:
                     fragmentTopNews = new FragmentTopNews();
                     manager.beginTransaction()
-                            .replace(R.id.fr_container, fragmentTopNews, fragmentTopNews.getClass().getSimpleName().toString())
+                            .replace(R.id.fr_container, fragmentTopNews, fragmentTopNews.getClass().getSimpleName())
                             .commit();
                     break;
                 case R.id.menu_favourites:
                     fragmentFavourites = new FragmentFavourites();
                     manager.beginTransaction()
-                            .replace(R.id.fr_container, fragmentFavourites, fragmentFavourites.getClass().getSimpleName().toString())
+                            .replace(R.id.fr_container, fragmentFavourites, fragmentFavourites.getClass().getSimpleName())
                             .commit();
                     break;
                 case R.id.menu_media:
                     createFragmentMedia();
                     manager.beginTransaction()
-                            .replace(R.id.fr_container, fragmentMedia, fragmentMedia.getClass().getSimpleName().toString())
+                            .replace(R.id.fr_container, fragmentMedia, fragmentMedia.getClass().getSimpleName())
                             .commit();
                     break;
             }
@@ -195,17 +195,17 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         if (get_position(from_view) < get_position(to_view)) {
             manager.beginTransaction()
                     .setCustomAnimations(R.anim.in_from_right, R.anim.out_to_left)
-                    .replace(R.id.fr_container, fragment, fragment.getClass().getSimpleName().toString())
+                    .replace(R.id.fr_container, fragment, fragment.getClass().getSimpleName())
                     .commit();
 
-            Log.d(Constants.CALLBACK_LOG, "transact: " + fragment.getClass().getSimpleName().toString());
+            Log.d(Constants.CALLBACK_LOG, "transact: " + fragment.getClass().getSimpleName());
         } else {
             manager.beginTransaction()
                     .setCustomAnimations(R.anim.in_from_left, R.anim.out_to_right)
-                    .replace(R.id.fr_container, fragment, fragment.getClass().getSimpleName().toString())
+                    .replace(R.id.fr_container, fragment, fragment.getClass().getSimpleName())
                     .commit();
 
-            Log.d(Constants.CALLBACK_LOG, "transact: " + fragment.getClass().getSimpleName().toString());
+            Log.d(Constants.CALLBACK_LOG, "transact: " + fragment.getClass().getSimpleName());
         }
 
     }

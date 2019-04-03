@@ -1,8 +1,5 @@
 package edu.azimjon.project.zamin.mvp.model;
 
-import java.util.Arrays;
-
-import edu.azimjon.project.zamin.model.FavouriteNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterFavouriteNews;
 
 public class ModelFavouriteNews {

@@ -43,7 +43,7 @@ import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECT
 
 public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, ViewPager.OnPageChangeListener {
 
-    public static interface MyInterface {
+    public interface MyInterface {
         void scrollEnded();
     }
 

@@ -9,7 +9,14 @@
         android:id="@+id/fragmentContent"
         android:name="edu.azimjon.project.zamin.fragment.FragmentContent"
         android:label="window_content"
-        tools:layout="@layout/window_content" />
+        tools:layout="@layout/window_content" >
+        <action
+            android:id="@+id/action_fragmentContent_to_fragmentSearchNews"
+            app:destination="@id/fragmentSearchNews" />
+        <action
+            android:id="@+id/action_fragmentContent_to_fragmentProfile"
+            app:destination="@id/fragmentProfile" />
+    </fragment>
     <fragment
         android:id="@+id/fragmentNewsContent"
         android:name="edu.azimjon.project.zamin.fragment.FragmentNewsContent"
@@ -19,4 +26,14 @@
             android:name="newsId"
             app:argType="string" />
     </fragment><action android:id="@+id/action_global_fragmentNewsContent" app:destination="@id/fragmentNewsContent"/>
+    <fragment
+        android:id="@+id/fragmentSearchNews"
+        android:name="edu.azimjon.project.zamin.fragment.FragmentSearchNews"
+        android:label="window_search"
+        tools:layout="@layout/window_search" />
+    <fragment
+        android:id="@+id/fragmentProfile"
+        android:name="edu.azimjon.project.zamin.fragment.FragmentProfile"
+        android:label="window_profile"
+        tools:layout="@layout/window_profile" />
 </navigation>

@@ -23,10 +23,10 @@ public class ParserSimpleNewsModel {
 
     public ParserSimpleNewsModel(Fragment fragment) {
 
-        allFavouriteIds = FavouriteNewsDatabase
-                .getInstance(fragment.getContext())
-                .getDao()
-                .getAllIds();
+//        allFavouriteIds = FavouriteNewsDatabase
+//                .getInstance(fragment.getContext())
+//                .getDao()
+//                .getAllIds();
 
 
     }

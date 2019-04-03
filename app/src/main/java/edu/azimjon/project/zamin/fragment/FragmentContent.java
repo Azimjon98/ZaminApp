@@ -13,7 +13,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.addition.Constants;
 
@@ -24,6 +26,8 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
 
     BottomNavigationView navigationView;
     TabLayout tabMedia;
+    ImageView searchIcon;
+    ImageView profileIcon;
 
     //TODO: initial fragments
 
@@ -52,6 +56,8 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         manager = getActivity().getSupportFragmentManager();
         navigationView = view.findViewById(R.id.bottom_navigation);
         tabMedia = view.findViewById(R.id.tab_media);
+        searchIcon = view.findViewById(R.id.toolbar_search);
+        profileIcon = view.findViewById(R.id.toolbar_ic_more);
 
         navigationView.setOnNavigationItemSelectedListener(this);
 
@@ -92,6 +98,11 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
 
         }
 
+        //declare toolbar icon touch listeners
+        searchIcon.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_fragmentContent_to_fragmentSearchNews));
+
+        profileIcon.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_fragmentContent_to_fragmentProfile));
+
     }
 
 
@@ -125,7 +136,7 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
 
     //TODO: Additional methods
 
-    private void createFragmentMedia(){
+    private void createFragmentMedia() {
         fragmentMedia = new FragmentMedia();
         fragmentMedia.setTabLayout(tabMedia);
         fragmentMedia.setFragmentManager(manager);
@@ -169,7 +180,7 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
                             tabMedia.setVisibility(View.VISIBLE);
 
                         }
-                    },300);
+                    }, 300);
 
                     transact_with_animation(temp, id, fragmentMedia);
                 }

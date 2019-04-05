@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
 
 
-
     <RelativeLayout
         android:id="@+id/icons_lay"
-        android:layout_marginTop="48dp"
         android:layout_width="match_parent"
-        android:layout_height="70dp">
+        android:layout_height="70dp"
+        android:layout_marginTop="48dp">
 
         <ImageView
             android:layout_width="40dp"
@@ -41,7 +41,6 @@
     </RelativeLayout>
 
 
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,23 +58,6 @@
         android:textSize="16sp"
         android:textStyle="normal"
         tools:text="Мадримовнинг мураббийи: &quot;Исроилда ўсиш катта!&quot;" />
-
-
-    <SeekBar
-        android:layout_marginTop="16dp"
-        android:id="@+id/seekBar2"
-        android:progressDrawable="@drawable/seekbar"
-        android:thumb="@drawable/micon_favourites"
-        android:thumbTint="#d32f2f"
-        android:secondaryProgressTint="@color/black"
-        android:progress="12"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <SeekBar
-        android:progress="12"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 
 </RelativeLayout>

@@ -41,8 +41,8 @@ import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_NO_CONN
 
 public class NavigationActivity extends AppCompatActivity {
 
-    private static List<String> allFavouriteIds;
-    private static List<NewsCategoryModel> categoryModels;
+    private static List<String> allFavouriteIds = new ArrayList<>();
+    private static List<NewsCategoryModel> categoryModels = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,23 +53,27 @@ public class NavigationActivity extends AppCompatActivity {
         FavouriteNewsDatabase
                 .getInstance(NavigationActivity.this)
                 .getDao()
-                .getAllIds().observe(this, new Observer<List<String>>() {
-            @Override
-            public void onChanged(@Nullable List<String> strings) {
-                allFavouriteIds = strings;
-            }
-        });
+                .getAllIds()
+                .observe(this, new Observer<List<String>>() {
+                    @Override
+                    public void onChanged(@Nullable List<String> strings) {
+                        allFavouriteIds = strings;
+                        System.out.println("getting all data from favourites");
+                    }
+                });
 
         //FIXME: commit or uncommit below if there any use/unuse of categories data
         CategoryNewsDatabase
                 .getInstance(NavigationActivity.this)
                 .getDao()
-                .getAllLive().observe(this, new Observer<List<NewsCategoryModel>>() {
-            @Override
-            public void onChanged(@Nullable List<NewsCategoryModel> categories) {
-                categoryModels = categories;
-            }
-        });
+                .getAllLive()
+                .observe(this, new Observer<List<NewsCategoryModel>>() {
+                    @Override
+                    public void onChanged(@Nullable List<NewsCategoryModel> categories) {
+                        categoryModels = categories;
+                        System.out.println("getting all data from categories");
+                    }
+                });
 
 
     }

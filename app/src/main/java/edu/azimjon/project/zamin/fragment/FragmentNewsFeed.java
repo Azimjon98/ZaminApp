@@ -5,8 +5,10 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -74,6 +76,10 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
     //#####################################################################
 
+    int visibleItemCount;
+    int totalItemCount;
+    int pastVisiblesItems;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +125,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
         videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         binding.listVideoNews.setAdapter(videoNewsAdapter);
 
-        binding.listLastNewsContinue.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        binding.listLastNewsContinue.setLayoutManager(mLayoutManager);
         lastContinueNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>(),
                 () -> {
                     //method for continue getting data from server
@@ -127,6 +134,54 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 //                    presenterNewsFeed.getLastNewsContinue();
                 });
         binding.listLastNewsContinue.setAdapter(lastContinueNewsAdapter);
+
+        binding.listLastNewsContinue.setNestedScrollingEnabled(false);
+        binding.listLastNewsContinue.setHasFixedSize(false);
+
+        binding.nestedView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+                if (scrollY > oldScrollY)
+                    Log.d(MY_LOG, "scrollDown");
+
+                if (scrollY < oldScrollY)
+                    Log.d(MY_LOG, "scrollUp");
+
+                if (scrollY == 0)
+                    Log.d(MY_LOG, "in Up");
+
+                if (scrollY != 0 && scrollY == oldScrollY)
+                    Log.d(MY_LOG, "in Down");
+
+                Log.d(MY_LOG, "getHeight" + binding.nestedView.getMeasuredHeight());
+                Log.d(MY_LOG, "scrollY" + scrollY);
+
+
+
+                if (v.getChildAt(v.getChildCount() - 1) != null) {
+                    if ((scrollY >= (binding.nestedView.getMeasuredHeight() - v.getMeasuredHeight())) &&
+                            scrollY > oldScrollY) {
+
+
+                        visibleItemCount = mLayoutManager.getChildCount();
+                        totalItemCount = mLayoutManager.getItemCount();
+                        pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+
+                        if (getAllowEnterTransitionOverlap()) {
+
+                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                Log.d(MY_LOG, "visibleItemCount: " + visibleItemCount +
+                                        "  totalItemCount: " + totalItemCount +
+                                        "  pastVisiblesItems: " + pastVisiblesItems);
+//                        Load Your Data
+                            }
+                        }
+                    }
+                }
+            }
+
+
+        });
 
         //*****************************************************************************
 

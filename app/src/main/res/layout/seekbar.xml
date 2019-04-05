@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.stfalcon.pricerangebar.SeekBarWithChart
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        app:barActiveLineColor="@android:color/holo_orange_dark"
+        app:barActiveThumbColor="@android:color/holo_blue_light"
+        app:barActiveTickRadius="@dimen/custom_active_tick_radius"
+        app:barChartSelectedBackgroundColor="@android:color/holo_red_dark"
+        app:barChartSelectedLineColor="@android:color/holo_green_dark"
+        app:barChartUnSelectedLineColor="@android:color/holo_green_light"
+        app:barChartUnselectedBackgroundColor="@android:color/holo_red_light"
+        app:barLineColor="@android:color/holo_blue_light"/>
+
+</FrameLayout>

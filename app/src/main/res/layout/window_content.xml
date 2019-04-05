@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">
@@ -28,6 +29,7 @@
                 android:src="@drawable/micon_search" />
 
             <TextView
+                android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -52,53 +54,25 @@
 
         </RelativeLayout>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tab_media"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:tabIndicatorColor="#d32f2f"
-            app:tabIndicatorHeight="2dp"
-            app:tabSelectedTextColor="#d32f2f"
-            app:tabTextAppearance="@style/TabStyle">
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Audio" />
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Video" />
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Galereya" />
-
-        </android.support.design.widget.TabLayout>
-
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/fr_container"
+
+    <edu.azimjon.project.zamin.views.CustomViewPager
+        android:id="@+id/content_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="64dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </FrameLayout>
-
+    </edu.azimjon.project.zamin.views.CustomViewPager>
 
     <android.support.design.widget.BottomNavigationView
-        app:itemIconSize="20dp"
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/white"
         android:theme="@style/my_bottom_navigation_view"
+        app:itemIconSize="20dp"
         app:itemTextAppearanceActive="@style/my_bottom_navigation_view_text_appearance"
         app:itemTextAppearanceInactive="@style/my_bottom_navigation_view_text_appearance"
         app:labelVisibilityMode="labeled"

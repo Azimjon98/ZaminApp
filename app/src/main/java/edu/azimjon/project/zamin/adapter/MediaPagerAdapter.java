@@ -2,13 +2,16 @@ package edu.azimjon.project.zamin.adapter;
 
 
 import android.content.Context;
+import android.media.Image;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.widget.ImageViewCompat;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import edu.azimjon.project.zamin.fragment.FragmentAudioInMedia;
 import edu.azimjon.project.zamin.fragment.FragmentGalleryInMedia;
@@ -59,6 +62,7 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         Log.d(CALLBACK_LOG, "getCount: " + tabs_number);
 
+
         return tabs_number;
     }
 
@@ -73,4 +77,6 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
         // Fragments will not destroyed
     }
+
+
 }

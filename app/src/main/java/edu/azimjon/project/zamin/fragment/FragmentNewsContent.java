@@ -1,5 +1,6 @@
 package edu.azimjon.project.zamin.fragment;
 
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.adapter.CategoryNewsAdapter;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
@@ -38,6 +40,7 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsContent;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsContent;
+import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 
@@ -111,6 +114,9 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
         initIcons();
         presenterNewsContent.init(newsId);
+
+
+
     }
 
     //TODO: override methods

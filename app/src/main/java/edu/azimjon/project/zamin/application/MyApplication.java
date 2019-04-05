@@ -30,7 +30,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Log.d(Constants.CALLBACK_LOG, "init application");
         instance = this;
-//        MySettings.initInstance(this);
+        MySettings.initInstance(this);
 
         myApplicationComponent = DaggerMyApplicationComponent.builder()
                 .contextModule(new ContextModule(this))

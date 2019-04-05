@@ -12,7 +12,9 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.addition.Constants;
+import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
@@ -20,16 +22,11 @@ import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 public class ParserSimpleNewsModel {
     //list of ids which are favourite
     List<String> allFavouriteIds;
+    List<NewsCategoryModel> categoryModels;
 
     public ParserSimpleNewsModel(Fragment fragment) {
-
-        //FIXME: fix this for using in thread
-//        allFavouriteIds = FavouriteNewsDatabase
-//                .getInstance(fragment.getContext())
-//                .getDao()
-//                .getAllIds();
-
-
+        allFavouriteIds = NavigationActivity.getFavouritesIds();
+        categoryModels = NavigationActivity.getAllCategories();
     }
 
     public List<NewsSimpleModel> parse(JsonObject json) {
@@ -55,6 +52,13 @@ public class ParserSimpleNewsModel {
 
             if (allFavouriteIds.contains(model.getNewsId())) {
                 model.setWished(true);
+            }
+
+            for (NewsCategoryModel c : categoryModels) {
+                if (model.getCategoryId() == c.getCategoryId()) {
+                    model.setCategoryName(c.getName());
+                    break;
+                }
             }
 
             items.add(model);

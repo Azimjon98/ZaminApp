@@ -31,8 +31,11 @@ public interface CategoryNewsDao {
     void deleteAll();
 
     @Query("SELECT * FROM news_category")
+    LiveData<List<NewsCategoryModel>> getAllLive();
+
+    @Query("SELECT * FROM news_category")
     List<NewsCategoryModel> getAll();
 
     @Query("SELECT * FROM news_category WHERE isEnabled = 1")
-    List<NewsCategoryModel> getAllEnabledCategories();
+    LiveData<List<NewsCategoryModel>> getAllEnabledCategories();
 }

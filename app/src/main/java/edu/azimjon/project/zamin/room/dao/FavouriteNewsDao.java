@@ -29,6 +29,6 @@ public interface FavouriteNewsDao {
     LiveData<List<FavouriteNewsModel>> getAll();
 
     @Query("SELECT favourites_news.newsId FROM favourites_news")
-    List<String> getAllIds();
+    LiveData<List<String>> getAllIds();
 
 }

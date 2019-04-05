@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.databinding.WindowAudioInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.mvp.presenter.PresenterAudioInMedia;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentAudioInMedia;
 
@@ -29,6 +31,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
     //TODO: variables here
     WindowAudioInsideMediaBinding binding;
+    PresenterAudioInMedia presenterAudioInMedia;
 
     //adapters
     AudioNewsAdapter audioNewsAdapter;
@@ -39,6 +42,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenterAudioInMedia = new PresenterAudioInMedia(this);
     }
 
     @Nullable
@@ -62,10 +66,11 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
         //*****************************************************************************
 
+
+        presenterAudioInMedia.init();
     }
 
     //TODO: override methods
-
 
 
     //#################################################################

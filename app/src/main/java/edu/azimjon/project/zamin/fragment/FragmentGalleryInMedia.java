@@ -19,6 +19,7 @@ import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
 import edu.azimjon.project.zamin.databinding.WindowGalleryInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowVideoInsideMediaBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.mvp.presenter.PresenterGalleryInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentGalleryInMedia;
 
 public class FragmentGalleryInMedia extends Fragment implements IFragmentGalleryInMedia {
@@ -29,6 +30,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
     //TODO: variables here
     WindowGalleryInsideMediaBinding binding;
+    PresenterGalleryInMedia presenterGalleryInMedia;
 
     //adapters
     GalleryAdapter galleryAdapter;
@@ -39,6 +41,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenterGalleryInMedia = new PresenterGalleryInMedia(this);
     }
 
     @Nullable
@@ -62,17 +65,16 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
         //*****************************************************************************
 
+        presenterGalleryInMedia.init();
     }
 
     //TODO: override methods
-
 
 
     //#################################################################
 
 
     //TODO: all methods from interface
-
 
 
     @Override

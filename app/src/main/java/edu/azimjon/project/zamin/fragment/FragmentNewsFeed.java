@@ -1,5 +1,6 @@
 package edu.azimjon.project.zamin.fragment;
 
+import android.arch.lifecycle.Observer;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,6 +36,7 @@ import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsFeed;
+import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
 import edu.azimjon.project.zamin.util.MyOnScrollListener;
 
 import static com.arlib.floatingsearchview.util.Util.dpToPx;
@@ -49,6 +51,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
 
     //TODO: Constants here
+    List<NewsCategoryModel> categoryModels;
     boolean isConnected_to_Net = true;
 
 
@@ -134,6 +137,18 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 //        }));
 
         presenterNewsFeed.init();
+
+        //TODO: categories observable here:
+        CategoryNewsDatabase
+                .getInstance(getContext())
+                .getDao()
+                .getAllEnabledCategories().observe(this, new Observer<List<NewsCategoryModel>>() {
+            @Override
+            public void onChanged(@Nullable List<NewsCategoryModel> categories) {
+                categoryModels = categories;
+                initCategories(categoryModels);
+            }
+        });
     }
 
     //TODO: override methods

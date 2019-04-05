@@ -21,6 +21,8 @@ public class NewsContentModel {
 
     public String categoryId;
 
+    public String categoryName;
+
     public String date;
 
     public String viewedCount;
@@ -112,5 +114,13 @@ public class NewsContentModel {
 
     public String getContent() {
         return content;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
     }
 }

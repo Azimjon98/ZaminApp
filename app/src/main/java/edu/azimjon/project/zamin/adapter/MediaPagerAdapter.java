@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import edu.azimjon.project.zamin.fragment.FragmentAudioInMedia;
 import edu.azimjon.project.zamin.fragment.FragmentGalleryInMedia;
@@ -65,5 +66,11 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return titles[position];
+    }
+
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        // Fragments will not destroyed
     }
 }

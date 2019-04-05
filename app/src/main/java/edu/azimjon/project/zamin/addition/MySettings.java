@@ -4,10 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import edu.azimjon.project.zamin.model.NewsCategoryModel;
 
 import static edu.azimjon.project.zamin.addition.Constants.*;
 
@@ -29,7 +33,6 @@ public class MySettings {
 
         return instance;
     }
-
 
 
     public boolean isFirstEnter() {
@@ -76,6 +79,44 @@ public class MySettings {
                 .clear()
                 .apply();
 
+    }
+
+
+    public void setCategories(List<NewsCategoryModel> categories) {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> ids = new HashSet<>();
+        Set<String> names = new HashSet<>();
+        Set<String> urls = new HashSet<>();
+        Set<String> isEnableds = new HashSet<>();
+
+        for (NewsCategoryModel m : categories) {
+            ids.add(m.getCategoryId());
+            names.add(m.getName());
+            urls.add(m.getImageUrl());
+            isEnableds.add(m.isEnabled() ? "1" : "0");
+        }
+
+
+        editor.putStringSet("ids", ids);
+        editor.putStringSet("names", names);
+        editor.putStringSet("urls", urls);
+        editor.putStringSet("isEnabled", isEnableds);
+        editor.apply();
+    }
+
+
+    public List<NewsCategoryModel> getCategories() {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+
+        List<NewsCategoryModel> array = new ArrayList<>();
+
+        Set<String> ids = sharedPreferences.getStringSet("ids", new HashSet<>());
+        Set<String> names = sharedPreferences.getStringSet("names", new HashSet<>());
+        Set<String> urls = sharedPreferences.getStringSet("urls", new HashSet<>());
+        Set<String> isEnableds = sharedPreferences.getStringSet("isEnableds", new HashSet<>());
+
+        return array;
     }
 
 

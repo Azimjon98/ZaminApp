@@ -1,5 +1,6 @@
 package edu.azimjon.project.zamin.activity;
 
+import android.arch.lifecycle.Observer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
 import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
+import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,11 +41,45 @@ import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_NO_CONN
 
 public class NavigationActivity extends AppCompatActivity {
 
+    private static List<String> allFavouriteIds;
+    private static List<NewsCategoryModel> categoryModels;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
+        //FIXME: fix this for using in thread
+        FavouriteNewsDatabase
+                .getInstance(NavigationActivity.this)
+                .getDao()
+                .getAllIds().observe(this, new Observer<List<String>>() {
+            @Override
+            public void onChanged(@Nullable List<String> strings) {
+                allFavouriteIds = strings;
+            }
+        });
+
+        //FIXME: commit or uncommit below if there any use/unuse of categories data
+        CategoryNewsDatabase
+                .getInstance(NavigationActivity.this)
+                .getDao()
+                .getAllLive().observe(this, new Observer<List<NewsCategoryModel>>() {
+            @Override
+            public void onChanged(@Nullable List<NewsCategoryModel> categories) {
+                categoryModels = categories;
+            }
+        });
+
+
+    }
+
+    public static List<String> getFavouritesIds() {
+        return allFavouriteIds;
+    }
+
+    public static List<NewsCategoryModel> getAllCategories() {
+        return categoryModels;
     }
 
     @Override
@@ -147,6 +183,7 @@ public class NavigationActivity extends AppCompatActivity {
             check_database(categoryModels);
             return null;
         }
+
     }
 
     private void check_database(List<NewsCategoryModel> categoryModels) {
@@ -162,12 +199,12 @@ public class NavigationActivity extends AppCompatActivity {
         if (oldCategories.size() == newCategories.size())
             return;
         else
-            update_database(categoryNewsDao,oldCategories, newCategories);
+            update_database(categoryNewsDao, oldCategories, newCategories);
 
         for (int i = 0; i < oldCategories.size(); i++) {
             //check if there any index changings in database
             if (oldCategories.get(i).getId() != newCategories.get(i).getId())
-                update_database(categoryNewsDao,oldCategories, newCategories);
+                update_database(categoryNewsDao, oldCategories, newCategories);
         }
 
         //else return :)

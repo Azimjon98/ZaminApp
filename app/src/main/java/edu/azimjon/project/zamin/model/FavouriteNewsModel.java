@@ -10,7 +10,7 @@ public class FavouriteNewsModel {
     @PrimaryKey(autoGenerate = true)
     int id;
 
-    @ColumnInfo(name = "newsId" )
+    @ColumnInfo(name = "newsId")
     public String newsId;
 
     public String title;
@@ -20,6 +20,8 @@ public class FavouriteNewsModel {
     public String originalUrl;
 
     public String categoryId;
+
+    public String categoryName;
 
     public String date;
 
@@ -123,5 +125,13 @@ public class FavouriteNewsModel {
 
     public String getSavedDate() {
         return savedDate;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
     }
 }

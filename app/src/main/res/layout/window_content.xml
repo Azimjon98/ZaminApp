@@ -91,16 +91,16 @@
     </FrameLayout>
 
 
-
     <android.support.design.widget.BottomNavigationView
+        app:itemIconSize="20dp"
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/white"
+        android:theme="@style/my_bottom_navigation_view"
         app:itemTextAppearanceActive="@style/my_bottom_navigation_view_text_appearance"
         app:itemTextAppearanceInactive="@style/my_bottom_navigation_view_text_appearance"
-        android:theme="@style/my_bottom_navigation_view"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_bottom_navigation">
 

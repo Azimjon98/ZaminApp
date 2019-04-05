@@ -61,8 +61,6 @@ public class TextBindingAdapters {
         MyApplicationComponent component = null;
 
 
-
-
     }
 
 

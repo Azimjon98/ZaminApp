@@ -19,6 +19,7 @@ import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
 import edu.azimjon.project.zamin.databinding.WindowAudioInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowVideoInsideMediaBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.mvp.presenter.PresenterVideoInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentVideoInMedia;
 
 public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMedia {
@@ -28,6 +29,7 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
     //TODO: variables here
     WindowVideoInsideMediaBinding binding;
+    PresenterVideoInMedia presenterVideoInMedia;
 
     //adapters
     VideoNewsAdapter videoNewsAdapter;
@@ -38,6 +40,7 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenterVideoInMedia = new PresenterVideoInMedia(this);
     }
 
     @Nullable
@@ -61,17 +64,17 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
         //*****************************************************************************
 
+        presenterVideoInMedia.init();
+
     }
 
     //TODO: override methods
-
 
 
     //#################################################################
 
 
     //TODO: all methods from interface
-
 
 
     @Override

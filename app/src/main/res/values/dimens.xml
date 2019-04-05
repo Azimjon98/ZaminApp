@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="bottomBarSize">64dp</dimen>
     <dimen name="bottomBarPadding">8dp</dimen>
+    <!--<dimen name="design_bottom_navigation_height" tools:override="true">52dp</dimen>-->
+    <dimen tools:override="true" name="design_navigation_icon_padding">5dp</dimen>
 </resources>

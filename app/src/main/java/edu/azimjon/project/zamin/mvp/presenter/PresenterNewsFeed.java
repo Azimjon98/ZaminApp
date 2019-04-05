@@ -28,6 +28,7 @@ public class PresenterNewsFeed {
 
     //TODO: callBack methods from Model to View
 
+    //cannot use because of liveData in view
     public void initCategories(List<NewsCategoryModel> items) {
         mainView.initCategories(items);
     }

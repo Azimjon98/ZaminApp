@@ -20,6 +20,7 @@ public class NewsSimpleModel {
     String originalUrl;
 
     String categoryId;
+    String categoryName;
 
     String date;
 
@@ -102,5 +103,13 @@ public class NewsSimpleModel {
 
     public boolean isWished() {
         return isWished;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

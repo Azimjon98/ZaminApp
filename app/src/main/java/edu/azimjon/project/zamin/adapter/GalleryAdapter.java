@@ -35,7 +35,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyHolder
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemGalleryNewsBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
-                R.layout.item_audio_news, parent, false);
+                R.layout.item_gallery_news, parent, false);
 
 
         return new MyHolder(binding);

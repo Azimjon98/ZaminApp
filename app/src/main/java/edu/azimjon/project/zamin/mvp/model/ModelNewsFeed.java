@@ -81,19 +81,8 @@ public class ModelNewsFeed {
     //TODO: Networking(getting response from server)
 
     //getting all enabled categories
+    //cannot use because of live data in view
     private void getEnabledCategories() {
-        Thread th = new Thread(() -> {
-            try {
-                CategoryNewsDao categoryNewsDao = CategoryNewsDatabase.getInstance(MyApplication.getInstance()).getDao();
-
-                presenterNewsFeed.initCategories(categoryNewsDao.getAllEnabledCategories());
-
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-
-        });
-        th.start();
 
     }
 

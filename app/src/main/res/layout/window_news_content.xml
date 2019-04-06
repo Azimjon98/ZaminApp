@@ -73,10 +73,11 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/white">
 
 
-            <ScrollView
+            <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -94,9 +95,9 @@
                         android:layout_height="wrap_content"
                         android:indeterminate="true"
                         android:indeterminateTint="#0078F0"
-                        android:progressBackgroundTint="#A0C8F0"
                         android:paddingTop="0dp"
                         android:paddingBottom="0dp"
+                        android:progressBackgroundTint="#A0C8F0"
                         android:visibility="visible" />
 
                     <TextView
@@ -121,11 +122,11 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            mySetDate="@{model.date}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="sans-serif"
-                            android:text="@{model.date}"
                             android:textColor="#9e9e9e"
                             android:textSize="15dp"
                             android:textStyle="normal" />
@@ -144,7 +145,7 @@
                             android:layout_gravity="center"
                             android:layout_marginStart="4dp"
                             android:fontFamily="sans-serif"
-                            android:text="@{model.categoryId}"
+                            android:text="@{model.categoryName}"
                             android:textColor="#d32f2f"
                             android:textSize="15dp"
                             android:textStyle="normal" />
@@ -153,19 +154,17 @@
                     <ImageView
                         imageUrl="@{model.imageUrl}"
                         android:layout_width="match_parent"
-                        android:layout_height="160dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:scaleType="centerCrop" />
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:layout_marginTop="16dp" />
 
                     <WebView
                         android:id="@+id/content_web"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="8dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp">
+                        android:layout_marginEnd="8dp">
 
                     </WebView>
 
@@ -228,7 +227,7 @@
                 </LinearLayout>
 
 
-            </ScrollView>
+            </android.support.v4.widget.NestedScrollView>
         </LinearLayout>
 
 

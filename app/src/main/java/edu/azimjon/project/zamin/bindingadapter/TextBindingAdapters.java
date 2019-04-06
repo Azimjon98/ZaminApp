@@ -20,7 +20,8 @@ public class TextBindingAdapters {
 
     @BindingAdapter("mySetDate")
     public static void setDate(TextView view, String text) {
-        MyApplicationComponent component = null;
+        if (text == null)
+            return;
 
         //making date of today 00:00 time
         Calendar calendar = new GregorianCalendar();
@@ -28,7 +29,7 @@ public class TextBindingAdapters {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
         Date todayDate = calendar.getTime();
@@ -45,12 +46,13 @@ public class TextBindingAdapters {
 
 
         if (newsDate.after(todayDate)) {
-            view.setText("bugun " +
-                    new SimpleDateFormat(" HH:mm").format(newsDate)
+            view.setText(
+                    new SimpleDateFormat(" HH:mm").format(newsDate) +
+                    " • Bugun"
             );
         } else {
             view.setText(
-                    new SimpleDateFormat(" dd MM yyyy  HH:mm").format(newsDate)
+                    new SimpleDateFormat("HH:mm • d MMMM yyyy").format(newsDate)
             );
         }
 

@@ -41,8 +41,8 @@ import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_NO_CONN
 
 public class NavigationActivity extends AppCompatActivity {
 
-    private static List<String> allFavouriteIds = new ArrayList<>();
-    private static List<NewsCategoryModel> categoryModels = new ArrayList<>();
+    private static List<String> allFavouriteIds;
+    private static List<NewsCategoryModel> categoryModels;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class NavigationActivity extends AppCompatActivity {
                     @Override
                     public void onChanged(@Nullable List<String> strings) {
                         allFavouriteIds = strings;
-                        System.out.println("getting all data from favourites");
+                        System.out.println("getting all data from favourites: " + strings.size());
                     }
                 });
 
@@ -71,7 +71,7 @@ public class NavigationActivity extends AppCompatActivity {
                     @Override
                     public void onChanged(@Nullable List<NewsCategoryModel> categories) {
                         categoryModels = categories;
-                        System.out.println("getting all data from categories");
+                        System.out.println("getting all data from categories: " + categories.size());
                     }
                 });
 

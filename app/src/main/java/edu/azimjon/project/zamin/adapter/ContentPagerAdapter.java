@@ -33,13 +33,15 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
 
     public ContentPagerAdapter(Context context, FragmentManager fm, int tabs) {
         super(fm);
+        Log.d(CALLBACK_LOG, "ContentPagerAdapter: init");
         this.context = context;
         this.tabs_number = tabs;
     }
 
     @Override
     public Fragment getItem(int i) {
-        Log.d(CALLBACK_LOG, "MediaPagerAdapter: getItem");
+        Log.d(CALLBACK_LOG, "ContentPagerAdapter: getItem");
+
         switch (i) {
             case 0:
                 if (fragmentNewsFeed == null)
@@ -64,7 +66,6 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        Log.d(CALLBACK_LOG, "getCount: " + tabs_number);
 
         return tabs_number;
     }

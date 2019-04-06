@@ -39,7 +39,6 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        Log.d(CALLBACK_LOG, "MediaPagerAdapter: getItem");
         switch (i) {
             case 0:
                 if (tab1 == null)
@@ -60,7 +59,6 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        Log.d(CALLBACK_LOG, "getCount: " + tabs_number);
 
 
         return tabs_number;

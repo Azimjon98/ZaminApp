@@ -15,54 +15,66 @@ import java.util.List;
 
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.addition.Converters;
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.databinding.ItemNewsMainMediumBinding;
 import edu.azimjon.project.zamin.interfaces.IScrollStateChanged;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
 
-public class MediumNewsAdapter extends RecyclerView.Adapter<MediumNewsAdapter.MyHolder> {
+public class MediumNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     ArrayList<NewsSimpleModel> items;
     Context context;
-    IScrollStateChanged scrollStateChanged;
 
     int lastPosition = -1;
+    boolean isLoading = false;
 
-    public MediumNewsAdapter(Context context, ArrayList<NewsSimpleModel> items, IScrollStateChanged scrollStateChanged) {
+    public MediumNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         this.context = context;
         this.items = items;
-        this.scrollStateChanged = scrollStateChanged;
     }
 
     @NonNull
     @Override
-    public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemNewsMainMediumBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
-                R.layout.item_news_main_medium, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        ItemNewsMainMediumBinding binding = DataBindingUtil.inflate(inflater,
+                R.layout.item_news_main_medium, viewGroup, false);
 
-
-        return new MyHolder(binding);
+        if (i == 1)
+            return new MyHolder(binding);
+        else
+            return new MyLoadingHolder(
+                    inflater.inflate(R.layout.item_loading, viewGroup, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
-        Log.d(MY_LOG, "onBindViewHolder: " + i);
-        myHolder.binding.setModel(items.get(i));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+
+        //loading case skips
+        if (isLoading && i == items.size() - 1) {
+            return;
+        }
+        MyHolder holder = ((MyHolder) viewHolder);
+
+        holder.binding.setModel(items.get(i));
 
 
         lastPosition = i;
 
-        if (lastPosition == items.size() - 1) {
-            scrollStateChanged.lastItemBinded();
-        }
     }
 
-
     @Override
-    public void onViewDetachedFromWindow(@NonNull MyHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-//        holder.card.clearAnimation();
+    public int getItemViewType(int position) {
+        if (isLoading && position == (items.size() - 1))
+            return 2;
+        else
+            return 1;
+
     }
 
     public void init_items(List<NewsSimpleModel> items) {
@@ -79,6 +91,19 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<MediumNewsAdapter.My
     public void clear_items() {
         this.items.clear();
         this.notifyDataSetChanged();
+    }
+
+    //TODO: indicator item show/hide when loading data
+    public void showLoading() {
+        isLoading = true;
+        items.add(new NewsSimpleModel());
+        notifyDataSetChanged();
+    }
+
+    public void hideLoading() {
+        isLoading = false;
+        items.remove(items.size() - 1);
+        notifyDataSetChanged();
     }
 
 
@@ -98,6 +123,27 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<MediumNewsAdapter.My
             this.binding = binding;
             this.binding.clicker.setOnClickListener(this);
 
+            binding.favouriteIcon.setOnClickListener(v -> {
+                        boolean isWished = binding.getModel().isWished();
+                        binding.getModel().setWished(!binding.getModel().isWished());
+
+
+                        //delete or inser news to favourites in another thread
+                        new Thread(() -> {
+                            if (isWished) {
+                                FavouriteNewsDatabase.getInstance(context)
+                                        .getDao()
+                                        .delete(binding.getModel().getNewsId());
+                            } else {
+                                FavouriteNewsDatabase.getInstance(context)
+                                        .getDao()
+                                        .insert(Converters
+                                                .fromSimpleNewstoFavouriteNews(binding.getModel()));
+                            }
+                        }).start();
+                    }
+            );
+
         }
 
 
@@ -108,5 +154,16 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<MediumNewsAdapter.My
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }
+
+    public class MyLoadingHolder extends RecyclerView.ViewHolder {
+
+
+        public MyLoadingHolder(View v) {
+            super(v);
+
+        }
+
+    }
+
 
 }

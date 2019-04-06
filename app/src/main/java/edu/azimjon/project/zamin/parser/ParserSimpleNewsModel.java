@@ -31,6 +31,11 @@ public class ParserSimpleNewsModel {
 
     public List<NewsSimpleModel> parse(JsonObject json) {
 
+        while (allFavouriteIds == null || categoryModels == null) {
+            allFavouriteIds = NavigationActivity.getFavouritesIds();
+            categoryModels = NavigationActivity.getAllCategories();
+        }
+
         List<NewsSimpleModel> items = new ArrayList<>();
 
         JsonArray articles = json.getAsJsonArray("articles");
@@ -49,13 +54,14 @@ public class ParserSimpleNewsModel {
             model.setImageUrl(article.getAsJsonPrimitive("urlToImage").getAsString());
             model.setViewedCount(article.getAsJsonPrimitive("viewed").getAsString());
 
-
             if (allFavouriteIds.contains(model.getNewsId())) {
                 model.setWished(true);
             }
 
             for (NewsCategoryModel c : categoryModels) {
-                if (model.getCategoryId() == c.getCategoryId()) {
+                if (model.getCategoryId().equals(c.getCategoryId())) {
+                    Log.d("myLog", "categoryModels in");
+
                     model.setCategoryName(c.getName());
                     break;
                 }

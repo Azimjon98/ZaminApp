@@ -19,6 +19,7 @@ import java.util.List;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.FavouriteNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.databinding.WindowFavouritesBinding;
 import edu.azimjon.project.zamin.model.FavouriteNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterFavouriteNews;
@@ -48,7 +49,8 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenterFavouriteNews = new PresenterFavouriteNews(this);
+        //dont need any presenter yet
+//        presenterFavouriteNews = new PresenterFavouriteNews(this);
     }
 
     @Nullable
@@ -70,13 +72,12 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
         favouriteNewsAdapter = new FavouriteNewsAdapter(getContext(), new ArrayList<FavouriteNewsModel>());
         binding.listFavourite.setAdapter(favouriteNewsAdapter);
 
-
         //*****************************************************************************
 
         //room init
         initRoom();
 
-        presenterFavouriteNews.init();
+//        presenterFavouriteNews.init();
     }
 
     //TODO: override methods
@@ -90,6 +91,8 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
     @Override
     public void initFavourites(List<FavouriteNewsModel> items) {
+        binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+
         favouriteNewsAdapter.init_items(items);
     }
 
@@ -106,12 +109,7 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
             @Override
             public void onChanged(@Nullable List<FavouriteNewsModel> tourModels) {
                 Log.d(Constants.MY_LOG, "in favourite onChanged");
-                favouriteNewsAdapter.init_items(tourModels);
-//                if (tourModels.size() == 0)
-//                    binding.setHas(false);
-//                else
-//                    binding.setHas(true);
-
+                initFavourites(tourModels);
             }
         });
     }

@@ -82,41 +82,18 @@ public class MySettings {
     }
 
 
-    public void setCategories(List<NewsCategoryModel> categories) {
+    public void setNavigationHeight(int height) {
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        Set<String> ids = new HashSet<>();
-        Set<String> names = new HashSet<>();
-        Set<String> urls = new HashSet<>();
-        Set<String> isEnableds = new HashSet<>();
-
-        for (NewsCategoryModel m : categories) {
-            ids.add(m.getCategoryId());
-            names.add(m.getName());
-            urls.add(m.getImageUrl());
-            isEnableds.add(m.isEnabled() ? "1" : "0");
-        }
-
-
-        editor.putStringSet("ids", ids);
-        editor.putStringSet("names", names);
-        editor.putStringSet("urls", urls);
-        editor.putStringSet("isEnabled", isEnableds);
+        editor.putInt("key_navigation_height", height);
         editor.apply();
     }
 
 
-    public List<NewsCategoryModel> getCategories() {
+    public int getNavigationHeight() {
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
 
-        List<NewsCategoryModel> array = new ArrayList<>();
-
-        Set<String> ids = sharedPreferences.getStringSet("ids", new HashSet<>());
-        Set<String> names = sharedPreferences.getStringSet("names", new HashSet<>());
-        Set<String> urls = sharedPreferences.getStringSet("urls", new HashSet<>());
-        Set<String> isEnableds = sharedPreferences.getStringSet("isEnableds", new HashSet<>());
-
-        return array;
+        return sharedPreferences.getInt("key_navigation_height", 56);
     }
 
 

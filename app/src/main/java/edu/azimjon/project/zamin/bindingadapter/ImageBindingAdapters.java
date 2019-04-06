@@ -71,6 +71,8 @@ public class ImageBindingAdapters {
 
         //make image view with corners
         view.setBackgroundResource(R.drawable.make_imageview_with_corners);
+        view.setClipToOutline(true);
+
 
     }
 

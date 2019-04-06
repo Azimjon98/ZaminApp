@@ -13,10 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.addition.Converters;
 import edu.azimjon.project.zamin.databinding.ItemAudioNewsBinding;
 import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
 import edu.azimjon.project.zamin.databinding.ItemVideoNewsBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 public class VideoNewsAdapter extends RecyclerView.Adapter<VideoNewsAdapter.MyHolder> {
 
@@ -42,6 +44,8 @@ public class VideoNewsAdapter extends RecyclerView.Adapter<VideoNewsAdapter.MyHo
 
     @Override
     public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
+        myHolder.binding.setModel(items.get(i));
+
         lastPosition = i;
     }
 
@@ -52,7 +56,7 @@ public class VideoNewsAdapter extends RecyclerView.Adapter<VideoNewsAdapter.MyHo
 //        holder.card.clearAnimation();
     }
 
-    public void init_items(List<NewsSimpleModel> items){
+    public void init_items(List<NewsSimpleModel> items) {
         clear_items();
         this.items.addAll(items);
         this.notifyDataSetChanged();
@@ -62,9 +66,6 @@ public class VideoNewsAdapter extends RecyclerView.Adapter<VideoNewsAdapter.MyHo
         this.items.clear();
         this.notifyDataSetChanged();
     }
-
-
-
 
 
     @Override
@@ -80,6 +81,28 @@ public class VideoNewsAdapter extends RecyclerView.Adapter<VideoNewsAdapter.MyHo
 
         public MyHolder(ItemVideoNewsBinding binding) {
             super(binding.getRoot());
+            this.binding = binding;
+
+            binding.favouriteIcon.setOnClickListener(v -> {
+                        boolean isWished = binding.getModel().isWished();
+                        binding.getModel().setWished(!binding.getModel().isWished());
+
+
+                        //delete or inser news to favourites in another thread
+                        new Thread(() -> {
+                            if (isWished) {
+                                FavouriteNewsDatabase.getInstance(context)
+                                        .getDao()
+                                        .delete(binding.getModel().getNewsId());
+                            } else {
+                                FavouriteNewsDatabase.getInstance(context)
+                                        .getDao()
+                                        .insert(Converters
+                                                .fromSimpleNewstoFavouriteNews(binding.getModel()));
+                            }
+                        }).start();
+                    }
+            );
 
 
         }

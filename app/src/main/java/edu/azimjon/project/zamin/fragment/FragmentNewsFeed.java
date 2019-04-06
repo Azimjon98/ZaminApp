@@ -1,8 +1,11 @@
 package edu.azimjon.project.zamin.fragment;
 
 import android.arch.lifecycle.Observer;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
@@ -32,6 +35,7 @@ import edu.azimjon.project.zamin.adapter.TopNewsPagerAdapter;
 import edu.azimjon.project.zamin.adapter.CategoryNewsAdapter;
 import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.databinding.WindowNewsFeedBinding;
 import edu.azimjon.project.zamin.events.MyNetworkEvents;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
@@ -42,6 +46,7 @@ import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
 import edu.azimjon.project.zamin.util.MyOnScrollListener;
 
 import static com.arlib.floatingsearchview.util.Util.dpToPx;
+import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
@@ -81,7 +86,23 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
     int pastVisiblesItems;
 
     @Override
+    public void onAttach(Context context) {
+        Log.d(CALLBACK_LOG, "FragmentNewsFeed: onAttach");
+
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(CALLBACK_LOG, "FragmentNewsFeed: onDetach");
+
+        super.onDetach();
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d(Constants.CALLBACK_LOG, "FragmentNewsFeed onCreate: ");
+
         super.onCreate(savedInstanceState);
         presenterNewsFeed = new PresenterNewsFeed(this);
     }
@@ -89,6 +110,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(Constants.CALLBACK_LOG, "FragmentNewsFeed onCreateView: ");
+
         binding = DataBindingUtil.inflate(inflater, R.layout.window_news_feed, container, false);
 
         return binding.getRoot();
@@ -97,6 +120,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Log.d(Constants.CALLBACK_LOG, "FragmentNewsFeed onViewCreated: ");
+
         super.onViewCreated(view, savedInstanceState);
 
         //initialize adapters and append to lists
@@ -127,56 +152,18 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         binding.listLastNewsContinue.setLayoutManager(mLayoutManager);
-        lastContinueNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>(),
-                () -> {
-                    //method for continue getting data from server
-                    Log.d(MY_LOG, "onLastItem");
-//                    presenterNewsFeed.getLastNewsContinue();
-                });
+        lastContinueNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         binding.listLastNewsContinue.setAdapter(lastContinueNewsAdapter);
 
-        binding.listLastNewsContinue.setNestedScrollingEnabled(false);
-        binding.listLastNewsContinue.setHasFixedSize(false);
 
         binding.nestedView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
 
-                if (scrollY > oldScrollY)
-                    Log.d(MY_LOG, "scrollDown");
+                if (scrollY == (v.getMeasuredHeight() - v.getChildAt(0).getMeasuredHeight()) ||
+                        -scrollY == (v.getMeasuredHeight() - v.getChildAt(0).getMeasuredHeight())) {
 
-                if (scrollY < oldScrollY)
-                    Log.d(MY_LOG, "scrollUp");
-
-                if (scrollY == 0)
-                    Log.d(MY_LOG, "in Up");
-
-                if (scrollY != 0 && scrollY == oldScrollY)
-                    Log.d(MY_LOG, "in Down");
-
-                Log.d(MY_LOG, "getHeight" + binding.nestedView.getMeasuredHeight());
-                Log.d(MY_LOG, "scrollY" + scrollY);
-
-
-
-                if (v.getChildAt(v.getChildCount() - 1) != null) {
-                    if ((scrollY >= (binding.nestedView.getMeasuredHeight() - v.getMeasuredHeight())) &&
-                            scrollY > oldScrollY) {
-
-
-                        visibleItemCount = mLayoutManager.getChildCount();
-                        totalItemCount = mLayoutManager.getItemCount();
-                        pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
-
-                        if (getAllowEnterTransitionOverlap()) {
-
-                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                                Log.d(MY_LOG, "visibleItemCount: " + visibleItemCount +
-                                        "  totalItemCount: " + totalItemCount +
-                                        "  pastVisiblesItems: " + pastVisiblesItems);
-//                        Load Your Data
-                            }
-                        }
-                    }
+                    lastContinueNewsAdapter.showLoading();
+                    presenterNewsFeed.getLastNewsContinue();
                 }
             }
 
@@ -185,13 +172,6 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
         //*****************************************************************************
 
-
-//        binding.listLastNewsContinue.addOnScrollListener(new MyOnScrollListener(lastContinueNewsAdapter, () -> {
-//            presenterNewsFeed.getLastNewsContinue();
-//            smallNewsAdapter.showLoadingItem();
-//        }));
-
-        presenterNewsFeed.init();
 
         //TODO: categories observable here:
         CategoryNewsDatabase
@@ -204,6 +184,9 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
                 initCategories(categoryModels);
             }
         });
+
+        presenterNewsFeed.init();
+
     }
 
     //TODO: override methods
@@ -258,6 +241,13 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
     @Override
     public void addLastNewsContinue(List<NewsSimpleModel> items) {
+        //give padding to bottom
+        binding.listLastNewsContinue.setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+
+
+        if (lastContinueNewsAdapter.getItemCount() != 0)
+            lastContinueNewsAdapter.hideLoading();
+
         lastContinueNewsAdapter.add_items(items);
     }
 

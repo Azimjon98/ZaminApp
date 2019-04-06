@@ -16,6 +16,7 @@ import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.databinding.ItemAudioNewsBinding;
 import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 public class AudioNewsAdapter extends RecyclerView.Adapter<AudioNewsAdapter.MyHolder> {
 
@@ -42,6 +43,8 @@ public class AudioNewsAdapter extends RecyclerView.Adapter<AudioNewsAdapter.MyHo
     @Override
     public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
         lastPosition = i;
+        myHolder.binding.setModel(items.get(i));
+
     }
 
 
@@ -51,7 +54,7 @@ public class AudioNewsAdapter extends RecyclerView.Adapter<AudioNewsAdapter.MyHo
 //        holder.card.clearAnimation();
     }
 
-    public void init_items(List<NewsSimpleModel> items){
+    public void init_items(List<NewsSimpleModel> items) {
         clear_items();
         this.items.addAll(items);
         this.notifyDataSetChanged();
@@ -63,23 +66,21 @@ public class AudioNewsAdapter extends RecyclerView.Adapter<AudioNewsAdapter.MyHo
     }
 
 
-
-
-
     @Override
     public int getItemCount() {
         return items.size();
     }
 
     public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ItemNewsCategoryBinding binding;
+        ItemAudioNewsBinding binding;
 
         int count = 0;
 
 
         public MyHolder(ItemAudioNewsBinding binding) {
             super(binding.getRoot());
-
+            this.binding = binding;
+            this.binding.clicker.setOnClickListener(this);
 
         }
 

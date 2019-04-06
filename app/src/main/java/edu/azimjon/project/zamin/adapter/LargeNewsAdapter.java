@@ -43,21 +43,6 @@ public class LargeNewsAdapter extends RecyclerView.Adapter<LargeNewsAdapter.MyHo
         this.context = context;
         this.items = items;
 
-//        //intit favourite ids
-//        allFavouriteIds = new ArrayList<>();
-//        FavouriteNewsDatabase
-//                .getInstance(context)
-//                .getDao()
-//                .getAllIds()
-//                .observe((LifecycleOwner) this, new Observer<List<Integer>>() {
-//                    @Override
-//                    public void onChanged(@Nullable List<Integer> integers) {
-//                        Log.d(Constants.MY_LOG, "in favourite get all ids");
-//                        allFavouriteIds.clear();
-//                        allFavouriteIds.addAll(integers);
-//                    }
-//                });
-
     }
 
     @NonNull
@@ -112,26 +97,26 @@ public class LargeNewsAdapter extends RecyclerView.Adapter<LargeNewsAdapter.MyHo
             this.binding = binding;
             this.binding.clicker.setOnClickListener(this);
 
-//            binding.favouriteIcon.setOnClickListener(v -> {
-//                        boolean isWished = binding.getModel().isWished();
-//                        binding.getModel().setWished(!binding.getModel().isWished());
-//
-//
-//                        //delete or inser news to favourites in another thread
-//                        new Thread(() -> {
-//                            if (isWished) {
-//                                FavouriteNewsDatabase.getInstance(context)
-//                                        .getDao()
-//                                        .delete(binding.getModel().getNewsId());
-//                            } else {
-////                                FavouriteNewsDatabase.getInstance(context)
-////                                        .getDao()
-////                                        .insert(Converters
-////                                                .fromSimpleNewstoFavouriteNews(binding.getModel()));
-//                            }
-//                        }).start();
-//                    }
-//            );
+            binding.favouriteIcon.setOnClickListener(v -> {
+                        boolean isWished = binding.getModel().isWished();
+                        binding.getModel().setWished(!binding.getModel().isWished());
+
+
+                        //delete or inser news to favourites in another thread
+                        new Thread(() -> {
+                            if (isWished) {
+                                FavouriteNewsDatabase.getInstance(context)
+                                        .getDao()
+                                        .delete(binding.getModel().getNewsId());
+                            } else {
+                                FavouriteNewsDatabase.getInstance(context)
+                                        .getDao()
+                                        .insert(Converters
+                                                .fromSimpleNewstoFavouriteNews(binding.getModel()));
+                            }
+                        }).start();
+                    }
+            );
 
         }
 

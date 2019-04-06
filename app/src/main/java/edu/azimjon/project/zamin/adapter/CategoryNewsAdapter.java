@@ -78,6 +78,7 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
         public MyHolder(ItemNewsCategoryBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            this.binding.cardNewsCategory.setOnClickListener(this);
 
         }
 

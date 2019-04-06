@@ -42,6 +42,8 @@ public class TopNewsPagerAdapter extends PagerAdapter implements View.OnClickLis
         ItemNewsMainLargeBinding binding = DataBindingUtil.inflate(inflater, R.layout.item_news_main_large, container, false);
         binding.setModel(news.get(position));
 
+
+
         binding.clicker.setOnClickListener(v -> {
             newsID = news.get(position).getNewsId();
             this.onClick(v);
@@ -51,6 +53,11 @@ public class TopNewsPagerAdapter extends PagerAdapter implements View.OnClickLis
 
         container.addView(binding.getRoot());
         return binding.getRoot();
+    }
+
+    @Override
+    public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        super.setPrimaryItem(container, position, object);
     }
 
     public void init_items(List<NewsSimpleModel> news, int count) {

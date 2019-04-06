@@ -80,11 +80,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         //initialize adapters and append to lists
 
         binding.listLastNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>(),
-                () -> {
-                    presenterNewsContent.getContinue();
-                    Toast.makeText(getContext(), "Salom", Toast.LENGTH_SHORT).show();
-                });
+        mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         binding.listLastNews.setAdapter(mediumNewsAdapter);
 
         String newsId = getArguments().getString(KEY_NEWS_ID);

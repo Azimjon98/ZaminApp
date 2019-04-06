@@ -14,9 +14,11 @@ import java.util.List;
 
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.addition.Converters;
 import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
 import edu.azimjon.project.zamin.databinding.ItemNewsMainSmallBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 
@@ -91,6 +93,27 @@ public class SmallNewsAdapter extends RecyclerView.Adapter<SmallNewsAdapter.MyHo
             super(binding.getRoot());
             this.binding = binding;
             this.binding.clicker.setOnClickListener(this);
+
+            binding.favouriteIcon.setOnClickListener(v -> {
+                        boolean isWished = binding.getModel().isWished();
+                        binding.getModel().setWished(!binding.getModel().isWished());
+
+
+                        //delete or inser news to favourites in another thread
+                        new Thread(() -> {
+                            if (isWished) {
+                                FavouriteNewsDatabase.getInstance(context)
+                                        .getDao()
+                                        .delete(binding.getModel().getNewsId());
+                            } else {
+                                FavouriteNewsDatabase.getInstance(context)
+                                        .getDao()
+                                        .insert(Converters
+                                                .fromSimpleNewstoFavouriteNews(binding.getModel()));
+                            }
+                        }).start();
+                    }
+            );
 
         }
 

@@ -20,33 +20,50 @@
 
 
             <ImageView
+                android:id="@+id/icon_back"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
-                android:padding="6dp"
+                android:padding="8dp"
                 android:src="@drawable/ic_arrow_back" />
 
 
             <EditText
+                android:id="@+id/ed_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="16sp"
                 android:hint="Yangiliklar"
+                android:imeOptions="actionDone"
                 android:singleLine="true"
                 android:textSize="15sp" />
 
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_search_result"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="16sp">
+            android:layout_height="match_parent">
 
-        </android.support.v7.widget.RecyclerView>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list_search_result"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16sp">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+
+        </RelativeLayout>
 
 
     </LinearLayout>

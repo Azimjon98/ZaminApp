@@ -17,6 +17,7 @@ import java.util.List;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.AudioNewsAdapter;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.databinding.WindowAudioInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
@@ -48,6 +49,8 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+
         binding = DataBindingUtil.inflate(inflater, R.layout.window_audio_inside_media, container, false);
 
         return binding.getRoot();
@@ -80,6 +83,8 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
     @Override
     public void initAudio(List<NewsSimpleModel> items) {
+        binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+
         audioNewsAdapter.init_items(items);
     }
 

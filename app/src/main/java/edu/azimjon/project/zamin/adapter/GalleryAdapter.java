@@ -14,6 +14,7 @@ import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.addition.Converters;
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.databinding.ItemAudioNewsBinding;
 import edu.azimjon.project.zamin.databinding.ItemGalleryNewsBinding;
 import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
@@ -21,44 +22,72 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 import edu.azimjon.project.zamin.util.MyUtil;
 
-public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyHolder> {
+public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     ArrayList<NewsSimpleModel> items;
     Context context;
 
     int lastPosition = -1;
 
+    private final static int TYPE_HEADER = 1;
+    private final static int TYPE_ITEM = 2;
+
     public GalleryAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         this.context = context;
         this.items = items;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0)
+            return TYPE_HEADER;
+        else
+            return TYPE_ITEM;
+    }
+
     @NonNull
     @Override
-    public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemGalleryNewsBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
-                R.layout.item_gallery_news, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        LayoutInflater inflater = LayoutInflater.from(context);
 
+        //header with bottom padding
+        if (i == TYPE_HEADER) {
+            View header = inflater.inflate(R.layout.header_window_gallery_inside_media, viewGroup, false);
+            header.setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+            return new MyHolder1(header);
+        } else
+            return new MyHolder2(DataBindingUtil
+                    .inflate(inflater,
+                            R.layout.item_gallery_news,
+                            viewGroup,
+                            false));
 
-        return new MyHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         lastPosition = i;
+
+        if (i == 0)
+            return;
+
+        MyHolder2 myHolder = (MyHolder2) viewHolder;
         myHolder.binding.setModel(items.get(i));
 
     }
 
 
-    @Override
-    public void onViewDetachedFromWindow(@NonNull MyHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-//        holder.card.clearAnimation();
-    }
+
 
     public void init_items(List<NewsSimpleModel> items) {
         clear_items();
+        this.items.add(new NewsSimpleModel());
+
+        this.items.addAll(items);
+        this.notifyDataSetChanged();
+    }
+
+    public void add_all(List<NewsSimpleModel> items) {
         this.items.addAll(items);
         this.notifyDataSetChanged();
     }
@@ -74,13 +103,25 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyHolder
         return items.size();
     }
 
-    public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    //################################################################
+
+    //TODO: Holders
+
+
+    public class MyHolder1 extends RecyclerView.ViewHolder {
+        public MyHolder1(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
+
+
+    public class MyHolder2 extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemGalleryNewsBinding binding;
 
         int count = 0;
 
 
-        public MyHolder(ItemGalleryNewsBinding binding) {
+        public MyHolder2(ItemGalleryNewsBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             binding.clicker.setOnClickListener(this);

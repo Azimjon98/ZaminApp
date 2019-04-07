@@ -1,29 +1,18 @@
 package edu.azimjon.project.zamin.mvp.model;
 
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.application.MyApplication;
-import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
 import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
-import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
-import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
-import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -93,8 +82,9 @@ public class ModelNewsFeed {
         retrofit.create(MyRestService.class)
                 .getMainNews(String.valueOf(offsetMain),
                         limit,
-                        "uz",
-                        "1")
+                        "1",
+                        "uz"
+                )
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -105,7 +95,7 @@ public class ModelNewsFeed {
 
                             offsetMain++;
                         } else {
-                            Log.d(API_LOG, "getMainNews onFailure: " + response.message());
+                            Log.d(API_LOG, "getMainNews onWrong: " + response.message());
                         }
                     }
 
@@ -120,7 +110,7 @@ public class ModelNewsFeed {
     private void getLastNews() {
 
         retrofit.create(MyRestService.class)
-                .getNewsData(String.valueOf(offsetLast),
+                .getLastNewsData(String.valueOf(offsetLast),
                         limit,
                         "uz")
                 .enqueue(new Callback<JsonObject>() {
@@ -133,7 +123,7 @@ public class ModelNewsFeed {
 
                             offsetLast++;
                         } else {
-                            Log.d(API_LOG, "getLastNews onFailure: " + response.message());
+                            Log.d(API_LOG, "getLastNews onWrong: " + response.message());
                         }
                     }
 
@@ -146,7 +136,7 @@ public class ModelNewsFeed {
 
     public void getlLastNewsContinue() {
         retrofit.create(MyRestService.class)
-                .getNewsData(String.valueOf(offsetLast),
+                .getLastNewsData(String.valueOf(offsetLast),
                         limit,
                         "uz")
                 .enqueue(new Callback<JsonObject>() {
@@ -158,7 +148,7 @@ public class ModelNewsFeed {
 
                             offsetLast++;
                         } else {
-                            Log.d(API_LOG, "getLastNews onFailure: " + response.message());
+                            Log.d(API_LOG, "getLastNews onWrong: " + response.message());
                         }
                     }
 

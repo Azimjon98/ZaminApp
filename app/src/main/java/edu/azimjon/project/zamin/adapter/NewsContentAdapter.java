@@ -5,7 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,64 +15,82 @@ import java.util.List;
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.addition.Converters;
-import edu.azimjon.project.zamin.addition.MySettings;
+import edu.azimjon.project.zamin.databinding.HeaderWindowNewsContentBinding;
 import edu.azimjon.project.zamin.databinding.ItemNewsMainMediumBinding;
-import edu.azimjon.project.zamin.interfaces.IScrollStateChanged;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
-import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
-import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
 
-public class MediumNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class NewsContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     ArrayList<NewsSimpleModel> items;
     Context context;
+
+
 
     int lastPosition = -1;
     boolean isLoading = false;
 
-    public MediumNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
+    private final static int TYPE_HEADER = 1;
+    private final static int TYPE_ITEM = 2;
+    private final static int TYPE_LOADING = 3;
+
+    public NewsContentAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         this.context = context;
         this.items = items;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return TYPE_HEADER;
+        } else if (isLoading && position == (items.size() - 1))
+            return TYPE_LOADING;
+        else
+            return TYPE_ITEM;
+
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        ItemNewsMainMediumBinding binding = DataBindingUtil.inflate(inflater,
-                R.layout.item_news_main_medium, viewGroup, false);
 
-        if (i == 1)
-            return new MyHolder(binding);
+
+        if (i == TYPE_HEADER)
+            return new MyHeaderHolder(DataBindingUtil
+                    .inflate(inflater,
+                            R.layout.header_window_news_content,
+                            viewGroup,
+                            false));
+        else if (i == TYPE_ITEM)
+            return new MyHolderItem(DataBindingUtil
+                    .inflate(inflater,
+                            R.layout.item_news_main_medium,
+                            viewGroup,
+                            false));
         else
-            return new MyLoadingHolder(
-                    inflater.inflate(R.layout.item_loading, viewGroup, false));
+            return new MyLoadingHolder(inflater.
+                    inflate(R.layout.item_loading, viewGroup, false));
+
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-
+        if (i == 0)
+            return;
         //loading case skips
         if (isLoading && i == items.size() - 1) {
             return;
         }
-        MyHolder holder = ((MyHolder) viewHolder);
+
+        MyHolderItem holder = ((MyHolderItem) viewHolder);
 
         holder.binding.setModel(items.get(i));
 
 
         lastPosition = i;
-
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (isLoading && position == (items.size() - 1))
-            return 2;
-        else
-            return 1;
 
     }
 
@@ -84,13 +101,17 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
 
-
     public void add_items(List<NewsSimpleModel> items) {
         this.items.addAll(items);
         this.notifyDataSetChanged();
     }
 
     public void clear_items() {
+        this.items.clear();
+        this.notifyDataSetChanged();
+    }
+
+    public void init_header() {
         this.items.clear();
         this.notifyDataSetChanged();
     }
@@ -114,13 +135,26 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return items.size();
     }
 
-    public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+    public class MyHeaderHolder extends RecyclerView.ViewHolder {
+        HeaderWindowNewsContentBinding binding;
+
+        public MyHeaderHolder(HeaderWindowNewsContentBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+
+
+        }
+
+    }
+
+    public class MyHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemNewsMainMediumBinding binding;
 
         int count = 0;
 
 
-        public MyHolder(ItemNewsMainMediumBinding binding) {
+        public MyHolderItem(ItemNewsMainMediumBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             this.binding.clicker.setOnClickListener(this);
@@ -157,6 +191,7 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
+
     public class MyLoadingHolder extends RecyclerView.ViewHolder {
 
 
@@ -166,6 +201,5 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
     }
-
 
 }

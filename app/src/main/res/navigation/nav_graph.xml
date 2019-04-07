@@ -36,4 +36,9 @@
         android:name="edu.azimjon.project.zamin.fragment.FragmentProfile"
         android:label="window_profile"
         tools:layout="@layout/window_profile" />
+    <fragment
+        android:id="@+id/fragmentSearchResults"
+        android:name="edu.azimjon.project.zamin.fragment.FragmentSearchResults"
+        android:label="window_search_results"
+        tools:layout="@layout/window_search_results" /><action android:id="@+id/action_global_fragmentSearchResults" app:destination="@id/fragmentSearchResults"/>
 </navigation>

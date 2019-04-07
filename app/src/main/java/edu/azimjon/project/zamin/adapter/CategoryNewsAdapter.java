@@ -3,6 +3,7 @@ package edu.azimjon.project.zamin.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,9 @@ import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
+
+import static edu.azimjon.project.zamin.addition.Constants.KEY_CATEGORY_ID;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_CATEGORY_NAME;
 
 public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapter.MyHolder> {
 
@@ -85,7 +89,10 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
 
         @Override
         public void onClick(View v) {
-            Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent);
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_CATEGORY_ID, items.get(getAdapterPosition()).getCategoryId());
+            bundle.putString(KEY_CATEGORY_NAME, items.get(getAdapterPosition()).getName());
+            Navigation.findNavController(v).navigate(R.id.action_global_fragmentSearchResults, bundle);
         }
     }
 }

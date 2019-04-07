@@ -9,30 +9,31 @@ import retrofit2.http.Query;
 
 public interface MyRestService {
 
+    @GET("category.php")
+    Call<JsonArray> getAllCategories(@Query("lang") String lang);
+
     @GET(".")
-    Call<JsonObject> getNewsData(@Query("offset") String offset,
-                             @Query("limit") String limit,
-                             @Query("lang") String lang);
+    Call<JsonObject> getLastNewsData(@Query("offset") String offset,
+                                     @Query("limit") String limit,
+                                     @Query("lang") String lang);
 
     @GET(".")
     Call<JsonObject> getMainNews(@Query("offset") String offset,
                                  @Query("limit") String limit,
-                                 @Query("lang") String lang,
-                                 @Query("main") String main);
-
-
+                                 @Query("main") String main,
+                                 @Query("lang") String lang);
 
 
     @GET(".")
     Call<JsonObject> getNewsWithCategory(@Query("offset") String offset,
                                          @Query("limit") String limit,
-                                         @Query("lang") String lang,
-                                         @Query("category") String category);
+                                         @Query("category") String category,
+                                         @Query("lang") String lang);
 
     @GET(".")
     Call<JsonObject> getTopNews(@Query("offset") String offset,
                                 @Query("limit") String limit,
-                                @Query("tagname") String popular,
+                                @Query("popular") String popular,
                                 @Query("lang") String lang);
 
     @GET("article.php")
@@ -43,16 +44,18 @@ public interface MyRestService {
     Call<JsonObject> getNewsContentTags(@Query("id") String id,
                                         @Query("lang") String lang);
 
-    @GET("category.php")
-    Call<JsonArray> getAllCategories(@Query("lang") String lang);
 
+    @GET("search.php")
+    Call<JsonObject> getNewsWithTags(@Query("offset") String offset,
+                                     @Query("limit") String limit,
+                                     @Query("tagname") String tagname,
+                                     @Query("lang") String lang);
 
-    @GET("tags.php")
-    Call<JsonObject> getNewsContentTags(@Query("offset") String offset,
+    @GET("search.php")
+    Call<JsonObject> searchNewsWithTitle(@Query("offset") String offset,
                                         @Query("limit") String limit,
-                                        @Query("tagname") String tagname,
+                                        @Query("key") String key,
                                         @Query("lang") String lang);
-
 
 
 }

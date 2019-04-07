@@ -45,6 +45,8 @@ public class Constants {
 
     //TODO: KEYS
     public static String KEY_NEWS_ID = "news_id";
+    public static String KEY_CATEGORY_ID = "news_id";
+    public static String KEY_CATEGORY_NAME = "news_id";
 
 
     //TODO:

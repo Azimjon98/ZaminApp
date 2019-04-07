@@ -69,13 +69,14 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.window_news_content, container, false);
 
-
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        binding.iconBack.setOnClickListener(v -> Navigation.findNavController(v).popBackStack(R.id.fragmentContent, true));
 
         //initialize adapters and append to lists
 
@@ -110,7 +111,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
         initIcons();
         presenterNewsContent.init(newsId);
-
 
 
     }

@@ -84,7 +84,7 @@ public class ModelNewsContent {
     public void getLastNews() {
 
         retrofit.create(MyRestService.class)
-                .getNewsData(String.valueOf(offset),
+                .getLastNewsData(String.valueOf(offset),
                         limit,
                         "uz")
                 .enqueue(new Callback<JsonObject>() {

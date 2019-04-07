@@ -46,16 +46,9 @@ public class SmallNewsAdapter extends RecyclerView.Adapter<SmallNewsAdapter.MyHo
     @Override
     public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
         myHolder.binding.setModel(items.get(i));
-
         lastPosition = i;
     }
 
-
-    @Override
-    public void onViewDetachedFromWindow(@NonNull MyHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-//        holder.card.clearAnimation();
-    }
 
     public void init_items(List<NewsSimpleModel> items) {
         clear_items();
@@ -79,9 +72,6 @@ public class SmallNewsAdapter extends RecyclerView.Adapter<SmallNewsAdapter.MyHo
         return items.size();
     }
 
-    //when data is loaded show loading item
-    public void showLoadingItem() {
-    }
 
     public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemNewsMainSmallBinding binding;

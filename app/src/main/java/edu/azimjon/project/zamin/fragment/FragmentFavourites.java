@@ -70,6 +70,11 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
         binding.listFavourite.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         favouriteNewsAdapter = new FavouriteNewsAdapter(getContext(), new ArrayList<FavouriteNewsModel>());
+        favouriteNewsAdapter.withHeader(LayoutInflater.from(getContext())
+                .inflate(
+                        R.layout.header_window_favourites,
+                        binding.listFavourite,
+                        false));
         binding.listFavourite.setAdapter(favouriteNewsAdapter);
 
         //*****************************************************************************

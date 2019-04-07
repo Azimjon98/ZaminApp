@@ -46,6 +46,7 @@ public class FragmentMedia extends Fragment implements IFragmentMedia, ViewPager
     //TODO: variables here
     WindowMediaBinding binding;
     PresenterMedia presenterMedia;
+    int position = 0;
 
     //adapters
     MediaPagerAdapter pagerAdapter;
@@ -83,7 +84,7 @@ public class FragmentMedia extends Fragment implements IFragmentMedia, ViewPager
         binding.mediaPager.setAdapter(pagerAdapter);
         binding.mediaPager.addOnPageChangeListener(this);
         binding.tabMedia.setupWithViewPager(binding.mediaPager);
-        // binding.mediaPager.setCurrentItem(1);
+        binding.mediaPager.setCurrentItem(position);
 
 
         //*****************************************************************************
@@ -143,6 +144,10 @@ public class FragmentMedia extends Fragment implements IFragmentMedia, ViewPager
 
     //TODO: Additional methods
 
+    //Inside method setPosition:
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
 
     //#################################################################

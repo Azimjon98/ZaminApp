@@ -18,6 +18,8 @@ import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
+import static edu.azimjon.project.zamin.addition.Constants.ERROR_LOG;
+
 //Simple news model parser
 public class ParserSimpleNewsModel {
     //list of ids which are favourite
@@ -45,14 +47,20 @@ public class ParserSimpleNewsModel {
 
             JsonObject article = i.getAsJsonObject();
 
-            //parsing and making a model
-            model.setNewsId(article.getAsJsonPrimitive("newsID").getAsString());
-            model.setTitle(article.getAsJsonPrimitive("title").getAsString());
-            model.setDate(article.getAsJsonPrimitive("publishedAt").getAsString());
-            model.setCategoryId(article.getAsJsonPrimitive("categoryID").getAsString());
-            model.setOriginalUrl(article.getAsJsonPrimitive("url").getAsString());
-            model.setImageUrl(article.getAsJsonPrimitive("urlToImage").getAsString());
-            model.setViewedCount(article.getAsJsonPrimitive("viewed").getAsString());
+            try {
+                //parsing and making a model
+                model.setNewsId(article.getAsJsonPrimitive("newsID").getAsString());
+                model.setTitle(article.getAsJsonPrimitive("title").getAsString());
+                model.setDate(article.getAsJsonPrimitive("publishedAt").getAsString());
+                model.setCategoryId(article.getAsJsonPrimitive("categoryID").getAsString());
+                model.setOriginalUrl(article.getAsJsonPrimitive("url").getAsString());
+                model.setImageUrl(article.getAsJsonPrimitive("urlToImage").getAsString());
+                model.setViewedCount(article.getAsJsonPrimitive("viewed").getAsString());
+
+            }catch (Exception e){
+                Log.d(ERROR_LOG, "Error SimpleNews Parser: " + e.getMessage());
+            }
+
 
             if (allFavouriteIds.contains(model.getNewsId())) {
                 model.setWished(true);

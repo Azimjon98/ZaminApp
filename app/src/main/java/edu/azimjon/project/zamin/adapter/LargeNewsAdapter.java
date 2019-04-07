@@ -58,7 +58,6 @@ public class LargeNewsAdapter extends RecyclerView.Adapter<LargeNewsAdapter.MyHo
     @Override
     public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
         myHolder.binding.setModel(items.get(i));
-
         lastPosition = i;
     }
 

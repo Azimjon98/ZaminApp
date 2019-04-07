@@ -28,6 +28,8 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
     FragmentFavourites fragmentFavourites;
     FragmentMedia fragmentMedia;
 
+    int mediaPosition = 0;
+
     Context context;
     private int tabs_number;
 
@@ -58,6 +60,7 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
             case 3:
                 if (fragmentMedia == null)
                     fragmentMedia = new FragmentMedia();
+                fragmentMedia.setPosition(mediaPosition);
                 return fragmentMedia;
             default:
                 return null;
@@ -74,6 +77,12 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         // Fragments will not destroyed
+    }
+
+    //additional inside methods
+
+    public void setPositionOfMediaNews(int positionOfMediaNews) {
+        mediaPosition = positionOfMediaNews;
     }
 
 

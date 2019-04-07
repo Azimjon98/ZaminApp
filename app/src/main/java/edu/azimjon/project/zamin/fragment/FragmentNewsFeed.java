@@ -3,12 +3,9 @@ package edu.azimjon.project.zamin.fragment;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
@@ -21,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -29,25 +27,27 @@ import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.AudioNewsAdapter;
+import edu.azimjon.project.zamin.adapter.ContentAdapter;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.adapter.SmallNewsAdapter;
-import edu.azimjon.project.zamin.adapter.TopNewsPagerAdapter;
+import edu.azimjon.project.zamin.adapter.MainNewsPagerAdapter;
 import edu.azimjon.project.zamin.adapter.CategoryNewsAdapter;
 import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
+import edu.azimjon.project.zamin.databinding.HeaderWindowNewsContentBinding;
+import edu.azimjon.project.zamin.databinding.HeaderWindowNewsFeedBinding;
 import edu.azimjon.project.zamin.databinding.WindowNewsFeedBinding;
 import edu.azimjon.project.zamin.events.MyNetworkEvents;
+import edu.azimjon.project.zamin.events.MyOnMoreNewsEvents;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsFeed;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
-import edu.azimjon.project.zamin.util.MyOnScrollListener;
 
 import static com.arlib.floatingsearchview.util.Util.dpToPx;
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
 public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, ViewPager.OnPageChangeListener {
@@ -58,18 +58,20 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
 
     //TODO: Constants here
+    LinearLayoutManager manager;
     List<NewsCategoryModel> categoryModels;
     boolean isConnected_to_Net = true;
 
 
     //TODO: variables here
     WindowNewsFeedBinding binding;
+    HeaderWindowNewsFeedBinding bindingHeader;
     PresenterNewsFeed presenterNewsFeed;
 
     //adapters
     CategoryNewsAdapter categoryNewsAdapter;
 
-    TopNewsPagerAdapter topNewsPagerAdapter;
+    MainNewsPagerAdapter mainNewsPagerAdapter;
 
     SmallNewsAdapter smallNewsAdapter;
 
@@ -77,13 +79,15 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
     VideoNewsAdapter videoNewsAdapter;
 
-    MediumNewsAdapter lastContinueNewsAdapter;
+    ContentAdapter lastContinueNewsAdapter;
 
     //#####################################################################
 
-    int visibleItemCount;
-    int totalItemCount;
-    int pastVisiblesItems;
+    //scrolling variables
+    boolean isScrolling = false;
+    boolean isLoading = false;
+
+    int total_items, visible_items, scrollout_items;
 
     @Override
     public void onAttach(Context context) {
@@ -126,51 +130,45 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
         //initialize adapters and append to lists
 
-        binding.listCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        categoryNewsAdapter = new CategoryNewsAdapter(getContext(), new ArrayList<NewsCategoryModel>());
-        binding.listCategory.setAdapter(categoryNewsAdapter);
-
-        topNewsPagerAdapter = new TopNewsPagerAdapter(getContext());
-        binding.mainNewsPager.setAdapter(topNewsPagerAdapter);
-        binding.mainNewsPager.setClipToPadding(false);
-        binding.mainNewsPager.setPadding(48, 0, 48, 0);
-        binding.mainNewsPager.setPageMargin(36);
-        binding.mainNewsPager.setCurrentItem(1);
-        binding.mainNewsPager.addOnPageChangeListener(this);
-
-        binding.listLastNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        smallNewsAdapter = new SmallNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-        binding.listLastNews.setAdapter(smallNewsAdapter);
-
-        binding.listAudioNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-        binding.listAudioNews.setAdapter(audioNewsAdapter);
-
-        binding.listVideoNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-        binding.listVideoNews.setAdapter(videoNewsAdapter);
-
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        binding.listLastNewsContinue.setLayoutManager(mLayoutManager);
-        lastContinueNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        binding.listLastNewsContinue.setLayoutManager(manager);
+        lastContinueNewsAdapter = new ContentAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         binding.listLastNewsContinue.setAdapter(lastContinueNewsAdapter);
 
+        binding.listLastNewsContinue.addOnScrollListener(scrollListener);
 
-        binding.nestedView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_feed, binding.listLastNewsContinue, false);
+        lastContinueNewsAdapter.withHeader(bindingHeader.getRoot());
 
-                if (scrollY == (v.getMeasuredHeight() - v.getChildAt(0).getMeasuredHeight()) ||
-                        -scrollY == (v.getMeasuredHeight() - v.getChildAt(0).getMeasuredHeight())) {
-
-                    lastContinueNewsAdapter.showLoading();
-                    presenterNewsFeed.getLastNewsContinue();
-                }
-            }
-
-
-        });
 
         //*****************************************************************************
+
+        //TODO: Header binding initializators
+        bindingHeader.listCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        categoryNewsAdapter = new CategoryNewsAdapter(getContext(), new ArrayList<NewsCategoryModel>());
+        bindingHeader.listCategory.setAdapter(categoryNewsAdapter);
+
+        mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
+        bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);
+        bindingHeader.mainNewsPager.setClipToPadding(false);
+        bindingHeader.mainNewsPager.setPadding(48, 0, 48, 0);
+        bindingHeader.mainNewsPager.setPageMargin(36);
+        bindingHeader.mainNewsPager.setCurrentItem(1);
+        bindingHeader.mainNewsPager.addOnPageChangeListener(this);
+
+        bindingHeader.listLastNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        smallNewsAdapter = new SmallNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        bindingHeader.listLastNews.setAdapter(smallNewsAdapter);
+
+        bindingHeader.listAudioNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        bindingHeader.listAudioNews.setAdapter(audioNewsAdapter);
+
+        bindingHeader.listVideoNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        bindingHeader.listVideoNews.setAdapter(videoNewsAdapter);
+
+        //####################################################################################
 
 
         //TODO: categories observable here:
@@ -185,6 +183,12 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
             }
         });
 
+        //TODO: Clicker here
+
+        bindingHeader.clickerAllAudio.setOnClickListener(v -> EventBus.getDefault().post(new MyOnMoreNewsEvents.MyOnMoreNewsEvent(0)));
+        bindingHeader.clickerAllVideo.setOnClickListener(v -> EventBus.getDefault().post(new MyOnMoreNewsEvents.MyOnMoreNewsEvent(1)));
+
+        //start process
         presenterNewsFeed.init();
 
     }
@@ -198,7 +202,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
     @Override
     public void onPageSelected(int i) {
-        change_dots(topNewsPagerAdapter.getCount(), i);
+        change_dots(mainNewsPagerAdapter.getCount(), i);
     }
 
     @Override
@@ -219,7 +223,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
     @Override
     public void initMainNews(List<NewsSimpleModel> items) {
-        topNewsPagerAdapter.init_items(items, items.size());
+        mainNewsPagerAdapter.init_items(items, items.size());
         change_dots(items.size(), 0);
     }
 
@@ -247,8 +251,9 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
         if (lastContinueNewsAdapter.getItemCount() != 0)
             lastContinueNewsAdapter.hideLoading();
+        isLoading = false;
 
-        lastContinueNewsAdapter.add_items(items);
+        lastContinueNewsAdapter.add_all(items);
     }
 
     //#################################################################
@@ -256,7 +261,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
     //TODO: Additional methods
 
     void change_dots(int count, int position) {
-        binding.mainNewsDots.removeAllViews();
+        bindingHeader.mainNewsDots.removeAllViews();
         for (int i = 0; i < count; i++) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(12), dpToPx(4));
             params.setMargins(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
@@ -266,11 +271,13 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
                 view.setBackgroundResource(R.drawable.dots_active);
             else
                 view.setBackgroundResource(R.drawable.dots_inactive);
-            binding.mainNewsDots.addView(view);
+            bindingHeader.mainNewsDots.addView(view);
         }
     }
 
     //#################################################################
+
+    //TODO: variables
 
 
     //TODO: From EVENTBUS
@@ -282,6 +289,42 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
         isConnected_to_Net = event.isState() == NETWORK_STATE_CONNECTED;
     }
+
+
+    //TODO: Argument variables
+
+    public RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            Log.d(Constants.MY_LOG, "onScrollStateChanged");
+
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                isScrolling = true;
+            }
+        }
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            total_items = manager.getItemCount();
+            visible_items = manager.getChildCount();
+            scrollout_items = manager.findFirstVisibleItemPosition();
+            Log.d(Constants.MY_LOG, "total_items: " + total_items + " " +
+                    "visible_items: " + visible_items + " " +
+                    "scrollout_items: " + scrollout_items);
+
+            if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
+                isScrolling = false;
+                isLoading = true;
+                lastContinueNewsAdapter.showLoading();
+                presenterNewsFeed.getLastNewsContinue();
+            }
+        }
+
+    };
 
 
 }

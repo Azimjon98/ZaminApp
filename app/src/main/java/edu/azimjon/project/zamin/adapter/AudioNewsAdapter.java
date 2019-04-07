@@ -26,22 +26,37 @@ public class AudioNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     Context context;
 
     int lastPosition = -1;
+    boolean isLoading = false;
 
+    //header
+    boolean hasHeader = false;
+    View headerView;
+
+    //Constants
     private final static int TYPE_HEADER = 1;
     private final static int TYPE_ITEM = 2;
+    private final static int TYPE_LOADING = 3;
 
     public AudioNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         this.context = context;
         this.items = items;
     }
 
+    public void withHeader(View headerView) {
+        this.headerView = headerView;
+        hasHeader = true;
+    }
+
     @Override
     public int getItemViewType(int position) {
-        if (position == 0)
+        if (hasHeader && position == 0)
             return TYPE_HEADER;
+        else if (isLoading && position == (items.size() - 1))
+            return TYPE_LOADING;
         else
             return TYPE_ITEM;
     }
+
 
 
     @NonNull
@@ -50,16 +65,20 @@ public class AudioNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         LayoutInflater inflater = LayoutInflater.from(context);
 
         //header with bottom padding
-        if (i == TYPE_HEADER) {
-            View header = inflater.inflate(R.layout.header_window_audio_inside_media, viewGroup, false);
-            header.setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
-            return new MyHolder1(header);
-        } else
+        if (i == TYPE_HEADER)
+            return new MyHolder1(headerView);
+        else if (i == TYPE_ITEM)
             return new MyHolder2(DataBindingUtil
                     .inflate(inflater,
                             R.layout.item_audio_news,
                             viewGroup,
                             false));
+        else
+            return new MyLoadingHolder(inflater.inflate(
+                    R.layout.item_loading,
+                    viewGroup,
+                    false));
+
 
     }
 
@@ -68,18 +87,22 @@ public class AudioNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         lastPosition = i;
 
-        if (i == 0)
+        if (hasHeader && i == 0)
             return;
+        //loading case skips
+        if (isLoading && i == items.size() - 1) {
+            return;
+        }
+
+        final int position = hasHeader ? i - 1 : i;
 
         MyHolder2 myHolder = (MyHolder2) viewHolder;
-        myHolder.binding.setModel(items.get(i));
+        myHolder.binding.setModel(items.get(position));
 
     }
 
     public void init_items(List<NewsSimpleModel> items) {
         clear_items();
-        this.items.add(new NewsSimpleModel());
-
         this.items.addAll(items);
         this.notifyDataSetChanged();
     }
@@ -94,10 +117,25 @@ public class AudioNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.notifyDataSetChanged();
     }
 
+    //TODO: indicator item show/hide when loading data
+    public void showLoading() {
+        isLoading = true;
+        items.add(new NewsSimpleModel());
+        notifyDataSetChanged();
+    }
+
+    public void hideLoading() {
+        isLoading = false;
+        items.remove(items.size() - 1);
+        notifyDataSetChanged();
+    }
+
+    //#######################################################
+
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return hasHeader ? items.size() + 1 : items.size();
     }
 
     //################################################################
@@ -130,5 +168,15 @@ public class AudioNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 
         }
+    }
+
+    public class MyLoadingHolder extends RecyclerView.ViewHolder {
+
+
+        public MyLoadingHolder(View v) {
+            super(v);
+
+        }
+
     }
 }

@@ -27,9 +27,12 @@ public class NewsContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     Context context;
 
 
-
     int lastPosition = -1;
     boolean isLoading = false;
+
+    //header
+    boolean hasHeader = false;
+    View headerView;
 
     private final static int TYPE_HEADER = 1;
     private final static int TYPE_ITEM = 2;
@@ -40,9 +43,14 @@ public class NewsContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.items = items;
     }
 
+    public void withHeader(View headerView) {
+        this.headerView = headerView;
+        hasHeader = true;
+    }
+
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) {
+        if (hasHeader && position == 0) {
             return TYPE_HEADER;
         } else if (isLoading && position == (items.size() - 1))
             return TYPE_LOADING;
@@ -58,40 +66,38 @@ public class NewsContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
         if (i == TYPE_HEADER)
-            return new MyHeaderHolder(DataBindingUtil
-                    .inflate(inflater,
-                            R.layout.header_window_news_content,
-                            viewGroup,
-                            false));
+            return new MyHeaderHolder(headerView);
         else if (i == TYPE_ITEM)
-            return new MyHolderItem(DataBindingUtil
-                    .inflate(inflater,
-                            R.layout.item_news_main_medium,
-                            viewGroup,
-                            false));
+            return new MyHolderItem(DataBindingUtil.inflate(
+                    inflater,
+                    R.layout.item_news_main_medium,
+                    viewGroup,
+                    false));
         else
-            return new MyLoadingHolder(inflater.
-                    inflate(R.layout.item_loading, viewGroup, false));
+            return new MyLoadingHolder(inflater.inflate(
+                    R.layout.item_loading,
+                    viewGroup,
+                    false));
 
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        if (i == 0)
+        if (hasHeader && i == 0)
             return;
         //loading case skips
         if (isLoading && i == items.size() - 1) {
             return;
         }
 
+        final int position = hasHeader ? i - 1 : i;
+
+
         MyHolderItem holder = ((MyHolderItem) viewHolder);
-
-        holder.binding.setModel(items.get(i));
-
+        holder.binding.setModel(items.get(position));
 
         lastPosition = i;
-
     }
 
     public void init_items(List<NewsSimpleModel> items) {
@@ -111,11 +117,6 @@ public class NewsContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.notifyDataSetChanged();
     }
 
-    public void init_header() {
-        this.items.clear();
-        this.notifyDataSetChanged();
-    }
-
     //TODO: indicator item show/hide when loading data
     public void showLoading() {
         isLoading = true;
@@ -129,21 +130,19 @@ public class NewsContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         notifyDataSetChanged();
     }
 
+    //#######################################################
+
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return hasHeader ? items.size() + 1 : items.size();
     }
 
 
     public class MyHeaderHolder extends RecyclerView.ViewHolder {
-        HeaderWindowNewsContentBinding binding;
 
-        public MyHeaderHolder(HeaderWindowNewsContentBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-
-
+        public MyHeaderHolder(View v) {
+            super(v);
         }
 
     }

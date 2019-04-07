@@ -3,6 +3,8 @@ package edu.azimjon.project.zamin.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.addition.Converters;
 import edu.azimjon.project.zamin.addition.MySettings;
@@ -21,25 +24,41 @@ import edu.azimjon.project.zamin.databinding.ItemVideoNewsBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
+import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
+
 public class VideoNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     ArrayList<NewsSimpleModel> items;
     Context context;
 
     int lastPosition = -1;
+    boolean isLoading = false;
 
+    //header
+    boolean hasHeader = false;
+    View headerView;
+
+    //Constants
     private final static int TYPE_HEADER = 1;
     private final static int TYPE_ITEM = 2;
+    private final static int TYPE_LOADING = 3;
 
     public VideoNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         this.context = context;
         this.items = items;
     }
 
+    public void withHeader(View headerView) {
+        this.headerView = headerView;
+        hasHeader = true;
+    }
+
     @Override
     public int getItemViewType(int position) {
-        if (position == 0)
+        if (hasHeader && position == 0)
             return TYPE_HEADER;
+        else if (isLoading && position == (items.size() - 1))
+            return TYPE_LOADING;
         else
             return TYPE_ITEM;
     }
@@ -50,16 +69,19 @@ public class VideoNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         LayoutInflater inflater = LayoutInflater.from(context);
 
         //header with bottom padding
-        if (i == TYPE_HEADER) {
-            View header = inflater.inflate(R.layout.header_window_video_inside_media, viewGroup, false);
-            header.setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
-            return new MyHolder1(header);
-        } else
+        if (i == TYPE_HEADER)
+            return new MyHolder1(headerView);
+        else if (i == TYPE_ITEM)
             return new MyHolder2(DataBindingUtil
                     .inflate(inflater,
                             R.layout.item_video_news,
                             viewGroup,
                             false));
+        else
+            return new MyLoadingHolder(inflater.inflate(
+                    R.layout.item_loading,
+                    viewGroup,
+                    false));
 
     }
 
@@ -67,18 +89,27 @@ public class VideoNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         lastPosition = i;
 
-        if (i == 0)
+        if (hasHeader && i == 0)
             return;
+        //loading case skips
+        if (isLoading && i == items.size() - 1) {
+            return;
+        }
+
+        final int position = hasHeader ? i - 1 : i;
 
         MyHolder2 myHolder = (MyHolder2) viewHolder;
-        myHolder.binding.setModel(items.get(i));
+        myHolder.binding.setModel(items.get(position));
 
     }
+
+    //########################################################################
+
+    //TODO: Additional methods
 
 
     public void init_items(List<NewsSimpleModel> items) {
         clear_items();
-        this.items.add(new NewsSimpleModel());
         this.items.addAll(items);
         this.notifyDataSetChanged();
     }
@@ -94,10 +125,25 @@ public class VideoNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.notifyDataSetChanged();
     }
 
+    //TODO: indicator item show/hide when loading data
+    public void showLoading() {
+        isLoading = true;
+        items.add(new NewsSimpleModel());
+        notifyDataSetChanged();
+    }
+
+    public void hideLoading() {
+        isLoading = false;
+        items.remove(items.size() - 1);
+        notifyDataSetChanged();
+    }
+
+    //#######################################################
+
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return hasHeader ? items.size() + 1 : items.size();
     }
 
 
@@ -114,9 +160,6 @@ public class VideoNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public class MyHolder2 extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemVideoNewsBinding binding;
-
-        int count = 0;
-
 
         public MyHolder2(ItemVideoNewsBinding binding) {
             super(binding.getRoot());
@@ -143,13 +186,24 @@ public class VideoNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
             );
 
-
         }
 
 
         @Override
         public void onClick(View v) {
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_NEWS_ID, items.get(getAdapterPosition()).getNewsId());
+            Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
+        }
+    }
+
+    public class MyLoadingHolder extends RecyclerView.ViewHolder {
+
+
+        public MyLoadingHolder(View v) {
+            super(v);
 
         }
+
     }
 }

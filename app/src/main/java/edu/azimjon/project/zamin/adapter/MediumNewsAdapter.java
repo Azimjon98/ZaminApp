@@ -33,23 +33,40 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     int lastPosition = -1;
     boolean isLoading = false;
 
+    //Constants
+    private final static int TYPE_ITEM = 1;
+    private final static int TYPE_LOADING = 2;
+
     public MediumNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         this.context = context;
         this.items = items;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isLoading && position == (items.size() - 1))
+            return TYPE_LOADING;
+        else
+            return TYPE_ITEM;
+
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        ItemNewsMainMediumBinding binding = DataBindingUtil.inflate(inflater,
-                R.layout.item_news_main_medium, viewGroup, false);
 
-        if (i == 1)
-            return new MyHolder(binding);
+        if (i == TYPE_ITEM)
+            return new MyHolder(DataBindingUtil
+                    .inflate(inflater,
+                            R.layout.item_news_main_medium,
+                            viewGroup,
+                            false));
         else
             return new MyLoadingHolder(
-                    inflater.inflate(R.layout.item_loading, viewGroup, false));
+                    inflater.inflate(R.layout.item_loading,
+                            viewGroup,
+                            false));
     }
 
     @Override
@@ -68,21 +85,11 @@ public class MediumNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (isLoading && position == (items.size() - 1))
-            return 2;
-        else
-            return 1;
-
-    }
-
     public void init_items(List<NewsSimpleModel> items) {
         clear_items();
         this.items.addAll(items);
         this.notifyDataSetChanged();
     }
-
 
 
     public void add_items(List<NewsSimpleModel> items) {

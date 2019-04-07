@@ -59,6 +59,11 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
         binding.listVideo.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        videoNewsAdapter.withHeader(LayoutInflater.from(getContext())
+                .inflate(
+                        R.layout.header_window_video_inside_media,
+                        binding.listVideo,
+                        false));
         binding.listVideo.setAdapter(videoNewsAdapter);
 
 

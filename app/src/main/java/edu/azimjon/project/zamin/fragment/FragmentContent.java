@@ -20,13 +20,19 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.ContentPagerAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
+import edu.azimjon.project.zamin.events.MyNetworkEvents;
+import edu.azimjon.project.zamin.events.MyOnMoreNewsEvents;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
 public class FragmentContent extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -202,5 +208,14 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
 
 
     //#################################################################
+
+    //TODO: From EVENTBUS
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void on_more_news(MyOnMoreNewsEvents.MyOnMoreNewsEvent event) {
+            navigationView.setSelectedItemId(R.id.menu_media);
+            contentPagerAdapter.setPositionOfMediaNews(event.getPosition());
+
+    }
 
 }

@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +24,13 @@ import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
+import edu.azimjon.project.zamin.events.MyNetworkEvents;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentTopNews;
 
 import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
 public class FragmentTopNews extends Fragment implements IFragmentTopNews {
 
@@ -41,7 +46,8 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
     MediumNewsAdapter mediumNewsAdapter;
 
     //scrolling variables
-    boolean is_scrolling = false;
+    boolean isScrolling = false;
+    boolean isLoading = false;
 
     int total_items, visible_items, scrollout_items;
 
@@ -73,36 +79,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
         mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         binding.listTopNews.setAdapter(mediumNewsAdapter);
 
-        binding.listTopNews.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                Log.d(Constants.MY_LOG, "onScrollStateChanged");
-
-                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                    is_scrolling = true;
-                }
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                total_items = manager.getItemCount();
-                visible_items = manager.getChildCount();
-                scrollout_items = manager.findFirstVisibleItemPosition();
-                Log.d(Constants.MY_LOG, "total_items: " + total_items + " " +
-                        "visible_items: " + visible_items + " " +
-                        "scrollout_items: " + scrollout_items);
-
-                if (is_scrolling && (visible_items + scrollout_items == total_items)) {
-                    is_scrolling = false;
-                    mediumNewsAdapter.showLoading();
-                    presenterTopNews.getContinue();
-                }
-            }
-        });
+        binding.listTopNews.addOnScrollListener(scrollListener);
 
 
         //*****************************************************************************
@@ -126,6 +103,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
         if (mediumNewsAdapter.getItemCount() != 0)
             mediumNewsAdapter.hideLoading();
 
+        isLoading = false;
         mediumNewsAdapter.add_items(items);
     }
 
@@ -137,5 +115,50 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
 
     //#################################################################
 
+    //TODO: From EVENTBUS
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void on_network_changed(MyNetworkEvents.NetworkStateChangedEvent event) {
+//        if (event.isState() == NETWORK_STATE_CONNECTED && !isConnected_to_Net)
+//            presenterNewsFeed.init();
+//
+//        isConnected_to_Net = event.isState() == NETWORK_STATE_CONNECTED;
+    }
+
+
+    //TODO: Argument variables
+
+    public RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            Log.d(Constants.MY_LOG, "onScrollStateChanged");
+
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                isScrolling = true;
+            }
+        }
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            total_items = manager.getItemCount();
+            visible_items = manager.getChildCount();
+            scrollout_items = manager.findFirstVisibleItemPosition();
+            Log.d(Constants.MY_LOG, "total_items: " + total_items + " " +
+                    "visible_items: " + visible_items + " " +
+                    "scrollout_items: " + scrollout_items);
+
+            if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
+                isScrolling = false;
+                isLoading = true;
+                mediumNewsAdapter.showLoading();
+                presenterTopNews.getContinue();
+            }
+        }
+
+    };
 
 }

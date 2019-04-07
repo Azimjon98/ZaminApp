@@ -64,6 +64,11 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
         binding.listAudio.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        audioNewsAdapter.withHeader(LayoutInflater.from(getContext())
+                .inflate(
+                        R.layout.header_window_audio_inside_media,
+                        binding.listAudio,
+                        false));
         binding.listAudio.setAdapter(audioNewsAdapter);
 
 

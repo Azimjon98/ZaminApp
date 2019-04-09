@@ -48,6 +48,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
     //scrolling variables
     boolean isScrolling = false;
     boolean isLoading = false;
+    boolean isContentLoaded = false;
 
     int total_items, visible_items, scrollout_items;
 
@@ -57,13 +58,15 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenterTopNews = new PresenterTopNews(this);
+        if (presenterTopNews == null)
+            presenterTopNews = new PresenterTopNews(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.window_top_news, container, false);
+        if (binding == null)
+            binding = DataBindingUtil.inflate(inflater, R.layout.window_top_news, container, false);
 
         return binding.getRoot();
     }
@@ -73,21 +76,32 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
         super.onViewCreated(view, savedInstanceState);
 
         //initialize adapters and append to lists
-        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        if (manager == null)
+            manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
-        binding.listTopNews.setLayoutManager(manager);
-        mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-        binding.listTopNews.setAdapter(mediumNewsAdapter);
+        if (!isContentLoaded) {
+            binding.listTopNews.setLayoutManager(manager);
+            mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+            binding.listTopNews.setAdapter(mediumNewsAdapter);
 
-        binding.listTopNews.addOnScrollListener(scrollListener);
-
+            binding.listTopNews.addOnScrollListener(scrollListener);
+        }
 
         //*****************************************************************************
 
-        presenterTopNews.init();
     }
 
     //TODO: override methods
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!isContentLoaded) {
+            presenterTopNews.init();
+            isContentLoaded = true;
+        }
+    }
 
 
     //#################################################################
@@ -104,7 +118,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
             mediumNewsAdapter.hideLoading();
 
         isLoading = false;
-        mediumNewsAdapter.add_items(items);
+        mediumNewsAdapter.add_all(items);
     }
 
 

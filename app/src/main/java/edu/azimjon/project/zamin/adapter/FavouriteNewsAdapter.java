@@ -14,15 +14,19 @@ import java.util.List;
 
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
-import edu.azimjon.project.zamin.addition.Converters;
+import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
+import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemFavouriteNewsBinding;
 import edu.azimjon.project.zamin.model.FavouriteNewsModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
-import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
-public class FavouriteNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel> {
     ArrayList<FavouriteNewsModel> items;
     Context context;
 
@@ -37,32 +41,29 @@ public class FavouriteNewsAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final static int TYPE_ITEM = 2;
 
     public FavouriteNewsAdapter(Context context, ArrayList<FavouriteNewsModel> items) {
+        super(context, items);
+
         this.context = context;
         this.items = items;
     }
-
-    public void withHeader(View headerView) {
-        this.headerView = headerView;
-        hasHeader = true;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (hasHeader && position == 0)
-            return TYPE_HEADER;
-        else return TYPE_ITEM;
-    }
-
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(context);
 
+        //header with bottom padding
         if (i == TYPE_HEADER)
-            return new MyHolder1(headerView);
+            return new MyBaseHolder(headerView);
+        else if (i == TYPE_FOOTER)
+            return new MyBaseHolder(footerView);
+        else if (i == TYPE_LOADING)
+            return new MyBaseHolder(inflater.inflate(
+                    R.layout.item_loading,
+                    viewGroup,
+                    false));
         else
-            return new MyHolder2(DataBindingUtil
+            return new MyHolderItem(DataBindingUtil
                     .inflate(inflater,
                             R.layout.item_favourite_news,
                             viewGroup,
@@ -73,34 +74,17 @@ public class FavouriteNewsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        lastPosition = i;
+        if (viewHolder instanceof MyHolderItem) {
+            int position = i;
+            if (hasHeader)
+                position--;
 
-        if (hasHeader && i == 0)
-            return;
-
-
-        final int position = hasHeader ? i - 1 : i;
-
-        MyHolder2 myHolder = (MyHolder2) viewHolder;
-        myHolder.binding.setModel(items.get(position));
-    }
+            MyHolderItem myHolder = (MyHolderItem) viewHolder;
+            myHolder.binding.setModel(items.get(position));
+            myHolder.binding.newsNumber.setText((i + 1) > 9 ? String.valueOf(i + 1) : "0" + i);
+        }
 
 
-    public void init_items(List<FavouriteNewsModel> items) {
-        clear_items();
-        this.items.addAll(items);
-        this.notifyDataSetChanged();
-    }
-
-    public void clear_items() {
-        this.items.clear();
-        this.notifyDataSetChanged();
-    }
-
-
-    @Override
-    public int getItemCount() {
-        return hasHeader ? items.size() + 1 : items.size();
     }
 
     //################################################################
@@ -108,18 +92,14 @@ public class FavouriteNewsAdapter extends RecyclerView.Adapter<RecyclerView.View
     //TODO: Hoders
 
 
-    public class MyHolder1 extends RecyclerView.ViewHolder {
-        public MyHolder1(@NonNull View itemView) {
-            super(itemView);
-        }
-    }
 
-    public class MyHolder2 extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+    public class MyHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemFavouriteNewsBinding binding;
         int count = 0;
 
 
-        public MyHolder2(ItemFavouriteNewsBinding binding) {
+        public MyHolderItem(ItemFavouriteNewsBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             binding.clicker.setOnClickListener(this);
@@ -150,7 +130,8 @@ public class FavouriteNewsAdapter extends RecyclerView.Adapter<RecyclerView.View
         @Override
         public void onClick(View v) {
             Bundle bundle = new Bundle();
-            bundle.putString(KEY_NEWS_ID, items.get(getAdapterPosition()).getNewsId());
+            bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
+            bundle.putParcelable(KEY_NEWS_MODEL, binding.getModel());
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }

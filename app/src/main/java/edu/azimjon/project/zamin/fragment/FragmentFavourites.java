@@ -43,6 +43,8 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
     FavouriteNewsDao dao;
     LiveData<List<FavouriteNewsModel>> allData;
 
+    boolean isContentLoaded = false;
+
 
     //#####################################################################
 
@@ -56,7 +58,8 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.window_favourites, container, false);
+        if (binding == null)
+            binding = DataBindingUtil.inflate(inflater, R.layout.window_favourites, container, false);
 
         return binding.getRoot();
 
@@ -68,14 +71,16 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
         //initialize adapters and append to lists
 
-        binding.listFavourite.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        favouriteNewsAdapter = new FavouriteNewsAdapter(getContext(), new ArrayList<FavouriteNewsModel>());
-        favouriteNewsAdapter.withHeader(LayoutInflater.from(getContext())
-                .inflate(
-                        R.layout.header_window_favourites,
-                        binding.listFavourite,
-                        false));
-        binding.listFavourite.setAdapter(favouriteNewsAdapter);
+        if (!isContentLoaded) {
+            binding.listFavourite.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+            favouriteNewsAdapter = new FavouriteNewsAdapter(getContext(), new ArrayList<FavouriteNewsModel>());
+            favouriteNewsAdapter.withHeader(LayoutInflater.from(getContext())
+                    .inflate(
+                            R.layout.header_window_favourites,
+                            binding.listFavourite,
+                            false));
+            binding.listFavourite.setAdapter(favouriteNewsAdapter);
+        }
 
         //*****************************************************************************
 
@@ -117,6 +122,7 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
                 initFavourites(tourModels);
             }
         });
+        isContentLoaded = true;
     }
 
     //#################################################################

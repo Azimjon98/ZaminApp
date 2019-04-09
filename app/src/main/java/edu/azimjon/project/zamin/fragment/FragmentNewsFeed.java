@@ -4,11 +4,12 @@ import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,15 +28,13 @@ import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.AudioNewsAdapter;
-import edu.azimjon.project.zamin.adapter.ContentAdapter;
-import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
+import edu.azimjon.project.zamin.adapter.NewsFeedAdapter;
 import edu.azimjon.project.zamin.adapter.SmallNewsAdapter;
 import edu.azimjon.project.zamin.adapter.MainNewsPagerAdapter;
 import edu.azimjon.project.zamin.adapter.CategoryNewsAdapter;
 import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
-import edu.azimjon.project.zamin.databinding.HeaderWindowNewsContentBinding;
 import edu.azimjon.project.zamin.databinding.HeaderWindowNewsFeedBinding;
 import edu.azimjon.project.zamin.databinding.WindowNewsFeedBinding;
 import edu.azimjon.project.zamin.events.MyNetworkEvents;
@@ -45,17 +44,13 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsFeed;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static com.arlib.floatingsearchview.util.Util.dpToPx;
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
-public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, ViewPager.OnPageChangeListener {
-
-    public interface MyInterface {
-        void scrollEnded();
-    }
-
+public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, ViewPager.OnPageChangeListener, SwipeRefreshLayout.OnRefreshListener {
 
     //TODO: Constants here
     LinearLayoutManager manager;
@@ -79,13 +74,14 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
     VideoNewsAdapter videoNewsAdapter;
 
-    ContentAdapter lastContinueNewsAdapter;
+    NewsFeedAdapter lastContinueNewsAdapter;
 
     //#####################################################################
 
     //scrolling variables
     boolean isScrolling = false;
     boolean isLoading = false;
+    boolean isContentLoaded = false;
 
     int total_items, visible_items, scrollout_items;
 
@@ -108,7 +104,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
         Log.d(Constants.CALLBACK_LOG, "FragmentNewsFeed onCreate: ");
 
         super.onCreate(savedInstanceState);
-        presenterNewsFeed = new PresenterNewsFeed(this);
+        if (presenterNewsFeed == null)
+            presenterNewsFeed = new PresenterNewsFeed(this);
     }
 
     @Nullable
@@ -116,10 +113,10 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(Constants.CALLBACK_LOG, "FragmentNewsFeed onCreateView: ");
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.window_news_feed, container, false);
+        if (binding == null)
+            binding = DataBindingUtil.inflate(inflater, R.layout.window_news_feed, container, false);
 
         return binding.getRoot();
-
     }
 
     @Override
@@ -130,44 +127,53 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
 
         //initialize adapters and append to lists
 
-        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        binding.listLastNewsContinue.setLayoutManager(manager);
-        lastContinueNewsAdapter = new ContentAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-        binding.listLastNewsContinue.setAdapter(lastContinueNewsAdapter);
+        if (!isContentLoaded) {
+            if (manager == null)
+                manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            binding.listLastNewsContinue.setLayoutManager(manager);
+            lastContinueNewsAdapter = new NewsFeedAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+            binding.listLastNewsContinue.setAdapter(lastContinueNewsAdapter);
 
-        binding.listLastNewsContinue.addOnScrollListener(scrollListener);
+            binding.listLastNewsContinue.addOnScrollListener(scrollListener);
 
-        bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_feed, binding.listLastNewsContinue, false);
-        lastContinueNewsAdapter.withHeader(bindingHeader.getRoot());
+            bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_feed, binding.listLastNewsContinue, false);
+            lastContinueNewsAdapter.withHeader(bindingHeader.getRoot());
+
+            binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+            binding.swiper.setOnRefreshListener(this);
 
 
-        //*****************************************************************************
+            //*****************************************************************************
 
-        //TODO: Header binding initializators
-        bindingHeader.listCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        categoryNewsAdapter = new CategoryNewsAdapter(getContext(), new ArrayList<NewsCategoryModel>());
-        bindingHeader.listCategory.setAdapter(categoryNewsAdapter);
+            //TODO: Header binding initializators
+            bindingHeader.listCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+            categoryNewsAdapter = new CategoryNewsAdapter(getContext(), new ArrayList<NewsCategoryModel>());
+            bindingHeader.listCategory.setAdapter(categoryNewsAdapter);
 
-        mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
-        bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);
-        bindingHeader.mainNewsPager.setClipToPadding(false);
-        bindingHeader.mainNewsPager.setPadding(48, 0, 48, 0);
-        bindingHeader.mainNewsPager.setPageMargin(36);
-        bindingHeader.mainNewsPager.setCurrentItem(1);
-        bindingHeader.mainNewsPager.addOnPageChangeListener(this);
+            mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
+            bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);
+            bindingHeader.mainNewsPager.setClipToPadding(false);
+            bindingHeader.mainNewsPager.setPadding(48, 0, 48, 0);
+            bindingHeader.mainNewsPager.setPageMargin(36);
+            bindingHeader.mainNewsPager.setCurrentItem(1);
+            bindingHeader.mainNewsPager.addOnPageChangeListener(this);
 
-        bindingHeader.listLastNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        smallNewsAdapter = new SmallNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-        bindingHeader.listLastNews.setAdapter(smallNewsAdapter);
+            bindingHeader.listLastNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+            smallNewsAdapter = new SmallNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+            bindingHeader.listLastNews.setAdapter(smallNewsAdapter);
 
-        bindingHeader.listAudioNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-        bindingHeader.listAudioNews.setAdapter(audioNewsAdapter);
+            bindingHeader.listAudioNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+            audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+            bindingHeader.listAudioNews.setAdapter(audioNewsAdapter);
 
-        bindingHeader.listVideoNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-        bindingHeader.listVideoNews.setAdapter(videoNewsAdapter);
+            bindingHeader.listVideoNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+            videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+            bindingHeader.listVideoNews.setAdapter(videoNewsAdapter);
 
+        }
         //####################################################################################
 
 
@@ -188,12 +194,32 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
         bindingHeader.clickerAllAudio.setOnClickListener(v -> EventBus.getDefault().post(new MyOnMoreNewsEvents.MyOnMoreNewsEvent(0)));
         bindingHeader.clickerAllVideo.setOnClickListener(v -> EventBus.getDefault().post(new MyOnMoreNewsEvents.MyOnMoreNewsEvent(1)));
 
-        //start process
-        presenterNewsFeed.init();
+    }
 
+    private void startLoadingContent() {
+        //check the net connection and  load data if needed
+        if (MyUtil.hasConnectionToNet(getActivity())) {
+            presenterNewsFeed.init();
+            binding.noConnectionLay.setVisibility(View.GONE);
+        } else {
+            isConnected_to_Net = false;
+            binding.noConnectionLay.setVisibility(View.VISIBLE);
+        }
     }
 
     //TODO: override methods
+
+    @Override
+    public void onResume() {
+        Log.d(CALLBACK_LOG, "NewsFeed onResume");
+        super.onResume();
+
+        //start process
+        if (!isContentLoaded) {
+            startLoadingContent();
+            isContentLoaded = true;
+        }
+    }
 
     @Override
     public void onPageScrolled(int i, float v, int i1) {
@@ -208,6 +234,19 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
     @Override
     public void onPageScrollStateChanged(int i) {
 
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                if (isConnected_to_Net)
+                    presenterNewsFeed.init();
+                binding.swiper.setRefreshing(false);
+            }
+        }, 1000);
     }
 
 
@@ -285,7 +324,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_network_changed(MyNetworkEvents.NetworkStateChangedEvent event) {
         if (event.isState() == NETWORK_STATE_CONNECTED && !isConnected_to_Net)
-            presenterNewsFeed.init();
+            startLoadingContent();
 
         isConnected_to_Net = event.isState() == NETWORK_STATE_CONNECTED;
     }

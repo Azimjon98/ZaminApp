@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.ColorRes;
@@ -24,6 +26,8 @@ import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileInputStream;
+
+import static android.content.Context.CONNECTIVITY_SERVICE;
 
 public class MyUtil {
 
@@ -147,5 +151,20 @@ public class MyUtil {
 
 
         return "";
+    }
+
+    public static boolean hasConnectionToNet(Activity activity) {
+        ConnectivityManager manager = (ConnectivityManager) activity.getSystemService(CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
+
+        //there are a connection to net
+        if (activeNetwork != null
+                && activeNetwork.isConnectedOrConnecting()) {
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }

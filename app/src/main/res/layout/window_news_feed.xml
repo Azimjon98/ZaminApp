@@ -6,19 +6,51 @@
         <import type="android.view.View" />
     </data>
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
 
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_last_news_continue"
+        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swiper"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </android.support.v7.widget.RecyclerView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list_last_news_continue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+            </android.support.v7.widget.RecyclerView>
+
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <RelativeLayout
+            android:visibility="visible"
+            android:id="@+id/no_connection_lay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:translationZ="6dp">
+
+            <ImageView
+                android:scaleType="fitCenter"
+                android:id="@+id/no_connection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/no_connection" />
+
+            <Button
+                android:id="@+id/no_connection_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/custom_ripple_borderless"
+                android:clickable="true"
+                android:focusable="true" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
 
 </layout>

@@ -1,15 +1,10 @@
 package edu.azimjon.project.zamin.adapter;
 
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,27 +14,27 @@ import java.util.List;
 
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
-import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.Converters;
-import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
+import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
+import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemNewsMainLargeBinding;
-import edu.azimjon.project.zamin.databinding.ItemNewsMainSmallBinding;
-import edu.azimjon.project.zamin.model.FavouriteNewsModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
-public class LargeNewsAdapter extends RecyclerView.Adapter<LargeNewsAdapter.MyHolder> {
+public class LargeNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
     ArrayList<NewsSimpleModel> items;
     Context context;
 
-    //list of ids which are favourite
-    List<Integer> allFavouriteIds;
-
-    int lastPosition = -1;
 
     public LargeNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
+        super(context, items);
+
         this.context = context;
         this.items = items;
 
@@ -47,36 +42,41 @@ public class LargeNewsAdapter extends RecyclerView.Adapter<LargeNewsAdapter.MyHo
 
     @NonNull
     @Override
-    public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemNewsMainLargeBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
-                R.layout.item_news_main_large, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        //header with bottom padding
+        if (i == TYPE_HEADER)
+            return new MyBaseHolder(headerView);
+        else if (i == TYPE_FOOTER)
+            return new MyBaseHolder(footerView);
+        else if (i == TYPE_LOADING)
+            return new MyBaseHolder(inflater.inflate(
+                    R.layout.item_loading,
+                    viewGroup,
+                    false));
+        else
+            return new MyHolderItem(DataBindingUtil
+                    .inflate(inflater,
+                            R.layout.item_news_main_large,
+                            viewGroup,
+                            false));
 
 
-        return new MyHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyHolder myHolder, int i) {
-        myHolder.binding.setModel(items.get(i));
-        lastPosition = i;
-    }
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+        if (viewHolder instanceof MyHolderItem) {
+            int position = i;
+            if (hasHeader)
+                position--;
+
+            MyHolderItem myHolder = (MyHolderItem) viewHolder;
+            myHolder.binding.setModel(items.get(position));
+        }
 
 
-    @Override
-    public void onViewDetachedFromWindow(@NonNull MyHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-//        holder.card.clearAnimation();
-    }
-
-    public void init_items(List<NewsSimpleModel> items) {
-        clear_items();
-        this.items.addAll(items);
-        this.notifyDataSetChanged();
-    }
-
-    public void clear_items() {
-        this.items.clear();
-        this.notifyDataSetChanged();
     }
 
 
@@ -85,13 +85,13 @@ public class LargeNewsAdapter extends RecyclerView.Adapter<LargeNewsAdapter.MyHo
         return items.size();
     }
 
-    public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemNewsMainLargeBinding binding;
 
         int count = 0;
 
 
-        public MyHolder(ItemNewsMainLargeBinding binding) {
+        public MyHolderItem(ItemNewsMainLargeBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             this.binding.clicker.setOnClickListener(this);
@@ -123,7 +123,8 @@ public class LargeNewsAdapter extends RecyclerView.Adapter<LargeNewsAdapter.MyHo
         @Override
         public void onClick(View v) {
             Bundle bundle = new Bundle();
-            bundle.putString(KEY_NEWS_ID, items.get(getAdapterPosition()).getNewsId());
+            bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
+            bundle.putParcelable(KEY_NEWS_MODEL, binding.getModel());
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }

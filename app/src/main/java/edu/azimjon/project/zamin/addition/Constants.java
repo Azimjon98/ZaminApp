@@ -11,6 +11,7 @@ public class Constants {
     public static final String API_LOG = "myapiLog";
     public static final String SERVICE_LOG = "myserviceLog";
     public static final String EXCEPTION_LOG = "myexceptionLog";
+    public static final String STATE_LOG = "mystateLog";
 
     //contant states
     public static final int STATE_OK = 0;
@@ -45,9 +46,21 @@ public class Constants {
 
     //TODO: KEYS
     public static String KEY_NEWS_ID = "news_id";
-    public static String KEY_CATEGORY_ID = "news_id";
-    public static String KEY_CATEGORY_NAME = "news_id";
+    public static String KEY_NEWS_MODEL = "news_model";
+    public static String KEY_CATEGORY_ID = "category_id";
+    public static String KEY_SEARCH_TOOLBAR_NAME = "toolbar_name";
+    public static String KEY_SEARCH_WHERE = "search_where";
+    public static String KEY_SEARCH_ID = "search_id";
 
+    //TODO: Recycler view Constants
+    public final static int TYPE_HEADER = 1;
+    public final static int TYPE_FOOTER = 2;
+    public final static int TYPE_ITEM = 3;
+    public final static int TYPE_LOADING = 4;
+
+    //TODO: Search Constants
+    public final static int SEARCH_CATEGORY = 301;
+    public final static int SEARCH_TAG = 302;
 
     //TODO:
     //database constants

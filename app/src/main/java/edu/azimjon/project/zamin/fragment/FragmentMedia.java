@@ -34,7 +34,7 @@ import timber.log.Timber;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 
-public class FragmentMedia extends Fragment implements IFragmentMedia, ViewPager.OnPageChangeListener {
+public class FragmentMedia extends Fragment implements IFragmentMedia {
 
     //TODO: Constants here
 
@@ -45,11 +45,14 @@ public class FragmentMedia extends Fragment implements IFragmentMedia, ViewPager
 
     //TODO: variables here
     WindowMediaBinding binding;
+    ViewGroup player;
     PresenterMedia presenterMedia;
     int position = 0;
 
     //adapters
     MediaPagerAdapter pagerAdapter;
+
+    boolean isContentLoaded;
 
 
     //#####################################################################
@@ -59,14 +62,16 @@ public class FragmentMedia extends Fragment implements IFragmentMedia, ViewPager
         super.onCreate(savedInstanceState);
         Log.d(CALLBACK_LOG, "FragmentMedia: onCreate");
 
-        presenterMedia = new PresenterMedia(this);
+        if (presenterMedia == null)
+            presenterMedia = new PresenterMedia(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(CALLBACK_LOG, "FragmentMedia: onCreateView");
-        binding = DataBindingUtil.inflate(inflater, R.layout.window_media, container, false);
+        if (binding == null)
+            binding = DataBindingUtil.inflate(inflater, R.layout.window_media, container, false);
 
         return binding.getRoot();
 
@@ -79,24 +84,47 @@ public class FragmentMedia extends Fragment implements IFragmentMedia, ViewPager
 
 
         //initialize adapters and append to lists or pagers
-
-        pagerAdapter = new MediaPagerAdapter(getContext(), getChildFragmentManager(), 3);
-        binding.mediaPager.setAdapter(pagerAdapter);
-        binding.mediaPager.addOnPageChangeListener(this);
-        binding.tabMedia.setupWithViewPager(binding.mediaPager);
-        binding.mediaPager.setCurrentItem(position);
-
-
+        if (!isContentLoaded) {
+            pagerAdapter = new MediaPagerAdapter(getContext(), getChildFragmentManager(), 3);
+            binding.mediaPager.setAdapter(pagerAdapter);
+//        binding.mediaPager.addOnPageChangeListener(this);
+            binding.tabMedia.setupWithViewPager(binding.mediaPager);
+            binding.mediaPager.setCurrentItem(position);
+            pagerAdapter.setPlayer(player);
+            binding.mediaPager.setOffscreenPageLimit(1);
+        }
         //*****************************************************************************
 
-        presenterMedia.init();
+        //transfarmation in viewPager
+        binding.mediaPager.setPageTransformer(true, zoomOutTransformation);
+
     }
 
     //TODO: override methods
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!isContentLoaded) {
+            presenterMedia.init();
+            isContentLoaded = true;
+        }
+    }
+
+    @Override
+    public boolean getUserVisibleHint() {
+        Log.d(CALLBACK_LOG, "Media: getUserVisibleHint");
+        return super.getUserVisibleHint();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        Log.d(CALLBACK_LOG, "Media: setUserVisibleHint: " + isVisibleToUser);
+        super.setUserVisibleHint(isVisibleToUser);
+    }
 
     //#################################################################
-
 
     //TODO: all methods from IFragmentMedia interface
 
@@ -120,25 +148,6 @@ public class FragmentMedia extends Fragment implements IFragmentMedia, ViewPager
 
     //TODO: all methods from TabLayout interface
 
-    @Override
-    public void onPageScrolled(int i, float v, int i1) {
-        Log.d(CALLBACK_LOG, "FragmentMedia: onPageScrolled");
-    }
-
-    @Override
-    public void onPageSelected(int i) {
-        Log.d(CALLBACK_LOG, "FragmentMedia: onPageSelected");
-
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int i) {
-        Log.d(CALLBACK_LOG, "FragmentMedia: onPageScrollStateChanged");
-
-
-    }
-
 
     //#################################################################
 
@@ -149,8 +158,43 @@ public class FragmentMedia extends Fragment implements IFragmentMedia, ViewPager
         this.position = position;
     }
 
+    //Inside method setPosition:
+    public void setPlayer(ViewGroup player) {
+        this.player = player;
+    }
+
 
     //#################################################################
+
+    //TODO: argument Variables
+
+    public ViewPager.PageTransformer zoomOutTransformation = new ViewPager.PageTransformer() {
+
+
+        final float MIN_SCALE = 0.8f;
+        final float MIN_ALPHA = 0.8f;
+
+        @Override
+        public void transformPage(View page, float position) {
+
+            if (position < -1) {  // [-Infinity,-1)
+                // This page is way off-screen to the left.
+                page.setAlpha(0);
+
+            } else if (position <= 1) { // [-1,1]
+
+                page.setScaleX(Math.max(MIN_SCALE, 1 - Math.abs(position)));
+                page.setScaleY(Math.max(MIN_SCALE, 1 - Math.abs(position)));
+                page.setAlpha(Math.max(MIN_ALPHA, 1 - Math.abs(position)));
+
+            } else {  // (1,+Infinity]
+                // This page is way off-screen to the right.
+                page.setAlpha(0);
+            }
+        }
+
+
+    };
 
 
 }

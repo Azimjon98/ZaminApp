@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
 import edu.azimjon.project.zamin.fragment.FragmentAudioInMedia;
@@ -33,6 +34,12 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
     Context context;
     private int tabs_number;
 
+    ViewGroup player;
+
+    public void setPlayer(ViewGroup v) {
+        player = v;
+    }
+
     public ContentPagerAdapter(Context context, FragmentManager fm, int tabs) {
         super(fm);
         Log.d(CALLBACK_LOG, "ContentPagerAdapter: init");
@@ -42,7 +49,6 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        Log.d(CALLBACK_LOG, "ContentPagerAdapter: getItem");
 
         switch (i) {
             case 0:
@@ -61,6 +67,7 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
                 if (fragmentMedia == null)
                     fragmentMedia = new FragmentMedia();
                 fragmentMedia.setPosition(mediaPosition);
+                fragmentMedia.setPlayer(player);
                 return fragmentMedia;
             default:
                 return null;
@@ -84,6 +91,5 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
     public void setPositionOfMediaNews(int positionOfMediaNews) {
         mediaPosition = positionOfMediaNews;
     }
-
 
 }

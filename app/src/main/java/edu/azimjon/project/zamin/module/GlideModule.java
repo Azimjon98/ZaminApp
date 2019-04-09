@@ -18,14 +18,10 @@ import edu.azimjon.project.zamin.interfaces.ApplicationContext;
 public class GlideModule {
     @Provides
     public RequestManager glideRequestManager(@ApplicationContext Context context, CircularProgressDrawable circularProgressDrawable) {
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(6));
-        requestOptions
-                .centerCrop()
-                .placeholder(circularProgressDrawable);
-
         return Glide.with(context)
-                .setDefaultRequestOptions(requestOptions);
+                .setDefaultRequestOptions(new RequestOptions()
+                        .placeholder(circularProgressDrawable)
+                        .centerCrop());
     }
 
     @Provides

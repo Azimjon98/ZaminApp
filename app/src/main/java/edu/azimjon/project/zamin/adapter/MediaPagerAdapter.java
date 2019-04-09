@@ -3,6 +3,7 @@ package edu.azimjon.project.zamin.adapter;
 
 import android.content.Context;
 import android.media.Image;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,8 +29,14 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
     FragmentVideoInMedia tab2;
     FragmentGalleryInMedia tab3;
 
+    ViewGroup player;
+
     Context context;
     private int tabs_number;
+
+    public void setPlayer(ViewGroup player) {
+        this.player = player;
+    }
 
     public MediaPagerAdapter(Context context, FragmentManager fm, int tabs) {
         super(fm);
@@ -43,6 +50,7 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 if (tab1 == null)
                     tab1 = new FragmentAudioInMedia();
+                tab1.setPlayer(player);
                 return tab1;
             case 1:
                 if (tab2 == null)
@@ -59,10 +67,10 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-
-
         return tabs_number;
     }
+
+
 
     @Nullable
     @Override
@@ -70,11 +78,8 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
         return titles[position];
     }
 
-
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        // Fragments will not destroyed
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        super.destroyItem(container, position, object);
     }
-
-
 }

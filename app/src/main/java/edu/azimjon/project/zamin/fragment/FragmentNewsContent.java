@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
@@ -20,6 +21,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AbsListView;
 import android.widget.Toast;
 
 import java.io.InputStream;
@@ -32,6 +34,7 @@ import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.adapter.CategoryNewsAdapter;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
+import edu.azimjon.project.zamin.databinding.HeaderWindowNewsContentBinding;
 import edu.azimjon.project.zamin.databinding.WindowNewsContentBinding;
 import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
@@ -41,19 +44,29 @@ import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsContent;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsContent;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
+import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
 
 public class FragmentNewsContent extends Fragment implements IFragmentNewsContent {
     //TODO: Constants here
 
 
     //TODO: variables here
+    LinearLayoutManager manager;
     WindowNewsContentBinding binding;
+    HeaderWindowNewsContentBinding bindingHeader;
     PresenterNewsContent presenterNewsContent;
 
     //adapters
     MediumNewsAdapter mediumNewsAdapter;
+
+    //scrolling variables
+    boolean isScrolling = false;
+    boolean isLoading = false;
+
+    int total_items, visible_items, scrollout_items;
 
 
     //#####################################################################
@@ -75,27 +88,35 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         binding.iconBack.setOnClickListener(v -> Navigation.findNavController(v).popBackStack(R.id.fragmentContent, true));
 
         //initialize adapters and append to lists
 
-        binding.listLastNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        binding.listLastNews.setLayoutManager(manager);
         mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+
+
+        bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_content, binding.listLastNews, false);
+        bindingHeader.getRoot().setPadding(0, 0, 0, MyUtil.dpToPx(24));
+        mediumNewsAdapter.withHeader(bindingHeader.getRoot());
         binding.listLastNews.setAdapter(mediumNewsAdapter);
 
-        String newsId = getArguments().getString(KEY_NEWS_ID);
+        binding.listLastNews.addOnScrollListener(scrollListener);
 
 
-// Enable Javascript
-        binding.contentWeb.getSettings().setJavaScriptEnabled(true);
+        //*****************************************************************************
+
+        //TODO: Header binding initializators
+        // Enable Javascript
+        bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true);
 
 
-        binding.contentWeb.setWebViewClient(new WebViewClient() {
+        bindingHeader.contentWeb.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                binding.progress.setVisibility(View.VISIBLE);
+                bindingHeader.progress.setVisibility(View.VISIBLE);
 
             }
 
@@ -103,15 +124,15 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             public void onPageFinished(WebView view, String url) {
 //                injectCSS();
                 super.onPageFinished(view, url);
-                binding.progress.setVisibility(View.GONE);
+                bindingHeader.progress.setVisibility(View.GONE);
 
             }
         });
         Log.d(Constants.MY_LOG, "in fragmentview:" + getArguments().getString(Constants.WEB_URL));
 
         initIcons();
+        String newsId = getArguments().getString(KEY_NEWS_ID);
         presenterNewsContent.init(newsId);
-
 
     }
 
@@ -126,20 +147,21 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     @Override
     public void initContent(NewsContentModel model) {
-        binding.setModel(model);
+        bindingHeader.setModel(model);
 
         final String mimeType = "text/html";
         final String encoding = "UTF-8";
 
-        binding.contentWeb.loadDataWithBaseURL(null, "<style>img{display: inline;height: auto;max-width: 100%;}img {\n" +
-                " margin-top:10px;\n" +
-                " margin-bottom:10px;\n" +
-                "}</style>" + model.getContent(), mimeType, encoding, "");
+        bindingHeader.contentWeb.loadUrl(model.getContent());
+        Log.d(MY_LOG, "initContent: " + model.getContent());
     }
 
     @Override
     public void addLastNews(List<NewsSimpleModel> items) {
-        mediumNewsAdapter.add_items(items);
+        if (mediumNewsAdapter.getItemCount() > 1)
+            mediumNewsAdapter.hideLoading();
+        isLoading = false;
+        mediumNewsAdapter.add_all(items);
     }
 
 
@@ -153,7 +175,42 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         binding.iconBookmark.setOnClickListener(v -> Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show());
     }
 
-
     //#################################################################
+
+    //TODO: Argument variables
+
+    public RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            Log.d(Constants.MY_LOG, "onScrollStateChanged");
+
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                isScrolling = true;
+            }
+        }
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            total_items = manager.getItemCount();
+            visible_items = manager.getChildCount();
+            scrollout_items = manager.findFirstVisibleItemPosition();
+            Log.d(Constants.MY_LOG, "total_items: " + total_items + " " +
+                    "visible_items: " + visible_items + " " +
+                    "scrollout_items: " + scrollout_items);
+
+            if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
+                isScrolling = false;
+                isLoading = true;
+                mediumNewsAdapter.showLoading();
+                presenterNewsContent.getContinue();
+            }
+        }
+
+    };
+
 
 }

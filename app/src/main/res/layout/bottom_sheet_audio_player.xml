@@ -23,10 +23,8 @@
             android:layout_width="6dp"
             android:layout_height="20dp"
             android:layout_marginStart="48dp"
-            app:cardPreventCornerOverlap="false"
-            android:elevation="4dp"
-            app:cardElevation="4dp"
-            android:translationZ="4dp"
+            app:cardPreventCornerOverlap="true"
+
             app:cardCornerRadius="6dp">
 
             <RelativeLayout

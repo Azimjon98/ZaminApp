@@ -36,8 +36,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_NO_CONNECTION;
+import static edu.azimjon.project.zamin.addition.Constants.STATE_LOG;
 
 public class NavigationActivity extends AppCompatActivity {
 
@@ -101,11 +103,16 @@ public class NavigationActivity extends AppCompatActivity {
         unregisterReceiver(myConnectivityReceiver);
     }
 
+
+    //TODO: NETWORKING STATES
+
     BroadcastReceiver myConnectivityReceiver = new BroadcastReceiver() {
 
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(STATE_LOG, "on_network_changed");
+
             if (intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE")) {
                 ConnectivityManager manager = (ConnectivityManager) NavigationActivity.this.getSystemService(CONNECTIVITY_SERVICE);
 
@@ -114,9 +121,13 @@ public class NavigationActivity extends AppCompatActivity {
                 //there are a connection to net
                 if (activeNetwork != null
                         && activeNetwork.isConnectedOrConnecting()) {
+                    Log.d(STATE_LOG, "NETWORK_STATE_CONNECTED");
+
                     EventBus.getDefault().post(new MyNetworkEvents.NetworkStateChangedEvent(NETWORK_STATE_CONNECTED));
                     check_categories_database();
                 } else {
+                    Log.d(STATE_LOG, "NETWORK_STATE_NO_CONNECTION");
+
                     EventBus.getDefault().post(new MyNetworkEvents.NetworkStateChangedEvent(NETWORK_STATE_NO_CONNECTION));
                 }
 
@@ -125,7 +136,8 @@ public class NavigationActivity extends AppCompatActivity {
         }
     };
 
-    //TODO: NETWORKING STATES
+    //##############################################################################
+
 
     private void check_categories_database() {
         try {

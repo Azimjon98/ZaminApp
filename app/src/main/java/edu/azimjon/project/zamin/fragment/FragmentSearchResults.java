@@ -7,9 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +26,6 @@ import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.application.MyApplication;
-import edu.azimjon.project.zamin.databinding.WindowSearchBinding;
 import edu.azimjon.project.zamin.databinding.WindowSearchResultsBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.view.IFragmentSearchNewsResult;
@@ -41,8 +38,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.KEY_CATEGORY_ID;
-import static edu.azimjon.project.zamin.addition.Constants.KEY_CATEGORY_NAME;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
+import static edu.azimjon.project.zamin.addition.Constants.SEARCH_CATEGORY;
+import static edu.azimjon.project.zamin.addition.Constants.SEARCH_TAG;
 
 public class FragmentSearchResults extends Fragment implements IFragmentSearchNewsResult {
     WindowSearchResultsBinding binding;
@@ -57,7 +57,10 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
     MediumNewsAdapter adapter;
     int offset = 1;
     final String limit = "10";
-    private String searchingText;
+
+    //Search Variables
+    int searchWhere;
+    private String searchingID;
 
     //scrolling variables
     boolean isScrolling = false;
@@ -74,6 +77,11 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        //TODO: Input arguments
+        searchWhere = getArguments().getInt(KEY_SEARCH_WHERE, -1);
+        searchingID = getArguments().getString(KEY_SEARCH_ID);
+
     }
 
     @Nullable
@@ -88,13 +96,11 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //TODO: Input arguments
-        searchingText = getArguments().getString(KEY_CATEGORY_ID);
+        binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).popBackStack());
         binding.toolbar.setTitle(
-                getArguments().getString(KEY_CATEGORY_NAME)
+                getArguments().getString(KEY_SEARCH_TOOLBAR_NAME)
         );
 
-        binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).popBackStack());
 
         manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         adapter = new MediumNewsAdapter(getContext(), new ArrayList<>());
@@ -113,9 +119,6 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
 
     //search news with title
     void search_text(boolean fromBegin) {
-        if (TextUtils.isEmpty(searchingText.trim())) {
-            return;
-        }
 
         if (fromBegin) {
             offset = 1;
@@ -126,12 +129,23 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
             searchNews.cancel();
         }
 
-        searchNews = retrofit
-                .create(MyRestService.class)
-                .getNewsWithCategory(String.valueOf(offset),
-                        limit,
-                        searchingText.trim(),
-                        "uz");
+        if (searchWhere == SEARCH_CATEGORY) {
+
+            searchNews = retrofit
+                    .create(MyRestService.class)
+                    .getNewsWithCategory(String.valueOf(offset),
+                            limit,
+                            searchingID,
+                            "uz");
+        }
+        else if (searchWhere == SEARCH_TAG){
+            searchNews = retrofit
+                    .create(MyRestService.class)
+                    .getNewsWithTags(String.valueOf(offset),
+                            limit,
+                            searchingID,
+                            "uz");
+        }
 
 
         searchNews.enqueue(new Callback<JsonObject>() {
@@ -180,7 +194,7 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
     @Override
     public void addNews(List<NewsSimpleModel> items) {
         adapter.hideLoading();
-        adapter.add_items(items);
+        adapter.add_all(items);
 
         isLoading = false;
     }

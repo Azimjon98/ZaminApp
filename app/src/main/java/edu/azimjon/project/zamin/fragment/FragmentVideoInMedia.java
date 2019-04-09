@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import edu.azimjon.project.zamin.databinding.WindowVideoInsideMediaBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterVideoInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentVideoInMedia;
+
+import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 
 public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMedia {
 
@@ -75,6 +78,32 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
     //TODO: override methods
 
+    @Override
+    public void onStart() {
+        Log.d(CALLBACK_LOG, "Video: onStart");
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(CALLBACK_LOG, "Video: onResume");
+
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(CALLBACK_LOG, "Video: onStop");
+
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        Log.d(CALLBACK_LOG, "Video: onPause");
+
+        super.onPause();
+    }
 
     //#################################################################
 

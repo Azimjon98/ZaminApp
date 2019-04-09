@@ -3,9 +3,11 @@ package edu.azimjon.project.zamin.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 @Entity(tableName = "news_content")
-public class NewsContentModel {
+public class NewsContentModel implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     int id;
@@ -35,6 +37,32 @@ public class NewsContentModel {
     public NewsContentModel() {
         isWished = false;
     }
+
+    protected NewsContentModel(Parcel in) {
+        id = in.readInt();
+        newsId = in.readString();
+        title = in.readString();
+        imageUrl = in.readString();
+        originalUrl = in.readString();
+        categoryId = in.readString();
+        categoryName = in.readString();
+        date = in.readString();
+        viewedCount = in.readString();
+        isWished = in.readByte() != 0;
+        content = in.readString();
+    }
+
+    public static final Creator<NewsContentModel> CREATOR = new Creator<NewsContentModel>() {
+        @Override
+        public NewsContentModel createFromParcel(Parcel in) {
+            return new NewsContentModel(in);
+        }
+
+        @Override
+        public NewsContentModel[] newArray(int size) {
+            return new NewsContentModel[size];
+        }
+    };
 
     public void setId(int id) {
         this.id = id;
@@ -122,5 +150,25 @@ public class NewsContentModel {
 
     public String getCategoryName() {
         return categoryName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(newsId);
+        dest.writeString(title);
+        dest.writeString(imageUrl);
+        dest.writeString(originalUrl);
+        dest.writeString(categoryId);
+        dest.writeString(categoryName);
+        dest.writeString(date);
+        dest.writeString(viewedCount);
+        dest.writeByte((byte) (isWished ? 1 : 0));
+        dest.writeString(content);
     }
 }

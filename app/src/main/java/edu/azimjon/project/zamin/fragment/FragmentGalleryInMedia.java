@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import edu.azimjon.project.zamin.databinding.WindowVideoInsideMediaBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterGalleryInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentGalleryInMedia;
+
+import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 
 public class FragmentGalleryInMedia extends Fragment implements IFragmentGalleryInMedia {
 
@@ -74,6 +77,33 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
     }
 
     //TODO: override methods
+
+    @Override
+    public void onStart() {
+        Log.d(CALLBACK_LOG, "Gallery: onStart");
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(CALLBACK_LOG, "Gallery: onResume");
+
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(CALLBACK_LOG, "Gallery: onStop");
+
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        Log.d(CALLBACK_LOG, "Gallery: onPause");
+
+        super.onPause();
+    }
 
 
     //#################################################################

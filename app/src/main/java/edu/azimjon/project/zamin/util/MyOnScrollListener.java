@@ -12,14 +12,18 @@ import edu.azimjon.project.zamin.fragment.FragmentNewsFeed;
 
 public class MyOnScrollListener extends RecyclerView.OnScrollListener {
 
-    FragmentNewsFeed.MyInterface myInterface;
+    public interface MyInterface {
+        void scrollEnded();
+    }
+
+    MyInterface myInterface;
     RecyclerView.Adapter adapter;
 
     boolean is_scrolling = false;
 
     int total_items, visible_items, scrollout_items;
 
-    public MyOnScrollListener(RecyclerView.Adapter adapter, FragmentNewsFeed.MyInterface m) {
+    public MyOnScrollListener(RecyclerView.Adapter adapter, MyInterface m) {
         this.adapter = adapter;
         this.myInterface = m;
     }

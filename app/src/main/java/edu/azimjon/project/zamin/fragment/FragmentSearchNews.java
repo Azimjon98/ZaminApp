@@ -171,7 +171,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     @Override
     public void addNews(List<NewsSimpleModel> items) {
         adapter.hideLoading();
-        adapter.add_items(items);
+        adapter.add_all(items);
 
         isLoading = false;
     }

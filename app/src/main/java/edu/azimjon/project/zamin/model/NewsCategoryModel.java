@@ -1,6 +1,7 @@
 package edu.azimjon.project.zamin.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "news_category")
@@ -21,6 +22,7 @@ public class NewsCategoryModel {
         isEnabled = true;
     }
 
+    @Ignore
     public NewsCategoryModel(String name, String categoryId, String imageUrl) {
         this();
         this.name = name;

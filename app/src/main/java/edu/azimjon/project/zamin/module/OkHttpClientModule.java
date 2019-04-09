@@ -9,8 +9,11 @@ import java.util.concurrent.TimeUnit;
 import dagger.Module;
 import dagger.Provides;
 import edu.azimjon.project.zamin.interfaces.ApplicationContext;
+import edu.azimjon.project.zamin.interfaces.CacheInterceptor;
 import edu.azimjon.project.zamin.interfaces.MyApplicationScope;
+import edu.azimjon.project.zamin.interfaces.OfflineCacheInterceptor;
 import okhttp3.Cache;
+import okhttp3.CacheControl;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -19,36 +22,24 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import timber.log.Timber;
 
-@Module(includes = ContextModule.class)
+@Module(includes = {ContextModule.class, InterceptorsMudule.class})
 public class OkHttpClientModule {
 
 
     //adding network interceptors and configuring RETROFIT, GLIDE CACHE
     @Provides
-    public OkHttpClient okHttpClient(Cache cache, HttpLoggingInterceptor interceptor) {
+    public OkHttpClient okHttpClient(Cache cache, HttpLoggingInterceptor interceptor,
+                                     @OfflineCacheInterceptor Interceptor offlineCacheIntercepror,
+                                     @CacheInterceptor Interceptor cacheInterceptor) {
+
         return new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-
-                .addNetworkInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        Request request = chain.request();
-                        HttpUrl url = request.url().newBuilder().addQueryParameter("lang", "ru").build();
-                        request = request.newBuilder().url(url).build();
-
-                        Response originalResponse = chain.proceed(chain.request());
-                        return originalResponse.newBuilder()
-                                .request(request)
-                                .removeHeader("Pragma")
-                                .header("Cache-Control", "max-age=60")
-                                .build();
-                    }
-                })
-                .readTimeout(100, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
+                .addInterceptor(offlineCacheIntercepror)
+                .addNetworkInterceptor(cacheInterceptor)
                 .cache(cache)
+                .readTimeout(60, TimeUnit.SECONDS)
                 .build();
     }
+
 
     @Provides
     public Cache cache(File file) {

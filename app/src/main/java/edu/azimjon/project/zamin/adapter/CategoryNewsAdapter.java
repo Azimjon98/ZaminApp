@@ -11,17 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
+import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_CATEGORY_ID;
-import static edu.azimjon.project.zamin.addition.Constants.KEY_CATEGORY_NAME;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
+import static edu.azimjon.project.zamin.addition.Constants.SEARCH_CATEGORY;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
-public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapter.MyHolder> {
+public class CategoryNewsAdapter extends BaseRecyclerAdapter<NewsCategoryModel> {
 
     ArrayList<NewsCategoryModel> items;
     Context context;
@@ -29,57 +36,59 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
     private int lastPosition = -1;
 
     public CategoryNewsAdapter(Context context, ArrayList<NewsCategoryModel> items) {
+        super(context, items);
+
         this.context = context;
         this.items = items;
     }
 
     @NonNull
     @Override
-    public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemNewsCategoryBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
-                R.layout.item_news_category, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        //header with bottom padding
+        if (i == TYPE_HEADER)
+            return new MyBaseHolder(headerView);
+        else if (i == TYPE_FOOTER)
+            return new MyBaseHolder(footerView);
+        else if (i == TYPE_LOADING)
+            return new MyBaseHolder(inflater.inflate(
+                    R.layout.item_loading,
+                    viewGroup,
+                    false));
+        else
+            return new MyHolderItem(DataBindingUtil
+                    .inflate(inflater,
+                            R.layout.item_news_category,
+                            viewGroup,
+                            false));
 
 
-        return new MyHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyHolder holder, int position) {
-        lastPosition = position;
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+        if (viewHolder instanceof MyHolderItem) {
+            int position = i;
+            if (hasHeader)
+                position--;
 
-        holder.binding.setModel(items.get(position));
-    }
+            MyHolderItem myHolder = (MyHolderItem) viewHolder;
+            myHolder.binding.setModel(items.get(position));
+        }
 
-    @Override
-    public void onViewDetachedFromWindow(@NonNull MyHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-//        holder.card.clearAnimation();
-    }
 
-    public void init_items(List<NewsCategoryModel> items) {
-        clear_items();
-        this.items.addAll(items);
-        this.notifyDataSetChanged();
-    }
-
-    public void clear_items() {
-        this.items.clear();
-        this.notifyDataSetChanged();
     }
 
 
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
-    public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemNewsCategoryBinding binding;
 
         int count = 0;
 
 
-        public MyHolder(ItemNewsCategoryBinding binding) {
+        public MyHolderItem(ItemNewsCategoryBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             this.binding.cardNewsCategory.setOnClickListener(this);
@@ -90,8 +99,9 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
         @Override
         public void onClick(View v) {
             Bundle bundle = new Bundle();
-            bundle.putString(KEY_CATEGORY_ID, items.get(getAdapterPosition()).getCategoryId());
-            bundle.putString(KEY_CATEGORY_NAME, items.get(getAdapterPosition()).getName());
+            bundle.putString(KEY_SEARCH_ID, binding.getModel().getCategoryId());
+            bundle.putString(KEY_SEARCH_TOOLBAR_NAME, binding.getModel().getName());
+            bundle.putInt(KEY_SEARCH_WHERE, SEARCH_CATEGORY);
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentSearchResults, bundle);
         }
     }

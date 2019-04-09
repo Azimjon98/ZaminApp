@@ -22,13 +22,14 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 
 public class MainNewsPagerAdapter extends PagerAdapter implements View.OnClickListener {
 
     Context context;
     int count;
     List<NewsSimpleModel> news;
-    static String newsID;
+    static int newsPosition;
 
     public MainNewsPagerAdapter(Context context) {
         this.context = context;
@@ -43,7 +44,7 @@ public class MainNewsPagerAdapter extends PagerAdapter implements View.OnClickLi
         binding.setModel(news.get(position));
 
         binding.clicker.setOnClickListener(v -> {
-            newsID = news.get(position).getNewsId();
+             newsPosition =  position;
             this.onClick(v);
         });
 
@@ -88,7 +89,8 @@ public class MainNewsPagerAdapter extends PagerAdapter implements View.OnClickLi
     @Override
     public void onClick(View v) {
         Bundle bundle = new Bundle();
-        bundle.putString(KEY_NEWS_ID, newsID);
+        bundle.putString(KEY_NEWS_ID, news.get(newsPosition).getNewsId());
+        bundle.putParcelable(KEY_NEWS_MODEL, news.get(newsPosition));
         Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
     }
 }

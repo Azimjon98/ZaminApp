@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -78,13 +79,6 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
     }
 
     @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        Log.d(CALLBACK_LOG, "FragmentContent: onViewStateRestored");
-
-        super.onViewStateRestored(savedInstanceState);
-    }
-
-    @Override
     public void onStart() {
         Log.d(CALLBACK_LOG, "FragmentContent: onStart");
 
@@ -109,9 +103,7 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(CALLBACK_LOG, "FragmentContent: onCreateView");
 
-        if (baseView == null){
-            Log.d(CALLBACK_LOG, "FragmentContent: baseView is null");
-
+        if (baseView == null) {
             baseView = inflater.inflate(R.layout.window_content, container, false);
         }
 
@@ -132,7 +124,8 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
             contentPagerAdapter = new ContentPagerAdapter(getContext(), getChildFragmentManager(), 4);
         contentPager = view.findViewById(R.id.content_pager);
         contentPager.setAdapter(contentPagerAdapter);
-        contentPager.setCurrentItem(0);
+        contentPagerAdapter.setPlayer(view.findViewById(R.id.player_lay));
+        contentPager.setOffscreenPageLimit(1);
 
         //when this window comes back continue with old navigation index
         if (savedId == -1) {
@@ -169,7 +162,6 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         savedId = navigationView.getSelectedItemId();
     }
 
-
     //#################################################################
 
 
@@ -201,7 +193,6 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
     }
 
 
-
     //#################################################################
 
     //TODO: Additional methods
@@ -213,8 +204,8 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_more_news(MyOnMoreNewsEvents.MyOnMoreNewsEvent event) {
-            navigationView.setSelectedItemId(R.id.menu_media);
-            contentPagerAdapter.setPositionOfMediaNews(event.getPosition());
+        navigationView.setSelectedItemId(R.id.menu_media);
+        contentPagerAdapter.setPositionOfMediaNews(event.getPosition());
 
     }
 

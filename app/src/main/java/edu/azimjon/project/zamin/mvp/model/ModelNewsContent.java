@@ -112,7 +112,7 @@ public class ModelNewsContent {
 
     //parsing main news(pager news)
     private void parsingNewsContent(JsonObject json) {
-        NewsContentModel model = ParserNewsContentModel.parse(json);
+        NewsContentModel model = new ParserNewsContentModel().parse(json);
 
         //sending data to view
         presenterNewsContent.initContent(model);

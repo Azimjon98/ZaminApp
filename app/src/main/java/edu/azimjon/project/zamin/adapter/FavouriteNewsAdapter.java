@@ -27,18 +27,6 @@ import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel> {
-    ArrayList<FavouriteNewsModel> items;
-    Context context;
-
-    int lastPosition = -1;
-
-    //header
-    boolean hasHeader = false;
-    View headerView;
-
-    //Constants
-    private final static int TYPE_HEADER = 1;
-    private final static int TYPE_ITEM = 2;
 
     public FavouriteNewsAdapter(Context context, ArrayList<FavouriteNewsModel> items) {
         super(context, items);

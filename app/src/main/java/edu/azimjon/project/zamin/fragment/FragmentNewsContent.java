@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.chip.Chip;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,7 +48,12 @@ import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
 import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
 import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.SEARCH_CATEGORY;
+import static edu.azimjon.project.zamin.addition.Constants.SEARCH_TAG;
 
 public class FragmentNewsContent extends Fragment implements IFragmentNewsContent {
     //TODO: Constants here
@@ -95,7 +101,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         binding.listLastNews.setLayoutManager(manager);
         mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-
 
         bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_content, binding.listLastNews, false);
         bindingHeader.getRoot().setPadding(0, 0, 0, MyUtil.dpToPx(24));
@@ -158,10 +163,33 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     @Override
     public void addLastNews(List<NewsSimpleModel> items) {
+        mediumNewsAdapter.add_all(items);
         if (mediumNewsAdapter.getItemCount() > 1)
             mediumNewsAdapter.hideLoading();
         isLoading = false;
-        mediumNewsAdapter.add_all(items);
+    }
+
+    @Override
+    public void initTags(List<String> tags) {
+        tags.add("Манчестер Юнайтед");
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        for (String tag : tags) {
+            Chip chip = (Chip) inflater.inflate(R.layout.item_tag, null,false);
+            chip.setText(tag);
+//            chip.setChipBackgroundColorResource(R.color.icon_active);
+
+
+            chip.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putString(KEY_SEARCH_ID, tag);
+                bundle.putString(KEY_SEARCH_TOOLBAR_NAME, tag);
+                bundle.putInt(KEY_SEARCH_WHERE, SEARCH_TAG);
+                Navigation.findNavController(v).navigate(R.id.action_global_fragmentSearchResults, bundle);
+            });
+
+            bindingHeader.tagsGroup.addView(chip);
+        }
+
     }
 
 

@@ -28,10 +28,6 @@ import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
-    ArrayList<NewsSimpleModel> items;
-    Context context;
-
-
     public AudioNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         super(context, items);
 

@@ -200,10 +200,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Vie
         //check the net connection and  load data if needed
         if (MyUtil.hasConnectionToNet(getActivity())) {
             presenterNewsFeed.init();
-            binding.noConnectionLay.setVisibility(View.GONE);
         } else {
             isConnected_to_Net = false;
-            binding.noConnectionLay.setVisibility(View.VISIBLE);
         }
     }
 

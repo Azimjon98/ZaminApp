@@ -28,8 +28,6 @@ import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class LargeNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
-    ArrayList<NewsSimpleModel> items;
-    Context context;
 
 
     public LargeNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {

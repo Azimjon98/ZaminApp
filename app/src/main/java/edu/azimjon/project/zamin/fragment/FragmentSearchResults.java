@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 
@@ -137,8 +138,7 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
                             limit,
                             searchingID,
                             "uz");
-        }
-        else if (searchWhere == SEARCH_TAG){
+        } else if (searchWhere == SEARCH_TAG) {
             searchNews = retrofit
                     .create(MyRestService.class)
                     .getNewsWithTags(String.valueOf(offset),

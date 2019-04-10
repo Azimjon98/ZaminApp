@@ -31,9 +31,6 @@ import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class NewsFeedAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
-    ArrayList<NewsSimpleModel> items;
-    Context context;
-
     public NewsFeedAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         super(context, items);
         this.context = context;
@@ -67,12 +64,12 @@ public class NewsFeedAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        if (viewHolder instanceof VideoNewsAdapter.MyHolderItem) {
+        if (viewHolder instanceof MyHolderItem) {
             int position = i;
             if (hasHeader)
                 position--;
 
-            VideoNewsAdapter.MyHolderItem myHolder = (VideoNewsAdapter.MyHolderItem) viewHolder;
+            MyHolderItem myHolder = (MyHolderItem) viewHolder;
             myHolder.binding.setModel(items.get(position));
         }
 
@@ -93,13 +90,6 @@ public class NewsFeedAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     //TODO: Holders
 
-
-    public class MyHolderHeader extends RecyclerView.ViewHolder {
-
-        public MyHolderHeader(View view) {
-            super(view);
-        }
-    }
 
     public class MyHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemNewsMainMediumBinding binding;

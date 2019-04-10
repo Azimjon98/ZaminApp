@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_tag"
+    android:layout_margin="8dp"
+    style="@style/Widget.MaterialComponents.Chip.Choice"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="6dp"
+    app:checkedIconEnabled="false"
+    android:text="Salom"
+    android:textColor="@color/white"
+    android:textSize="15sp"
+    android:theme="@style/Base.Theme.MaterialComponents" />

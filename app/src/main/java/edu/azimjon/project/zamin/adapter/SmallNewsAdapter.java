@@ -28,8 +28,6 @@ import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class SmallNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
-    ArrayList<NewsSimpleModel> items;
-    Context context;
 
     public SmallNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         super(context, items);

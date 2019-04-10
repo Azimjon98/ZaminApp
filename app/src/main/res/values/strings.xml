@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Zamin</string>
+    <string name="app_name" translatable="false">Zamin</string>
     <string name="menu_news_feed">Lenta</string>
     <string name="menu_top">Top</string>
     <string name="menu_favourites">Tanlanganlar</string>

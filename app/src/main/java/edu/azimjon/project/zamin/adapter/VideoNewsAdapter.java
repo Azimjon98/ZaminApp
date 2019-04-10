@@ -31,9 +31,6 @@ import static edu.azimjon.project.zamin.addition.Constants.*;
 
 public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
-    ArrayList<NewsSimpleModel> items;
-    Context context;
-
     public VideoNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         super(context, items);
         this.context = context;

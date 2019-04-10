@@ -3,8 +3,11 @@ package edu.azimjon.project.zamin.mvp.model;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.azimjon.project.zamin.application.MyApplication;
@@ -49,6 +52,7 @@ public class ModelNewsContent {
     public void getAllItems(String newsId) {
         getContent(newsId);
         getLastNews();
+        getTags(newsId);
 
     }
 
@@ -107,6 +111,32 @@ public class ModelNewsContent {
                 });
     }
 
+    //getting main news(pager news)
+    public void getTags(String id) {
+
+        retrofit.create(MyRestService.class)
+                .getNewsContentTags(
+                        id,
+                        "uz")
+                .enqueue(new Callback<JsonArray>() {
+                    @Override
+                    public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                        if (response.isSuccessful()) {
+                            JsonArray json = response.body();
+                            parsingTags(json);
+
+                        } else {
+                            Log.d(API_LOG, "getTags onFailure: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonArray> call, Throwable t) {
+                        Log.d(API_LOG, "getTags onFailure: " + t.getMessage());
+                    }
+                });
+    }
+
 
     //TODO: Parsing and sending data to our view
 
@@ -125,6 +155,23 @@ public class ModelNewsContent {
 
         //sending data to view
         presenterNewsContent.addLastNews(items);
+
+    }
+
+    //parsing main news(pager news)
+    private void parsingTags(JsonArray json) {
+        List<String> tags = new ArrayList<>();
+
+
+        for (JsonElement i : json) {
+            JsonObject item = i.getAsJsonObject();
+
+            tags.add(item.getAsJsonPrimitive("tag").getAsString());
+        }
+
+
+        //sending data to view
+        presenterNewsContent.initTags(tags);
 
     }
 }

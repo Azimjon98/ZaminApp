@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import edu.azimjon.project.zamin.databinding.ItemNewsMainMediumBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
+import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
@@ -28,8 +30,6 @@ import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
-    ArrayList<NewsSimpleModel> items;
-    Context context;
 
     public MediumNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         super(context, items);
@@ -63,17 +63,33 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     }
 
+//    @Override
+//    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+//        if ((hasHeader && i == 0) || (hasFooter && i == (getItemCount() - 1)) || (isLoading && i == (getItemCount() - 1)))
+//            return;
+//
+//        int position = i;
+//        if (hasHeader)
+//            position--;
+//
+//
+//        MyHolderItem myHolder = (MyHolderItem) viewHolder;
+//        myHolder.binding.setModel(items.get(position));
+//    }
+
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof MyHolderItem) {
+
+
             int position = i;
             if (hasHeader)
                 position--;
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;
             myHolder.binding.setModel(items.get(position));
-        }
 
+        }
 
     }
 
@@ -84,8 +100,6 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     public class MyHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemNewsMainMediumBinding binding;
-
-        int count = 0;
 
 
         public MyHolderItem(ItemNewsMainMediumBinding binding) {
@@ -125,6 +139,5 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }
-
 
 }

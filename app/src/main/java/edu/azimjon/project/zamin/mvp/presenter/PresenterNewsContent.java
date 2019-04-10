@@ -37,6 +37,10 @@ public class PresenterNewsContent {
         mainView.addLastNews(items);
     }
 
+    public void initTags(List<String> tags) {
+        mainView.initTags(tags);
+    }
+
 
     //########################################################################
 

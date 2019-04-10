@@ -30,11 +30,6 @@ import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class CategoryNewsAdapter extends BaseRecyclerAdapter<NewsCategoryModel> {
 
-    ArrayList<NewsCategoryModel> items;
-    Context context;
-
-    private int lastPosition = -1;
-
     public CategoryNewsAdapter(Context context, ArrayList<NewsCategoryModel> items) {
         super(context, items);
 

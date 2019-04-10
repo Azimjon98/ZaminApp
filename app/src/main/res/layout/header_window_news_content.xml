@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -13,9 +14,9 @@
     </data>
 
     <android.support.v4.widget.NestedScrollView
-        android:fillViewport="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -102,6 +103,21 @@
                 android:layout_marginEnd="8dp">
 
             </WebView>
+
+            <android.support.design.chip.ChipGroup
+                android:id="@+id/tags_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="8dp"
+                android:lineSpacingMultiplier="2"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp">
+
+
+            </android.support.design.chip.ChipGroup>
+
 
             <View
                 android:layout_width="match_parent"

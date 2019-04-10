@@ -26,30 +26,6 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <RelativeLayout
-            android:visibility="visible"
-            android:id="@+id/no_connection_lay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:translationZ="6dp">
-
-            <ImageView
-                android:scaleType="fitCenter"
-                android:id="@+id/no_connection"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/no_connection" />
-
-            <Button
-                android:id="@+id/no_connection_button"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/custom_ripple_borderless"
-                android:clickable="true"
-                android:focusable="true" />
-
-        </RelativeLayout>
-
 
     </RelativeLayout>
 

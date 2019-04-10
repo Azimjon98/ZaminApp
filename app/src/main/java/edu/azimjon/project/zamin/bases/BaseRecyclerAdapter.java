@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +25,8 @@ import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.*;
 
 public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    ArrayList<T> items;
-    Context context;
+    public ArrayList<T> items;
+    public Context context;
 
     //header states
     public boolean isLoading = false;
@@ -35,7 +36,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     //views
     public View headerView;
     public View footerView;
-
 
 
     public BaseRecyclerAdapter(Context context, ArrayList<T> items) {
@@ -64,34 +64,16 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
     @Override
     public int getItemViewType(int position) {
+
         if (hasHeader && position == 0)
             return TYPE_HEADER;
-        else if (hasFooter && position == (items.size() - 1)) {
+        else if (hasFooter && position == (getItemCount() - 1)) {
             return TYPE_FOOTER;
-        } else if (isLoading && position == (items.size() - 1))
+        } else if (isLoading && position == (getItemCount() - 1))
             return TYPE_LOADING;
         else
             return TYPE_ITEM;
     }
-
-
-    //    @Override
-//    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-//        lastPosition = i;
-//
-//        if (hasHeader && i == 0)
-//            return;
-//        //loading case skips
-//        if (isLoading && i == items.size() - 1) {
-//            return;
-//        }
-//
-//        final int position = hasHeader ? i - 1 : i;
-//
-//        VideoNewsAdapter.MyHolderItem myHolder = (VideoNewsAdapter.MyHolderItem) viewHolder;
-//        myHolder.binding.setModel(items.get(position));
-//
-//    }
 
     //########################################################################
 
@@ -137,6 +119,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         if (hasFooter || isLoading)
             count++;
 
+
         return count;
     }
 
@@ -145,22 +128,5 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
     //TODO: Holders
 
-
-    public class MyHolderHeader extends RecyclerView.ViewHolder {
-        public MyHolderHeader(@NonNull View itemView) {
-            super(itemView);
-        }
-    }
-
-
-    public class MyLoadingFooter extends RecyclerView.ViewHolder {
-
-
-        public MyLoadingFooter(View v) {
-            super(v);
-
-        }
-
-    }
 
 }

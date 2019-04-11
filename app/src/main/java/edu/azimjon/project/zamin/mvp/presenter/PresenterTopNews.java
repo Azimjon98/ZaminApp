@@ -19,15 +19,19 @@ public class PresenterTopNews {
     }
 
     public void init() {
-        modelTopNews.getTopNews();
+        modelTopNews.initTopNews();
     }
 
     public void getContinue() {
         modelTopNews.getTopNews();
     }
 
-    public void addNews(List<NewsSimpleModel> items) {
-        mainView.addNews(items);
+    public void initNews(List<NewsSimpleModel> items, int message) {
+        mainView.initNews(items, message);
+    }
+
+    public void addNews(List<NewsSimpleModel> items, int message) {
+        mainView.addNews(items, message);
     }
 
 

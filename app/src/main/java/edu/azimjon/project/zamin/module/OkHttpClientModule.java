@@ -35,8 +35,8 @@ public class OkHttpClientModule {
         return new OkHttpClient.Builder()
                 .addInterceptor(offlineCacheIntercepror)
                 .addNetworkInterceptor(cacheInterceptor)
+                .addInterceptor(interceptor)
                 .cache(cache)
-                .readTimeout(60, TimeUnit.SECONDS)
                 .build();
     }
 

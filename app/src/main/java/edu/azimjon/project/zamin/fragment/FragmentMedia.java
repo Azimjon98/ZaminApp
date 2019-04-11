@@ -102,15 +102,7 @@ public class FragmentMedia extends Fragment implements IFragmentMedia {
 
     //TODO: override methods
 
-    @Override
-    public void onResume() {
-        super.onResume();
 
-        if (!isContentLoaded) {
-            presenterMedia.init();
-            isContentLoaded = true;
-        }
-    }
 
     @Override
     public boolean getUserVisibleHint() {
@@ -195,6 +187,58 @@ public class FragmentMedia extends Fragment implements IFragmentMedia {
 
 
     };
+
+
+
+
+    @Override
+    public void onResume() {
+        Log.d(CALLBACK_LOG, "Media: onPause");
+
+        super.onResume();
+
+        if (!isContentLoaded) {
+            presenterMedia.init();
+            isContentLoaded = true;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        Log.d(CALLBACK_LOG, "Media: onPause");
+
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(CALLBACK_LOG, "Media onStop");
+
+        super.onStop();
+    }
+
+
+
+    @Override
+    public void onDestroyView() {
+        Log.d(CALLBACK_LOG, "Media onDestroyView");
+
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(CALLBACK_LOG, "Media onDetach");
+
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(CALLBACK_LOG, "Media onDestroy");
+
+        super.onDestroy();
+    }
 
 
 }

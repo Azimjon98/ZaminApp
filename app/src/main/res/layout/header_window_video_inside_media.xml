@@ -15,7 +15,7 @@
         android:layout_marginEnd="24dp"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="4sp"
-        android:text="Видео хабарлар"
+        android:text="@string/title_video_news"
         android:textColor="#212121"
         android:textSize="32dp"
         android:textStyle="bold" />
@@ -29,7 +29,7 @@
         android:layout_marginEnd="24dp"
         android:fontFamily="sans-serif"
         android:lineSpacingMultiplier="1.2"
-        android:text="Zamin studiyasining dolzarb mavzudagi intervyulari"
+        android:text="@string/message_video"
         android:textColor="#757575"
         android:textSize="18dp"
         android:textStyle="normal" />

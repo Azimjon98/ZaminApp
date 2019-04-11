@@ -18,14 +18,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.application.MyApplication;
-import edu.azimjon.project.zamin.events.MyNetworkEvents;
+import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
 import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
@@ -36,7 +35,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.STATE_LOG;
@@ -48,6 +47,7 @@ public class NavigationActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d(CALLBACK_LOG, "Navigation: onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
@@ -97,12 +97,6 @@ public class NavigationActivity extends AppCompatActivity {
         registerReceiver(myConnectivityReceiver, intentFilter);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(myConnectivityReceiver);
-    }
-
 
     //TODO: NETWORKING STATES
 
@@ -123,12 +117,12 @@ public class NavigationActivity extends AppCompatActivity {
                         && activeNetwork.isConnectedOrConnecting()) {
                     Log.d(STATE_LOG, "NETWORK_STATE_CONNECTED");
 
-                    EventBus.getDefault().post(new MyNetworkEvents.NetworkStateChangedEvent(NETWORK_STATE_CONNECTED));
+                    EventBus.getDefault().post(new NetworkStateChangedEvent(NETWORK_STATE_CONNECTED));
                     check_categories_database();
                 } else {
                     Log.d(STATE_LOG, "NETWORK_STATE_NO_CONNECTION");
 
-                    EventBus.getDefault().post(new MyNetworkEvents.NetworkStateChangedEvent(NETWORK_STATE_NO_CONNECTION));
+                    EventBus.getDefault().post(new NetworkStateChangedEvent(NETWORK_STATE_NO_CONNECTION));
                 }
 
 
@@ -247,4 +241,27 @@ public class NavigationActivity extends AppCompatActivity {
         categoryNewsDao.insertAll(newCategories);
     }
 
+
+    @Override
+    protected void onStop() {
+        Log.d(CALLBACK_LOG, "Navigation onStop");
+
+
+        super.onStop();
+        unregisterReceiver(myConnectivityReceiver);
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(CALLBACK_LOG, "Navigation onPause");
+
+        super.onPause();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        Log.d(CALLBACK_LOG, "Navigation onDestroy");
+        super.onDestroy();
+    }
 }

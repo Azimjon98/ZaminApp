@@ -31,10 +31,12 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     //header states
     public boolean isLoading = false;
     public boolean hasHeader = false;
+    public boolean hasHeaderNoInternet = false;
     public boolean hasFooter = false;
 
     //views
     public View headerView;
+    public View headerNoInternetView;
     public View footerView;
 
 
@@ -47,19 +49,32 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     public void withHeader(View headerView) {
         this.headerView = headerView;
         hasHeader = true;
+        hasHeaderNoInternet = false;
+        notifyDataSetChanged();
+    }
+
+    public void withHeaderNoInternet(View headerView) {
+        this.headerNoInternetView = headerView;
+        hasHeader = false;
+        hasHeaderNoInternet = true;
+        notifyDataSetChanged();
     }
 
     public void withFooter(View footerView) {
         this.footerView = footerView;
         hasFooter = true;
+        notifyDataSetChanged();
     }
 
-    public void removeHeader() {
+    public void removeHeaders() {
         hasHeader = false;
+        hasHeaderNoInternet = false;
+        notifyDataSetChanged();
     }
 
     public void removeFooter() {
         hasFooter = false;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -67,6 +82,8 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
         if (hasHeader && position == 0)
             return TYPE_HEADER;
+        else if (hasHeaderNoInternet && position == 0)
+            return TYPE_HEADER_NO_INTERNET;
         else if (hasFooter && position == (getItemCount() - 1)) {
             return TYPE_FOOTER;
         } else if (isLoading && position == (getItemCount() - 1))
@@ -79,6 +96,10 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
     //TODO: Additional methods
 
+    private void clear_items() {
+        this.items.clear();
+        this.notifyDataSetChanged();
+    }
 
     public void init_items(List<T> items) {
         clear_items();
@@ -91,11 +112,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         this.notifyDataSetChanged();
     }
 
-
-    public void clear_items() {
-        this.items.clear();
-        this.notifyDataSetChanged();
-    }
 
     //TODO: indicator item show/hide when loading data
     public void showLoading() {
@@ -114,11 +130,10 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     @Override
     public int getItemCount() {
         int count = items.size();
-        if (hasHeader)
+        if (hasHeader || hasHeaderNoInternet)
             count++;
         if (hasFooter || isLoading)
             count++;
-
 
         return count;
     }

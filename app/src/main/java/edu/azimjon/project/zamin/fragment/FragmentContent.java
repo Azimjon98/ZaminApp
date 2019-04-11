@@ -2,14 +2,11 @@ package edu.azimjon.project.zamin.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -27,13 +23,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.ContentPagerAdapter;
-import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
-import edu.azimjon.project.zamin.events.MyNetworkEvents;
 import edu.azimjon.project.zamin.events.MyOnMoreNewsEvents;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
 public class FragmentContent extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -98,6 +91,22 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         super.onCreate(savedInstanceState);
     }
 
+
+    @Override
+    public void onDestroyView() {
+        Log.d(CALLBACK_LOG, "FragmentContent onDestroyView");
+
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(CALLBACK_LOG, "FragmentContent onResume");
+
+        super.onResume();
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -153,15 +162,6 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
 
     //TODO: override methods
 
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        Log.d(Constants.CALLBACK_LOG, "FragmentContent onSaveInstanceState: " + navigationView.getSelectedItemId());
-
-        savedId = navigationView.getSelectedItemId();
-    }
-
     //#################################################################
 
 
@@ -169,6 +169,7 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        savedId = navigationView.getSelectedItemId();
         toolbarTitle.setText(item.getTitle());
         switch (item.getItemId()) {
             case R.id.menu_news_feed:

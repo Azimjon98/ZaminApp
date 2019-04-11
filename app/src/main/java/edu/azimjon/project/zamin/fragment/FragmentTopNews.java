@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -23,23 +25,30 @@ import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
+import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
+import edu.azimjon.project.zamin.databinding.HeaderWindowNewsFeedBinding;
+import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
-import edu.azimjon.project.zamin.events.MyNetworkEvents;
+import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentTopNews;
 
-import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
-public class FragmentTopNews extends Fragment implements IFragmentTopNews {
+public class FragmentTopNews extends Fragment implements IFragmentTopNews, SwipeRefreshLayout.OnRefreshListener {
 
     //TODO: Constants here
     LinearLayoutManager manager;
+    boolean isConnected_to_Net = true;
 
 
     //TODO: variables here
     WindowTopNewsBinding binding;
+    WindowNoConnectionBinding bindingNoConnection;
+    FooterNoConnectionBinding bindingFooter;
     PresenterTopNews presenterTopNews;
 
     //adapters
@@ -76,31 +85,53 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
         super.onViewCreated(view, savedInstanceState);
 
         //initialize adapters and append to lists
-        if (manager == null)
+        if (manager == null) {
             manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
-        if (!isContentLoaded) {
             binding.listTopNews.setLayoutManager(manager);
             mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
             binding.listTopNews.setAdapter(mediumNewsAdapter);
-
-            binding.listTopNews.addOnScrollListener(scrollListener);
+            binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
         }
+
+
+        binding.listTopNews.addOnScrollListener(scrollListener);
+
+        binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        binding.swiper.setOnRefreshListener(this);
+
 
         //*****************************************************************************
 
+        presenterTopNews.init();
     }
 
     //TODO: override methods
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
-        if (!isContentLoaded) {
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+
+    @Override
+    public void onRefresh() {
+        if (isConnected_to_Net)
             presenterTopNews.init();
-            isContentLoaded = true;
-        }
+        else
+            binding.swiper.setRefreshing(false);
     }
 
 
@@ -109,15 +140,32 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
 
     //TODO: all methods from interface
 
+    @Override
+    public void initNews(List<NewsSimpleModel> items, int message) {
+        mediumNewsAdapter.removeHeaders();
+
+        binding.swiper.setRefreshing(false);
+        if (message == MESSAGE_NO_CONNECTION) {
+            bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listTopNews, false);
+            mediumNewsAdapter.withHeader(bindingNoConnection.getRoot());
+            return;
+        }
+
+        mediumNewsAdapter.init_items(items);
+    }
+
 
     @Override
-    public void addNews(List<NewsSimpleModel> items) {
-        binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
-
-        if (mediumNewsAdapter.getItemCount() != 0)
-            mediumNewsAdapter.hideLoading();
-
+    public void addNews(List<NewsSimpleModel> items, int message) {
+        mediumNewsAdapter.hideLoading();
         isLoading = false;
+
+        if (message == MESSAGE_NO_CONNECTION) {
+            bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listTopNews, false);
+            mediumNewsAdapter.withFooter(bindingFooter.getRoot());
+            return;
+        }
+
         mediumNewsAdapter.add_all(items);
     }
 
@@ -132,11 +180,13 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
     //TODO: From EVENTBUS
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void on_network_changed(MyNetworkEvents.NetworkStateChangedEvent event) {
-//        if (event.isState() == NETWORK_STATE_CONNECTED && !isConnected_to_Net)
-//            presenterNewsFeed.init();
-//
-//        isConnected_to_Net = event.isState() == NETWORK_STATE_CONNECTED;
+    public void on_network_changed(NetworkStateChangedEvent event) {
+        if (event.state == NETWORK_STATE_CONNECTED && !isConnected_to_Net) {
+            binding.swiper.setRefreshing(false);
+            presenterTopNews.init();
+        }
+
+        isConnected_to_Net = event.state == NETWORK_STATE_CONNECTED;
     }
 
 
@@ -168,11 +218,43 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews {
             if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
                 isScrolling = false;
                 isLoading = true;
+
+                mediumNewsAdapter.removeFooter();
                 mediumNewsAdapter.showLoading();
                 presenterTopNews.getContinue();
             }
         }
 
     };
+
+
+    @Override
+    public void onResume() {
+        Log.d(CALLBACK_LOG, "TopNews onResume");
+
+        super.onResume();
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        Log.d(CALLBACK_LOG, "TopNews onDestroyView");
+
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(CALLBACK_LOG, "TopNews onDetach");
+
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(CALLBACK_LOG, "TopNews onDestroy");
+
+        super.onDestroy();
+    }
 
 }

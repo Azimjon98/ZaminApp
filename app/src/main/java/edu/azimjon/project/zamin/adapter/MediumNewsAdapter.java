@@ -27,6 +27,7 @@ import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
@@ -46,6 +47,8 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
         //header with bottom padding
         if (i == TYPE_HEADER)
             return new MyBaseHolder(headerView);
+        else if (i == TYPE_HEADER_NO_INTERNET)
+            return new MyBaseHolder(headerNoInternetView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
         else if (i == TYPE_LOADING)
@@ -81,9 +84,8 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof MyHolderItem) {
 
-
             int position = i;
-            if (hasHeader)
+            if (hasHeader || hasHeaderNoInternet)
                 position--;
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;
@@ -110,7 +112,6 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
             binding.favouriteIcon.setOnClickListener(v -> {
                         boolean isWished = binding.getModel().isWished();
                         binding.getModel().setWished(!binding.getModel().isWished());
-
 
                         //delete or inser news to favourites in another thread
                         new Thread(() -> {

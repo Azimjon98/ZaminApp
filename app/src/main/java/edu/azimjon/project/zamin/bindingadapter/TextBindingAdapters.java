@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.component.MyApplicationComponent;
@@ -44,15 +45,20 @@ public class TextBindingAdapters {
             return;
         }
 
+        String textToday = view.getContext().getResources().getString(R.string.today);
+        String[] months = view.getContext().getResources().getStringArray(R.array.months);
+        Calendar newsCalendar = new GregorianCalendar();
+        calendar.setTimeInMillis(newsDate.getTime());
 
         if (newsDate.after(todayDate)) {
             view.setText(
                     new SimpleDateFormat(" HH:mm").format(newsDate) +
-                    " • Bugun"
+                            " • " + textToday
             );
         } else {
             view.setText(
-                    new SimpleDateFormat("HH:mm • d MMMM yyyy").format(newsDate)
+                    new SimpleDateFormat("HH:mm • d ").format(newsDate) +
+                            months[calendar.get(Calendar.MONTH)] + " " + calendar.get(Calendar.YEAR)
             );
         }
 

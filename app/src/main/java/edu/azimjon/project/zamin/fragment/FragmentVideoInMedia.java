@@ -78,32 +78,6 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
     //TODO: override methods
 
-    @Override
-    public void onStart() {
-        Log.d(CALLBACK_LOG, "Video: onStart");
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        Log.d(CALLBACK_LOG, "Video: onResume");
-
-        super.onResume();
-    }
-
-    @Override
-    public void onStop() {
-        Log.d(CALLBACK_LOG, "Video: onStop");
-
-        super.onStop();
-    }
-
-    @Override
-    public void onPause() {
-        Log.d(CALLBACK_LOG, "Video: onPause");
-
-        super.onPause();
-    }
 
     //#################################################################
 
@@ -123,5 +97,48 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
 
     //#################################################################
+
+
+    @Override
+    public void onStop() {
+        Log.d(CALLBACK_LOG, "Video onStop");
+
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        Log.d(CALLBACK_LOG, "Video onPause");
+
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(CALLBACK_LOG, "Video onDestroyView");
+
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(CALLBACK_LOG, "Video onResume");
+
+        super.onResume();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(CALLBACK_LOG, "Video onDetach");
+
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(CALLBACK_LOG, "Video onDestroy");
+
+        super.onDestroy();
+    }
 
 }

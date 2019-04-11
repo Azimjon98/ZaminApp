@@ -19,6 +19,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class ModelNewsFeed {
     MyApplication application;
@@ -55,15 +57,6 @@ public class ModelNewsFeed {
         getEnabledCategories();
         getMainNews();
         getLastNews();
-
-
-        presenterNewsFeed.initAudioNews(Arrays.asList(new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel()));
-
-        presenterNewsFeed.initVideoNews(Arrays.asList(new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel()));
 
     }
 
@@ -102,6 +95,8 @@ public class ModelNewsFeed {
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
                         Log.d(API_LOG, "getMainNews onFailure: " + t.getMessage());
+                        presenterNewsFeed.initMainNews(null, MESSAGE_NO_CONNECTION);
+
                     }
                 });
     }
@@ -130,6 +125,7 @@ public class ModelNewsFeed {
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
                         Log.d(API_LOG, "getLastNews onFailure: " + t.getMessage());
+                        presenterNewsFeed.initLastNews(null, MESSAGE_NO_CONNECTION);
                     }
                 });
     }
@@ -155,6 +151,7 @@ public class ModelNewsFeed {
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
                         Log.d(API_LOG, "getLastNews onFailure: " + t.getMessage());
+                        presenterNewsFeed.addLastNewsContinue(null, MESSAGE_NO_CONNECTION);
                     }
                 });
     }
@@ -167,7 +164,7 @@ public class ModelNewsFeed {
         List<NewsSimpleModel> items = simpleModelParser.parse(json);
 
         //sending data to view
-        presenterNewsFeed.initMainNews(items);
+        presenterNewsFeed.initMainNews(items, MESSAGE_OK);
 
     }
 
@@ -176,7 +173,7 @@ public class ModelNewsFeed {
         List<NewsSimpleModel> items = simpleModelParser.parse(json);
 
         //sending data to view
-        presenterNewsFeed.initLastNews(items);
+        presenterNewsFeed.initLastNews(items, MESSAGE_OK);
 
     }
 
@@ -185,7 +182,7 @@ public class ModelNewsFeed {
         List<NewsSimpleModel> items = simpleModelParser.parse(json);
 
         //sending data to view
-        presenterNewsFeed.addLastNewsContinue(items);
+        presenterNewsFeed.addLastNewsContinue(items, MESSAGE_OK);
     }
 
 

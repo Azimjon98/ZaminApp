@@ -28,6 +28,8 @@ import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.application.MyApplication;
+import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
+import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowSearchBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.view.IFragmentSearchNews;
@@ -40,9 +42,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class FragmentSearchNews extends Fragment implements IFragmentSearchNews {
     WindowSearchBinding binding;
+    WindowNoConnectionBinding bindingNoConnection;
+    FooterNoConnectionBinding bindingFooter;
 
     //retrofit call
     Retrofit retrofit;
@@ -89,6 +95,9 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
         adapter = new MediumNewsAdapter(getContext(), new ArrayList<>());
         binding.listSearchResult.setLayoutManager(manager);
         binding.listSearchResult.setAdapter(adapter);
+
+        bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listSearchResult, false);
+        bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
 
 
         //initiate search Edit text Watcher
@@ -145,6 +154,11 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
             public void onFailure(@NotNull Call<JsonObject> call, @NotNull Throwable t) {
                 Log.d(API_LOG, "searchNews onFailure" + t.getMessage());
                 binding.progress.setVisibility(View.GONE);
+
+                if (offset == 1)
+                    adapter.withHeaderNoInternet(bindingNoConnection.getRoot());
+                else
+                    adapter.withFooter(bindingFooter.getRoot());
             }
         });
     }
@@ -158,18 +172,23 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
             parserSimpleNewsModel = new ParserSimpleNewsModel(this);
 
         //sending data to view
-        initNews(parserSimpleNewsModel.parse(json));
+        if (offset == 1)
+            initNews(parserSimpleNewsModel.parse(json), MESSAGE_OK);
+        else
+            addNews(parserSimpleNewsModel.parse(json), MESSAGE_OK);
+
     }
 
     //TODO: Interface override methods
 
     @Override
-    public void initNews(List<NewsSimpleModel> items) {
+    public void initNews(List<NewsSimpleModel> items, int message) {
+        adapter.removeHeaders();
         adapter.init_items(items);
     }
 
     @Override
-    public void addNews(List<NewsSimpleModel> items) {
+    public void addNews(List<NewsSimpleModel> items, int message) {
         adapter.hideLoading();
         adapter.add_all(items);
 
@@ -227,6 +246,8 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
             if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
                 isScrolling = false;
                 isLoading = true;
+
+                adapter.removeFooter();
                 adapter.showLoading();
                 search_text(false);
             }
@@ -238,7 +259,11 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
 
     @Override
     public void onStop() {
+        Log.d(CALLBACK_LOG, "Search onStop");
+
         super.onStop();
         MyUtil.closeSoftKeyboard(getActivity());
     }
+
+
 }

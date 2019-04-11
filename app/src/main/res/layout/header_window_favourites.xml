@@ -14,7 +14,7 @@
         android:layout_marginEnd="24dp"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="4sp"
-        android:text="Sizning Xabarlaringiz"
+        android:text="@string/title_favourites"
         android:textColor="#212121"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -28,7 +28,7 @@
         android:layout_marginEnd="24dp"
         android:fontFamily="sans-serif"
         android:lineSpacingMultiplier="1.2"
-        android:text="Zamin siz uchun muhim habarlarni saqlab turadi"
+        android:text="@string/message_favourites"
         android:textColor="#757575"
         android:textSize="17sp"
         android:textStyle="normal" />

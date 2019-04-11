@@ -16,7 +16,7 @@
         android:layout_marginEnd="24dp"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="4sp"
-        android:text="Foto kolleksiya"
+        android:text="@string/title_foto"
         android:textColor="#212121"
         android:textSize="32dp"
         android:textStyle="bold" />
@@ -30,7 +30,7 @@
         android:layout_marginEnd="24dp"
         android:fontFamily="sans-serif"
         android:lineSpacingMultiplier="1.2"
-        android:text="O'zbekistonda va jahonda bo'layotgan voqealarning foto jamlanmasi"
+        android:text="@string/message_foto"
         android:textColor="#757575"
         android:textSize="18dp"
         android:textStyle="normal" />

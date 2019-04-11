@@ -29,28 +29,25 @@ public class PresenterNewsFeed {
     //TODO: callBack methods from Model to View
 
     //cannot use because of liveData in view
-    public void initCategories(List<NewsCategoryModel> items) {
-        mainView.initCategories(items);
+
+    public void initMainNews(List<NewsSimpleModel> items, int message) {
+        mainView.initMainNews(items, message);
     }
 
-    public void initMainNews(List<NewsSimpleModel> items) {
-        mainView.initMainNews(items);
+    public void initLastNews(List<NewsSimpleModel> items, int message) {
+        mainView.initLastAndContinueNews(items, message);
     }
 
-    public void initLastNews(List<NewsSimpleModel> items) {
-        mainView.initLastNews(items);
+    public void initAudioNews(List<NewsSimpleModel> items, int message) {
+        mainView.initAudioNews(items, message);
     }
 
-    public void initAudioNews(List<NewsSimpleModel> items) {
-        mainView.initAudioNews(items);
+    public void initVideoNews(List<NewsSimpleModel> items, int message) {
+        mainView.initVideoNews(items, message);
     }
 
-    public void initVideoNews(List<NewsSimpleModel> items) {
-        mainView.initVideoNews(items);
-    }
-
-    public void addLastNewsContinue(List<NewsSimpleModel> items) {
-        mainView.addLastNewsContinue(items);
+    public void addLastNewsContinue(List<NewsSimpleModel> items, int message) {
+        mainView.addLastNewsContinue(items, message);
     }
 
     //########################################################################

@@ -78,31 +78,49 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
     //TODO: override methods
 
-    @Override
-    public void onStart() {
-        Log.d(CALLBACK_LOG, "Gallery: onStart");
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        Log.d(CALLBACK_LOG, "Gallery: onResume");
-
-        super.onResume();
-    }
-
-    @Override
-    public void onStop() {
-        Log.d(CALLBACK_LOG, "Gallery: onStop");
-
-        super.onStop();
-    }
 
     @Override
     public void onPause() {
         Log.d(CALLBACK_LOG, "Gallery: onPause");
 
         super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(CALLBACK_LOG, "Gallery onStop");
+
+        super.onStop();
+    }
+
+
+
+    @Override
+    public void onDestroyView() {
+        Log.d(CALLBACK_LOG, "Gallery onDestroyView");
+
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(CALLBACK_LOG, "Gallery onResume");
+
+        super.onResume();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(CALLBACK_LOG, "Gallery onDetach");
+
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(CALLBACK_LOG, "Gallery onDestroy");
+
+        super.onDestroy();
     }
 
 

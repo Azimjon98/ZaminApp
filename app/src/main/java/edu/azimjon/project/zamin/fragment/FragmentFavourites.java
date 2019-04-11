@@ -27,6 +27,8 @@ import edu.azimjon.project.zamin.mvp.view.IFragmentFavouriteNews;
 import edu.azimjon.project.zamin.room.dao.FavouriteNewsDao;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
+import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+
 public class FragmentFavourites extends Fragment implements IFragmentFavouriteNews {
 
     //TODO: Constants here
@@ -126,5 +128,48 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
     }
 
     //#################################################################
+
+    @Override
+    public void onStop() {
+        Log.d(CALLBACK_LOG, "Favourites onStop");
+
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        Log.d(CALLBACK_LOG, "AudFavouritesio onPause");
+
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(CALLBACK_LOG, "Favourites onDestroyView");
+
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(CALLBACK_LOG, "Favourites onResume");
+
+        super.onResume();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(CALLBACK_LOG, "Favourites onDetach");
+
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(CALLBACK_LOG, "Favourites onDestroy");
+
+        super.onDestroy();
+    }
+
 
 }

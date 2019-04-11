@@ -1,2 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="menu_news_feed">Lenta</string>
+    <string name="menu_top">Top</string>
+    <string name="menu_favourites">Tanlanganlar</string>
+    <string name="menu_media">Media</string>
+    <string name="text_news">Yangiliklar</string>
+    <string name="text_choose_language">Tilni tanlang</string>
+    <string name="text_back">Ortga</string>
+    <string name="text_submit">Tanlash</string>
+    <string name="message_no_connection">Internetga ulanishning iloji yo\'q</string>
+    <string name="title_audio_news">Audio xabarlar</string>
+    <string name="messege_audio">O\'zbekistonda va jahonda bo\'layotgan voqealarning audio xabarlari</string>
+    <string name="title_favourites">Sizning Xabarlaringiz</string>
+    <string name="message_favourites">Zamin siz uchun muhim habarlarni saqlab turadi</string>
+    <string name="title_foto">Foto kolleksiya</string>
+    <string name="message_foto">O\'zbekistonda va jahonda bo\'layotgan voqealarning foto jamlanmasi</string>
+    <string name="text_last_news">So\'nggi yangiliklar</string>
+    <string name="text_main_news">Asosiy yangiliklar</string>
+    <string name="text_audio_news2">Audio yangiliklar</string>
+    <string name="text_all">Barchasi</string>
+    <string name="text_video_news">Video yangiliklar</string>
+    <string name="title_video_news">Видео хабарлар</string>
+    <string name="message_video">Zamin studiyasining dolzarb mavzudagi intervyulari</string>
+    <string name="tab_audio">Audio</string>
+    <string name="tab_video">Video</string>
+    <string name="tab_gallery">Galereya</string>
+    <string name="toolbar_profile">Profil</string>
+    <string name="text_notification">Bildirishlar</string>
+    <string name="text_categories">Ruknlar</string>
+    <string name="text_select_language">Tilni tanlash</string>
+    <string name="language">O\'zbek</string>
+    <string name="text_results">qidiruv natijalari</string>
+    <string name="title_select_categories">Kategoriyalarni tanlang</string>
+    <string name="today">Bugun</string>
+</resources>

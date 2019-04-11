@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="model"
+            type="edu.azimjon.project.zamin.model.NewsCategoryModel" />
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/clicker"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/custom_ripple"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:fontFamily="sans-serif"
+            android:text="@{model.name}"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <Switch
+            android:id="@+id/enabled"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_toLeftOf="@id/drag_icon"
+            android:checked="@{model.enabled}"
+            app:lottie_fileName="check_anim.json" />
+
+
+        <ImageView
+            android:id="@+id/drag_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/custom_ripple_borderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="6dp"
+            android:src="@drawable/ic_menu" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/lay_additional"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="#e5e5e5" />
+
+
+    </RelativeLayout>
+</layout>

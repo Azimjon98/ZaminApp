@@ -19,6 +19,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class ModelTopNews {
 
@@ -40,12 +42,43 @@ public class ModelTopNews {
             e.printStackTrace();
         }
 
-        parserSimpleNewsModel = new ParserSimpleNewsModel(((Fragment)presenterTopNews.mainView));
+        parserSimpleNewsModel = new ParserSimpleNewsModel(((Fragment) presenterTopNews.mainView));
     }
 
 
     //TODO: Networking(getting response from server)
 
+    //getting main news(pager news)
+    public void initTopNews() {
+        offset = 1;
+
+        retrofit.create(MyRestService.class)
+                .getTopNews(String.valueOf(offset),
+                        limit,
+                        "1",
+                        "uz")
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        if (response.isSuccessful()) {
+                            JsonObject json = response.body();
+                            parsingInitTopNews(json);
+
+
+                            offset++;
+                        } else {
+                            Log.d(API_LOG, "getLastNews onFailure: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        Log.d(API_LOG, "getLastNews onFailure: " + t.getMessage());
+                        presenterTopNews.initNews(null, MESSAGE_NO_CONNECTION);
+
+                    }
+                });
+    }
 
     //getting main news(pager news)
     public void getTopNews() {
@@ -72,6 +105,8 @@ public class ModelTopNews {
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
                         Log.d(API_LOG, "getLastNews onFailure: " + t.getMessage());
+                        presenterTopNews.addNews(null, MESSAGE_NO_CONNECTION);
+
                     }
                 });
     }
@@ -80,14 +115,22 @@ public class ModelTopNews {
     //TODO: Parsing and sending data to our view
 
     //parsing top news(pager news)
+    private void parsingInitTopNews(JsonObject json) {
+        List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
+
+        //sending data to view
+        presenterTopNews.initNews(items, MESSAGE_OK);
+
+    }
+
+    //parsing top news(pager news)
     private void parsingTopNews(JsonObject json) {
         List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
 
         //sending data to view
-        presenterTopNews.addNews(items);
+        presenterTopNews.addNews(items, MESSAGE_OK);
 
     }
-
 
 
 }

@@ -2,6 +2,7 @@ package edu.azimjon.project.zamin.fragment;
 
 import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.adapter.CategoryNewsAdapter;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
+import edu.azimjon.project.zamin.addition.Converters;
 import edu.azimjon.project.zamin.databinding.HeaderWindowNewsContentBinding;
 import edu.azimjon.project.zamin.databinding.WindowNewsContentBinding;
 import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
@@ -45,9 +47,12 @@ import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsContent;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsContent;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
+import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 import edu.azimjon.project.zamin.util.MyUtil;
 
+import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
@@ -62,6 +67,8 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     //TODO: variables here
     LinearLayoutManager manager;
     WindowNewsContentBinding binding;
+    NewsSimpleModel simpleModel;
+    NewsContentModel model;
     HeaderWindowNewsContentBinding bindingHeader;
     PresenterNewsContent presenterNewsContent;
 
@@ -80,6 +87,9 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        simpleModel = getArguments().getParcelable(KEY_NEWS_MODEL);
+        model = Converters.fromSimpleNewstoContentNews(simpleModel);
+
         presenterNewsContent = new PresenterNewsContent(this);
     }
 
@@ -104,8 +114,10 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
         bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_content, binding.listLastNews, false);
         bindingHeader.getRoot().setPadding(0, 0, 0, MyUtil.dpToPx(24));
+        bindingHeader.setModel(model);
         mediumNewsAdapter.withHeader(bindingHeader.getRoot());
         binding.listLastNews.setAdapter(mediumNewsAdapter);
+
 
         binding.listLastNews.addOnScrollListener(scrollListener);
 
@@ -152,7 +164,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     @Override
     public void initContent(NewsContentModel model) {
-        bindingHeader.setModel(model);
 
         final String mimeType = "text/html";
         final String encoding = "UTF-8";
@@ -174,7 +185,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         tags.add("Манчестер Юнайтед");
         LayoutInflater inflater = LayoutInflater.from(getContext());
         for (String tag : tags) {
-            Chip chip = (Chip) inflater.inflate(R.layout.item_tag, null,false);
+            Chip chip = (Chip) inflater.inflate(R.layout.item_tag, null, false);
             chip.setText(tag);
 //            chip.setChipBackgroundColorResource(R.color.icon_active);
 
@@ -200,7 +211,33 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     private void initIcons() {
         binding.iconBack.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
 
-        binding.iconBookmark.setOnClickListener(v -> Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show());
+        binding.iconBookmark.setOnClickListener(v -> {
+            boolean isWished = bindingHeader.getModel().isWished();
+            bindingHeader.getModel().setWished(!bindingHeader.getModel().isWished());
+
+            //delete or inser news to favourites in another thread
+            new Thread(() -> {
+                if (isWished) {
+                    FavouriteNewsDatabase.getInstance(getContext())
+                            .getDao()
+                            .delete(bindingHeader.getModel().getNewsId());
+                } else {
+                    FavouriteNewsDatabase.getInstance(getContext())
+                            .getDao()
+                            .insert(Converters
+                                    .fromSimpleNewstoFavouriteNews(simpleModel));
+                }
+            }).start();
+        });
+
+        binding.iconShare.setOnClickListener(v -> {
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            String shareBody = bindingHeader.getModel().getOriginalUrl();
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Zamin.uz");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+            startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.text_share)));
+        });
     }
 
     //#################################################################

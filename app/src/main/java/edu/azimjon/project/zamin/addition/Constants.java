@@ -5,6 +5,7 @@ public class Constants {
     //TODO
     //logs
     public static final String ERROR_LOG = "myerrorLog";
+    public static final String EVENT_LOG = "eventLog";
     public static final String CALLBACK_LOG = "mycallbackLog";
     public static final String MY_LOG = "myLog";
     public static final String DELETE_LOG = "mydeleteLog";
@@ -13,13 +14,16 @@ public class Constants {
     public static final String EXCEPTION_LOG = "myexceptionLog";
     public static final String STATE_LOG = "mystateLog";
 
-    //contant states
-    public static final int STATE_OK = 0;
-    public static final int STATE_NO_CONNECTION = 201;
-    public static final int STATE_NO_ITEMS = 202;
-    public static final int STATE_ERROR_MESSEGE = 203;
+    //contant states and Messages
+    public static final int MESSAGE_OK = 0;
+    public static final int MESSAGE_NO_CONNECTION = 201;
+    public static final int MESSAGE_NO_ITEMS = 202;
+    public static final int MESSAGE_ERROR_MESSEGE = 203;
     public static final int NETWORK_STATE_CONNECTED = 101;
     public static final int NETWORK_STATE_NO_CONNECTION = 102;
+
+
+
 
 
 
@@ -54,9 +58,10 @@ public class Constants {
 
     //TODO: Recycler view Constants
     public final static int TYPE_HEADER = 1;
-    public final static int TYPE_FOOTER = 2;
-    public final static int TYPE_ITEM = 3;
-    public final static int TYPE_LOADING = 4;
+    public final static int TYPE_HEADER_NO_INTERNET = 2;
+    public final static int TYPE_FOOTER = 3;
+    public final static int TYPE_ITEM = 4;
+    public final static int TYPE_LOADING = 5;
 
     //TODO: Search Constants
     public final static int SEARCH_CATEGORY = 301;

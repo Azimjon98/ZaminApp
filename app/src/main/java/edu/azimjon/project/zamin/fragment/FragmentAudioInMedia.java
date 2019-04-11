@@ -99,8 +99,6 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
             e.printStackTrace();
         }
 
-        player.setVisibility(View.GONE);
-
         mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
 
         //mediaPlayer prepare listener
@@ -183,4 +181,45 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     };
 
 
+    @Override
+    public void onStop() {
+        Log.d(CALLBACK_LOG, "Audio onStop");
+
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        Log.d(CALLBACK_LOG, "Audio onPause");
+
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(CALLBACK_LOG, "Audio onDestroyView");
+
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(CALLBACK_LOG, "Audio onResume");
+
+        super.onResume();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d(CALLBACK_LOG, "Audio onDetach");
+
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(CALLBACK_LOG, "Audio onDestroy");
+
+        super.onDestroy();
+    }
 }

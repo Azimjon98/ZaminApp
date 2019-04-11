@@ -17,10 +17,11 @@
             android:layout_height="wrap_content">
 
             <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:navigationIcon="@drawable/ic_arrow_back"
-                app:title="Profile">
+                app:title="@string/toolbar_profile">
 
             </android.support.v7.widget.Toolbar>
 
@@ -33,6 +34,7 @@
             android:orientation="vertical">
 
             //profile layout
+
             <LinearLayout
                 android:id="@+id/profile_lay"
                 android:layout_width="match_parent"
@@ -41,6 +43,9 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="12dp"
                 android:layout_marginBottom="32dp"
+                android:background="@drawable/custom_ripple"
+                android:clickable="true"
+                android:focusable="true"
                 android:orientation="horizontal">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -94,6 +99,7 @@
             </LinearLayout>
 
             //separator view layout
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,6 +133,7 @@
             </LinearLayout>
 
             //for settings items layout
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -135,7 +142,10 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="64dp">
+                    android:layout_height="64dp"
+                    android:background="@drawable/custom_ripple"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageView
                         android:layout_width="32dp"
@@ -152,11 +162,12 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="4dp"
-                        android:text="Bildirishlar"
+                        android:text="@string/text_notification"
                         android:textColor="#212121"
                         android:textSize="16sp" />
 
                     <Switch
+                        android:id="@+id/swith_nofifications"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -172,8 +183,12 @@
                     android:background="#f6f6f6" />
 
                 <LinearLayout
+                    android:id="@+id/category_lay"
                     android:layout_width="match_parent"
-                    android:layout_height="64dp">
+                    android:layout_height="64dp"
+                    android:background="@drawable/custom_ripple"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageView
                         android:layout_width="32dp"
@@ -183,23 +198,46 @@
                         android:src="@drawable/micon_favourites" />
 
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="16sp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif"
-                        android:lineSpacingExtra="4dp"
-                        android:text="Ruknlar"
-                        android:textColor="#212121"
-                        android:textSize="16sp" />
-
-                    <Switch
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="16sp"
-                        android:checked="false" />
+                        android:layout_marginStart="16sp"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="4dp"
+                        android:singleLine="true"
+                        android:text="@string/text_categories"
+                        android:textColor="#212121"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:gravity="end"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/text_categories"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="32dp"
+                            android:fontFamily="sans-serif"
+                            android:singleLine="true"
+                            android:ellipsize="end"
+                            android:lineSpacingExtra="4dp"
+                            tools:text="Duasdasdayo, O'sddasasdas..."
+                            android:textColor="#898989"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_navigate_next" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -210,8 +248,12 @@
                     android:background="#f6f6f6" />
 
                 <LinearLayout
+                    android:id="@+id/language_lay"
                     android:layout_width="match_parent"
-                    android:layout_height="64dp">
+                    android:layout_height="64dp"
+                    android:background="@drawable/custom_ripple"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageView
                         android:layout_width="32dp"
@@ -228,7 +270,7 @@
                         android:layout_weight="1"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="4dp"
-                        android:text="Tilni tanlash"
+                        android:text="@string/text_select_language"
                         android:textColor="#212121"
                         android:textSize="16sp" />
 
@@ -239,15 +281,15 @@
                         android:layout_marginStart="16sp"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="4dp"
-                        android:text="O'zbek tili"
+                        android:text="@string/language"
                         android:textColor="#898989"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="16sp"
+                        android:layout_marginEnd="12dp"
                         android:src="@drawable/ic_navigate_next" />
 
                 </LinearLayout>
@@ -255,6 +297,7 @@
             </LinearLayout>
 
             //second separator
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

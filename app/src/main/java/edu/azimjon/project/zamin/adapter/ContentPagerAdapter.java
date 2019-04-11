@@ -81,11 +81,6 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
     }
 
 
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        // Fragments will not destroyed
-    }
-
     //additional inside methods
 
     public void setPositionOfMediaNews(int positionOfMediaNews) {

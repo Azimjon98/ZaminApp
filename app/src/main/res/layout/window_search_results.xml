@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:navigationIcon="@drawable/ic_arrow_back"
-                app:subtitle="qidiruv natijalari"
+                app:subtitle="@string/text_results"
                 app:subtitleTextAppearance="@style/my_toolbar_subtitle"
                 app:title="Uzbek">
 

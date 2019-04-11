@@ -37,5 +37,8 @@ public interface CategoryNewsDao {
     List<NewsCategoryModel> getAll();
 
     @Query("SELECT * FROM news_category WHERE isEnabled = 1")
-    LiveData<List<NewsCategoryModel>> getAllEnabledCategories();
+    LiveData<List<NewsCategoryModel>> getAllEnabledCategoriesLive();
+
+    @Query("SELECT * FROM news_category WHERE isEnabled = 1")
+    List<NewsCategoryModel> getAllEnabledCategories();
 }

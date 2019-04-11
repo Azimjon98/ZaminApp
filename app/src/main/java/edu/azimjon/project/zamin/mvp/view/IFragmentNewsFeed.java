@@ -7,15 +7,13 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 
 public interface IFragmentNewsFeed {
 
-    void initCategories(List<NewsCategoryModel> items);
+    void initMainNews(List<NewsSimpleModel> items, int messege);
 
-    void initMainNews(List<NewsSimpleModel> items);
+    void initLastAndContinueNews(List<NewsSimpleModel> items, int messege);
 
-    void initLastNews(List<NewsSimpleModel> items);
+    void initAudioNews(List<NewsSimpleModel> items, int messege);
 
-    void initAudioNews(List<NewsSimpleModel> items);
+    void initVideoNews(List<NewsSimpleModel> items, int messege);
 
-    void initVideoNews(List<NewsSimpleModel> items);
-
-    void addLastNewsContinue(List<NewsSimpleModel> items);
+    void addLastNewsContinue(List<NewsSimpleModel> items, int messege);
 }

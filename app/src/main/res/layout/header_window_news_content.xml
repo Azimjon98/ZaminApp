@@ -47,7 +47,7 @@
                 android:textColor="#212121"
                 android:textSize="20dp"
                 android:textStyle="bold"
-                tools:text="@{model.title}" />
+                android:text="@{model.title}" />
 
             <LinearLayout
                 android:id="@+id/lay_news_date"
@@ -139,23 +139,23 @@
                     android:layout_height="24dp"
                     android:fontFamily="sans-serif"
                     android:gravity="center_vertical"
-                    android:text="So'nggi yangiliklar"
+                    android:text="@string/text_last_news"
                     android:textColor="#757575"
                     android:textSize="17sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="24dp"
-                    android:layout_alignParentEnd="true"
-                    android:background="@drawable/custom_ripple"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center_vertical"
-                    android:text="Barchasi"
-                    android:textColor="#d32f2f"
-                    android:textSize="17sp" />
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="24dp"-->
+                    <!--android:layout_alignParentEnd="true"-->
+                    <!--android:background="@drawable/custom_ripple"-->
+                    <!--android:clickable="true"-->
+                    <!--android:focusable="true"-->
+                    <!--android:fontFamily="sans-serif-medium"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:text="Barchasi"-->
+                    <!--android:textColor="#d32f2f"-->
+                    <!--android:textSize="17sp" />-->
 
                 <View
                     android:layout_width="match_parent"

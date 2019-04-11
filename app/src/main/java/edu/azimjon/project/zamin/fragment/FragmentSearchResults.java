@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.LoginFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +40,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
@@ -96,6 +99,7 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).popBackStack());
 
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).popBackStack());
         binding.toolbar.setTitle(
@@ -131,7 +135,7 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
         }
 
         if (searchWhere == SEARCH_CATEGORY) {
-
+            Log.d(DELETE_LOG, "in search category");
             searchNews = retrofit
                     .create(MyRestService.class)
                     .getNewsWithCategory(String.valueOf(offset),
@@ -156,7 +160,6 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
                     parsingLastNewsContinue(json);
 
                     offset++;
-
                 } else {
                     Log.d(API_LOG, "searchNews : error: " + response.message());
                 }
@@ -181,7 +184,10 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
             parserSimpleNewsModel = new ParserSimpleNewsModel(this);
 
         //sending data to view
-        initNews(parserSimpleNewsModel.parse(json));
+        if (offset == 1)
+            initNews(parserSimpleNewsModel.parse(json));
+        else
+            addNews(parserSimpleNewsModel.parse(json));
     }
 
     //TODO: Interface override methods
@@ -242,6 +248,8 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
 
     @Override
     public void onStop() {
+        Log.d(CALLBACK_LOG, "SearchResult onStop");
+
         super.onStop();
         MyUtil.closeSoftKeyboard(getActivity());
     }

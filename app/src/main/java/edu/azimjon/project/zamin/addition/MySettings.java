@@ -96,5 +96,19 @@ public class MySettings {
         return sharedPreferences.getInt("key_navigation_height", 56);
     }
 
+    public void setLocale(String locale) {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(MY_LOCALE, locale);
+        editor.apply();
+    }
+
+
+    public String getLocale() {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+
+        return sharedPreferences.getString(MY_LOCALE, "default");
+    }
+
 
 }

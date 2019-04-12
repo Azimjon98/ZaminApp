@@ -79,6 +79,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     boolean isScrolling = false;
     boolean isLoading = false;
 
+
     int total_items, visible_items, scrollout_items;
 
 

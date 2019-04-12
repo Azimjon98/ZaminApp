@@ -6,5 +6,6 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 
 public interface IFragmentVideoInMedia {
 
-    void initVideo(List<NewsSimpleModel> items);
+    void initVideo(List<NewsSimpleModel> items, int message);
+    void addVideo(List<NewsSimpleModel> items, int message);
 }

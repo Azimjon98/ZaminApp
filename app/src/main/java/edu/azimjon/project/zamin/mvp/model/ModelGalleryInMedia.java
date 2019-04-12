@@ -21,6 +21,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class ModelGalleryInMedia {
 
@@ -52,13 +53,6 @@ public class ModelGalleryInMedia {
     //getting main news(pager news)
     public void getNews() {
 
-        presenterGalleryInMedia.addNews(Arrays.asList(
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel()
-        ));
-
         //declare data get here
     }
 
@@ -70,7 +64,7 @@ public class ModelGalleryInMedia {
         List<NewsSimpleModel> items = new ArrayList<>();
 
         //sending data to view
-        presenterGalleryInMedia.addNews(items);
+        presenterGalleryInMedia.addNews(items, MESSAGE_OK);
 
     }
 

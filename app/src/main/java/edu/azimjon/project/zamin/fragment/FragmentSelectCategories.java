@@ -7,6 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,8 @@ import edu.azimjon.project.zamin.databinding.WindowSelectCategoriesBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
+
+import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 
 public class FragmentSelectCategories extends Fragment {
     WindowSelectCategoriesBinding binding;
@@ -57,7 +62,6 @@ public class FragmentSelectCategories extends Fragment {
         binding.list.setLayoutManager(manager);
         adapter = new SelectCategoriesAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         binding.list.setAdapter(adapter);
-        binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
 
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -68,5 +72,69 @@ public class FragmentSelectCategories extends Fragment {
             }
         }.execute();
 
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallBack(adapter));
+        itemTouchHelper.attachToRecyclerView(binding.list);
+    }
+
+
+    //TODO: ItemTouch helper
+    public class SimpleItemTouchHelperCallBack extends ItemTouchHelper.Callback {
+
+        private final SelectCategoriesAdapter adapter;
+
+        public SimpleItemTouchHelperCallBack(SelectCategoriesAdapter adapter) {
+            this.adapter = adapter;
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return true;
+        }
+
+        @Override
+        public boolean isItemViewSwipeEnabled() {
+            return false;
+        }
+
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+            return makeMovementFlags(dragFlags, swipeFlags);
+        }
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+
+            adapter.onItemMove(viewHolder.getAdapterPosition(), viewHolder1.getAdapterPosition());
+            return true;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        updateDatabase();
+    }
+
+    //TODO: CHECK AND UPDATE DATABASE
+    public void updateDatabase() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                dao.deleteAll();
+
+                dao.insertAll(adapter.items);
+
+                return null;
+            }
+        }.execute();
     }
 }

@@ -25,8 +25,8 @@ public class PresenterGalleryInMedia {
         modelGalleryInMedia.getNews();
     }
 
-    public void addNews(List<NewsSimpleModel> items) {
-        mainView.initGallery(items);
+    public void addNews(List<NewsSimpleModel> items, int message) {
+        mainView.initGallery(items, message);
     }
 
 }

@@ -8,12 +8,19 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,35 +30,50 @@ import java.util.List;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.AudioNewsAdapter;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
+import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
+import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowAudioInsideMediaBinding;
+import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
+import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterAudioInMedia;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentAudioInMedia;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
+import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
-public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMedia, MediaPlayer.OnErrorListener {
+public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMedia, MediaPlayer.OnErrorListener, SwipeRefreshLayout.OnRefreshListener {
 
     //TODO: Constants here
+    LinearLayoutManager manager;
+    boolean isConnected_to_Net = true;
     MediaPlayer mediaPlayer;
 
 
     //TODO: variables here
     WindowAudioInsideMediaBinding binding;
-    View player;
+    WindowNoConnectionBinding bindingNoConnection;
+    FooterNoConnectionBinding bindingFooter;
+
     PresenterAudioInMedia presenterAudioInMedia;
 
     //adapters
     AudioNewsAdapter audioNewsAdapter;
 
-    //#####################################################################
+    //scrolling variables
+    boolean isScrolling = false;
+    boolean isLoading = false;
+    boolean isContentLoaded = false;
 
-    public void setPlayer(View view) {
-        player = view;
-    }
+    int total_items, visible_items, scrollout_items;
+
+
+    //#####################################################################
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,10 +97,6 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
         //initialize adapters and append to lists
 
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setScreenOnWhilePlaying(true);
-
         binding.listAudio.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         audioNewsAdapter.withHeader(LayoutInflater.from(getContext())
@@ -87,6 +105,9 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
                         binding.listAudio,
                         false));
         binding.listAudio.setAdapter(audioNewsAdapter);
+
+
+        binding.listAudio.addOnScrollListener(scrollListener);
 
 
         //*****************************************************************************
@@ -108,34 +129,39 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
         presenterAudioInMedia.init();
     }
 
-    //TODO: override methods
-
+//TODO: override methods
 
     @Override
-    public boolean getUserVisibleHint() {
-        Log.d(CALLBACK_LOG, "Audio: getUserVisibleHint");
+    public void onStart() {
+        super.onStart();
 
-        return super.getUserVisibleHint();
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setScreenOnWhilePlaying(true);
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        Log.d(CALLBACK_LOG, "Audio: setUserVisibleHint: " + isVisibleToUser);
+    public void onStop() {
+        super.onStop();
 
-        super.setUserVisibleHint(isVisibleToUser);
-
-        if (getActivity() != null) {
-
-            if (!isVisibleToUser) {
-                player.setVisibility(View.GONE);
-                if (mediaPlayer != null) {
-                    mediaPlayer.release();
-                    mediaPlayer = null;
-                }
-            }
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
+
+        EventBus.getDefault().unregister(this);
     }
 
+
+    @Override
+    public void onRefresh() {
+        if (isConnected_to_Net)
+            presenterAudioInMedia.init();
+        else
+            binding.swiper.setRefreshing(false);
+    }
 
     //#################################################################
 
@@ -143,11 +169,37 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     //TODO: all methods from interface
 
     @Override
-    public void initAudio(List<NewsSimpleModel> items) {
-        binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+    public void initAudio(List<NewsSimpleModel> items, int message) {
+        binding.swiper.setRefreshing(false);
 
-        audioNewsAdapter.init_items(items);
+        if (message == MESSAGE_NO_CONNECTION) {
+            audioNewsAdapter.withHeader(bindingNoConnection.getRoot());
 
+            return;
+        }
+
+        if (message == MESSAGE_OK) {
+            audioNewsAdapter.init_items(items);
+
+        }
+
+    }
+
+
+    @Override
+    public void addAudio(List<NewsSimpleModel> items, int message) {
+        audioNewsAdapter.hideLoading();
+        isLoading = false;
+
+        if (message == MESSAGE_NO_CONNECTION) {
+            audioNewsAdapter.withFooter(bindingFooter.getRoot());
+            return;
+        }
+
+        if (message == MESSAGE_OK) {
+            audioNewsAdapter.add_all(items);
+
+        }
 
     }
 
@@ -170,7 +222,55 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
     //#################################################################
 
-    //TODO: Argument Variables
+    //TODO: From EVENTBUS
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void on_network_changed(NetworkStateChangedEvent event) {
+        if (event.state == NETWORK_STATE_CONNECTED && !isConnected_to_Net) {
+            binding.swiper.setRefreshing(false);
+            presenterAudioInMedia.init();
+        }
+
+        isConnected_to_Net = event.state == NETWORK_STATE_CONNECTED;
+    }
+
+
+    //TODO: Argument variables
+
+    public RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            Log.d(Constants.MY_LOG, "onScrollStateChanged");
+
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                isScrolling = true;
+            }
+        }
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            total_items = manager.getItemCount();
+            visible_items = manager.getChildCount();
+            scrollout_items = manager.findFirstVisibleItemPosition();
+            Log.d(Constants.MY_LOG, "total_items: " + total_items + " " +
+                    "visible_items: " + visible_items + " " +
+                    "scrollout_items: " + scrollout_items);
+
+            if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
+                isScrolling = false;
+                isLoading = true;
+
+                audioNewsAdapter.removeFooter();
+                audioNewsAdapter.showLoading();
+                presenterAudioInMedia.getContinue();
+            }
+        }
+
+    };
 
     public MediaPlayer.OnPreparedListener prepareListenter = new MediaPlayer.OnPreparedListener() {
 
@@ -181,45 +281,4 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     };
 
 
-    @Override
-    public void onStop() {
-        Log.d(CALLBACK_LOG, "Audio onStop");
-
-        super.onStop();
-    }
-
-    @Override
-    public void onPause() {
-        Log.d(CALLBACK_LOG, "Audio onPause");
-
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroyView() {
-        Log.d(CALLBACK_LOG, "Audio onDestroyView");
-
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onResume() {
-        Log.d(CALLBACK_LOG, "Audio onResume");
-
-        super.onResume();
-    }
-
-    @Override
-    public void onDetach() {
-        Log.d(CALLBACK_LOG, "Audio onDetach");
-
-        super.onDetach();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(CALLBACK_LOG, "Audio onDestroy");
-
-        super.onDestroy();
-    }
 }

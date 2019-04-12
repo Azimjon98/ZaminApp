@@ -19,22 +19,31 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
-                app:navigationIcon="@drawable/ic_arrow_back"
-                app:title="@string/title_select_categories"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
+                android:layout_height="?attr/actionBarSize"
+                app:navigationIcon="@drawable/ic_arrow_back"
+                app:title="@string/title_select_categories">
 
             </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/list"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#ECECEC">
+
+            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
 
-        </android.support.v7.widget.RecyclerView>
+            </android.support.v7.widget.RecyclerView>
+
+
+        </RelativeLayout>
+
     </LinearLayout>
 
 </layout>

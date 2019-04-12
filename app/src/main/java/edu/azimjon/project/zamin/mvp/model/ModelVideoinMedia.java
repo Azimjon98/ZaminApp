@@ -21,6 +21,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class ModelVideoinMedia {
 
@@ -52,13 +53,6 @@ public class ModelVideoinMedia {
     //getting main news(pager news)
     public void getTopNews() {
 
-        presenterVideoInMedia.addNews(Arrays.asList(
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel()
-        ));
-
         //declare get data here
     }
 
@@ -70,7 +64,7 @@ public class ModelVideoinMedia {
         List<NewsSimpleModel> items = new ArrayList<>();
 
         //sending data to view
-        presenterVideoInMedia.addNews(items);
+        presenterVideoInMedia.addNews(items, MESSAGE_OK);
 
     }
 

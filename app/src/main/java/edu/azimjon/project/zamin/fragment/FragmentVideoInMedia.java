@@ -5,11 +5,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,25 +24,45 @@ import java.util.List;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.AudioNewsAdapter;
 import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
+import edu.azimjon.project.zamin.addition.Constants;
+import edu.azimjon.project.zamin.addition.MySettings;
+import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowAudioInsideMediaBinding;
+import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowVideoInsideMediaBinding;
+import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterVideoInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentVideoInMedia;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
+import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
-public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMedia {
+public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMedia, SwipeRefreshLayout.OnRefreshListener {
 
     //TODO: Constants here
-
+    LinearLayoutManager manager;
+    boolean isConnected_to_Net = true;
 
     //TODO: variables here
     WindowVideoInsideMediaBinding binding;
-    PresenterVideoInMedia presenterVideoInMedia;
+    WindowNoConnectionBinding bindingNoConnection;
+    FooterNoConnectionBinding bindingFooter;
+
 
     //adapters
     VideoNewsAdapter videoNewsAdapter;
+    PresenterVideoInMedia presenterVideoInMedia;
+
+    //scrolling variables
+    boolean isScrolling = false;
+    boolean isLoading = false;
+    boolean isContentLoaded = false;
+
+    int total_items, visible_items, scrollout_items;
 
 
     //#####################################################################
@@ -58,9 +85,13 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+
+
         //initialize adapters and append to lists
 
-        binding.listVideo.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        binding.listVideo.setLayoutManager(manager);
         videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         videoNewsAdapter.withHeader(LayoutInflater.from(getContext())
                 .inflate(
@@ -68,6 +99,20 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
                         binding.listVideo,
                         false));
         binding.listVideo.setAdapter(videoNewsAdapter);
+        binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+
+
+        bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listVideo, false);
+        bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listVideo, false);
+
+
+        binding.listVideo.addOnScrollListener(scrollListener);
+
+        binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        binding.swiper.setOnRefreshListener(this);
 
 
         //*****************************************************************************
@@ -79,6 +124,29 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
     //TODO: override methods
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+
+    @Override
+    public void onRefresh() {
+        if (isConnected_to_Net)
+            presenterVideoInMedia.init();
+        else
+            binding.swiper.setRefreshing(false);
+    }
+
     //#################################################################
 
 
@@ -86,8 +154,35 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
 
     @Override
-    public void initVideo(List<NewsSimpleModel> items) {
-        videoNewsAdapter.init_items(items);
+    public void initVideo(List<NewsSimpleModel> items, int message) {
+        videoNewsAdapter.removeHeaders();
+
+        binding.swiper.setRefreshing(false);
+        if (message == MESSAGE_NO_CONNECTION) {
+            videoNewsAdapter.withHeader(bindingNoConnection.getRoot());
+            return;
+        }
+
+        if (message == MESSAGE_OK) {
+            videoNewsAdapter.init_items(items);
+        }
+
+    }
+
+    @Override
+    public void addVideo(List<NewsSimpleModel> items, int message) {
+        videoNewsAdapter.hideLoading();
+        isLoading = false;
+
+        if (message == MESSAGE_NO_CONNECTION) {
+            videoNewsAdapter.withFooter(bindingFooter.getRoot());
+            return;
+        }
+
+        if (message == MESSAGE_OK) {
+            videoNewsAdapter.add_all(items);
+
+        }
     }
 
 
@@ -98,47 +193,55 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
     //#################################################################
 
+    //TODO: From EVENTBUS
 
-    @Override
-    public void onStop() {
-        Log.d(CALLBACK_LOG, "Video onStop");
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void on_network_changed(NetworkStateChangedEvent event) {
+        if (event.state == NETWORK_STATE_CONNECTED && !isConnected_to_Net) {
+            binding.swiper.setRefreshing(false);
+            presenterVideoInMedia.init();
+        }
 
-        super.onStop();
+        isConnected_to_Net = event.state == NETWORK_STATE_CONNECTED;
     }
 
-    @Override
-    public void onPause() {
-        Log.d(CALLBACK_LOG, "Video onPause");
 
-        super.onPause();
-    }
+    //TODO: Argument variables
 
-    @Override
-    public void onDestroyView() {
-        Log.d(CALLBACK_LOG, "Video onDestroyView");
+    public RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
 
-        super.onDestroyView();
-    }
+            Log.d(Constants.MY_LOG, "onScrollStateChanged");
 
-    @Override
-    public void onResume() {
-        Log.d(CALLBACK_LOG, "Video onResume");
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                isScrolling = true;
+            }
+        }
 
-        super.onResume();
-    }
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
 
-    @Override
-    public void onDetach() {
-        Log.d(CALLBACK_LOG, "Video onDetach");
+            total_items = manager.getItemCount();
+            visible_items = manager.getChildCount();
+            scrollout_items = manager.findFirstVisibleItemPosition();
+            Log.d(Constants.MY_LOG, "total_items: " + total_items + " " +
+                    "visible_items: " + visible_items + " " +
+                    "scrollout_items: " + scrollout_items);
 
-        super.onDetach();
-    }
+            if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
+                isScrolling = false;
+                isLoading = true;
 
-    @Override
-    public void onDestroy() {
-        Log.d(CALLBACK_LOG, "Video onDestroy");
+                videoNewsAdapter.removeFooter();
+                videoNewsAdapter.showLoading();
+                presenterVideoInMedia.getContinue();
+            }
+        }
 
-        super.onDestroy();
-    }
+    };
+
 
 }

@@ -27,8 +27,8 @@ public class PresenterVideoInMedia {
         modelVideoinMedia.getTopNews();
     }
 
-    public void addNews(List<NewsSimpleModel> items) {
-        mainView.initVideo(items);
+    public void addNews(List<NewsSimpleModel> items, int message) {
+        mainView.initVideo(items, message);
     }
 
 }

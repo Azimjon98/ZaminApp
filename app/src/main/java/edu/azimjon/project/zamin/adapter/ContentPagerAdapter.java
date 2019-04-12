@@ -34,12 +34,6 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
     Context context;
     private int tabs_number;
 
-    ViewGroup player;
-
-    public void setPlayer(ViewGroup v) {
-        player = v;
-    }
-
     public ContentPagerAdapter(Context context, FragmentManager fm, int tabs) {
         super(fm);
         Log.d(CALLBACK_LOG, "ContentPagerAdapter: init");
@@ -67,7 +61,6 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
                 if (fragmentMedia == null)
                     fragmentMedia = new FragmentMedia();
                 fragmentMedia.setPosition(mediaPosition);
-                fragmentMedia.setPlayer(player);
                 return fragmentMedia;
             default:
                 return null;

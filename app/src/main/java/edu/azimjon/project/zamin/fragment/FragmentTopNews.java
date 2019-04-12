@@ -35,7 +35,9 @@ import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentTopNews;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
 public class FragmentTopNews extends Fragment implements IFragmentTopNews, SwipeRefreshLayout.OnRefreshListener {
@@ -94,6 +96,9 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
             binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
         }
 
+        bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listTopNews, false);
+        bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listTopNews, false);
+
 
         binding.listTopNews.addOnScrollListener(scrollListener);
 
@@ -142,16 +147,19 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
 
     @Override
     public void initNews(List<NewsSimpleModel> items, int message) {
-        mediumNewsAdapter.removeHeaders();
-
         binding.swiper.setRefreshing(false);
+
         if (message == MESSAGE_NO_CONNECTION) {
-            bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listTopNews, false);
             mediumNewsAdapter.withHeader(bindingNoConnection.getRoot());
+
             return;
         }
 
-        mediumNewsAdapter.init_items(items);
+        if (message == MESSAGE_OK) {
+            mediumNewsAdapter.init_items(items);
+
+        }
+
     }
 
 
@@ -161,12 +169,15 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
         isLoading = false;
 
         if (message == MESSAGE_NO_CONNECTION) {
-            bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listTopNews, false);
             mediumNewsAdapter.withFooter(bindingFooter.getRoot());
             return;
         }
 
-        mediumNewsAdapter.add_all(items);
+        if (message == MESSAGE_OK) {
+            mediumNewsAdapter.add_all(items);
+
+        }
+
     }
 
 
@@ -227,34 +238,5 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
 
     };
 
-
-    @Override
-    public void onResume() {
-        Log.d(CALLBACK_LOG, "TopNews onResume");
-
-        super.onResume();
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        Log.d(CALLBACK_LOG, "TopNews onDestroyView");
-
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDetach() {
-        Log.d(CALLBACK_LOG, "TopNews onDetach");
-
-        super.onDetach();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(CALLBACK_LOG, "TopNews onDestroy");
-
-        super.onDestroy();
-    }
 
 }

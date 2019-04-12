@@ -59,13 +59,15 @@ public class SelectCategoriesAdapter extends BaseRecyclerAdapter<NewsCategoryMod
             this.binding = binding;
 
             binding.enabled.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                binding.getModel().setEnabled(isChecked);
-                //update category in another thread
-                new Thread(() -> {
-                    CategoryNewsDatabase.getInstance(context)
-                            .getDao()
-                            .update(binding.getModel());
-                }).start();
+                items.get(getAdapterPosition()).setEnabled(isChecked);
+
+//                binding.getModel().setEnabled(isChecked);
+//                //update category in another thread
+//                new Thread(() -> {
+//                    CategoryNewsDatabase.getInstance(context)
+//                            .getDao()
+//                            .update(binding.getModel());
+//                }).start();
 
             });
         }

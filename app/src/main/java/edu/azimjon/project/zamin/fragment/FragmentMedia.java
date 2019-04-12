@@ -34,7 +34,7 @@ import timber.log.Timber;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 
-public class FragmentMedia extends Fragment implements IFragmentMedia {
+public class FragmentMedia extends Fragment{
 
     //TODO: Constants here
 
@@ -45,7 +45,6 @@ public class FragmentMedia extends Fragment implements IFragmentMedia {
 
     //TODO: variables here
     WindowMediaBinding binding;
-    ViewGroup player;
     PresenterMedia presenterMedia;
     int position = 0;
 
@@ -62,8 +61,6 @@ public class FragmentMedia extends Fragment implements IFragmentMedia {
         super.onCreate(savedInstanceState);
         Log.d(CALLBACK_LOG, "FragmentMedia: onCreate");
 
-        if (presenterMedia == null)
-            presenterMedia = new PresenterMedia(this);
     }
 
     @Nullable
@@ -90,7 +87,6 @@ public class FragmentMedia extends Fragment implements IFragmentMedia {
 //        binding.mediaPager.addOnPageChangeListener(this);
             binding.tabMedia.setupWithViewPager(binding.mediaPager);
             binding.mediaPager.setCurrentItem(position);
-            pagerAdapter.setPlayer(player);
             binding.mediaPager.setOffscreenPageLimit(1);
         }
         //*****************************************************************************
@@ -103,37 +99,9 @@ public class FragmentMedia extends Fragment implements IFragmentMedia {
     //TODO: override methods
 
 
-
-    @Override
-    public boolean getUserVisibleHint() {
-        Log.d(CALLBACK_LOG, "Media: getUserVisibleHint");
-        return super.getUserVisibleHint();
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        Log.d(CALLBACK_LOG, "Media: setUserVisibleHint: " + isVisibleToUser);
-        super.setUserVisibleHint(isVisibleToUser);
-    }
-
     //#################################################################
 
     //TODO: all methods from IFragmentMedia interface
-
-    @Override
-    public void initAudio(List<NewsSimpleModel> items) {
-
-    }
-
-    @Override
-    public void initVideo(List<NewsSimpleModel> items) {
-
-    }
-
-    @Override
-    public void initGallery(List<NewsSimpleModel> items) {
-
-    }
 
     //#################################################################
 
@@ -151,10 +119,6 @@ public class FragmentMedia extends Fragment implements IFragmentMedia {
     }
 
     //Inside method setPosition:
-    public void setPlayer(ViewGroup player) {
-        this.player = player;
-    }
-
 
     //#################################################################
 
@@ -187,58 +151,6 @@ public class FragmentMedia extends Fragment implements IFragmentMedia {
 
 
     };
-
-
-
-
-    @Override
-    public void onResume() {
-        Log.d(CALLBACK_LOG, "Media: onPause");
-
-        super.onResume();
-
-        if (!isContentLoaded) {
-            presenterMedia.init();
-            isContentLoaded = true;
-        }
-    }
-
-    @Override
-    public void onPause() {
-        Log.d(CALLBACK_LOG, "Media: onPause");
-
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        Log.d(CALLBACK_LOG, "Media onStop");
-
-        super.onStop();
-    }
-
-
-
-    @Override
-    public void onDestroyView() {
-        Log.d(CALLBACK_LOG, "Media onDestroyView");
-
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDetach() {
-        Log.d(CALLBACK_LOG, "Media onDetach");
-
-        super.onDetach();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(CALLBACK_LOG, "Media onDestroy");
-
-        super.onDestroy();
-    }
 
 
 }

@@ -26,8 +26,8 @@ public class PresenterAudioInMedia {
     }
 
 
-    public void addNews(List<NewsSimpleModel> items) {
-        mainView.initAudio(items);
+    public void addNews(List<NewsSimpleModel> items, int message) {
+        mainView.initAudio(items, message);
     }
 
 

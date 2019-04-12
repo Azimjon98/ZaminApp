@@ -6,5 +6,6 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 
 public interface IFragmentAudioInMedia {
 
-    void initAudio(List<NewsSimpleModel> items);
+    void initAudio(List<NewsSimpleModel> items, int message);
+    void addAudio(List<NewsSimpleModel> items, int message);
 }

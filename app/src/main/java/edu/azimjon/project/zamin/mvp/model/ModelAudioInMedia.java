@@ -14,6 +14,8 @@ import edu.azimjon.project.zamin.mvp.presenter.PresenterAudioInMedia;
 import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import retrofit2.Retrofit;
 
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
+
 public class ModelAudioInMedia {
 
     ParserSimpleNewsModel parserSimpleNewsModel;
@@ -43,12 +45,6 @@ public class ModelAudioInMedia {
 
     //getting main news(pager news)
     public void getAudioNews() {
-        presenterAudioInMedia.addNews(Arrays.asList(
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel()
-        ));
 
         //declare getting data method here
 
@@ -62,7 +58,7 @@ public class ModelAudioInMedia {
         List<NewsSimpleModel> items = new ArrayList<>();
 
         //sending data to view
-        presenterAudioInMedia.addNews(items);
+        presenterAudioInMedia.addNews(items, MESSAGE_OK);
 
     }
 

@@ -15,24 +15,6 @@ public class ModelMedia {
     }
 
     public void getAllItems(){
-        presenterMedia.initAudio(Arrays.asList(new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel()));
-
-        presenterMedia.initVideo(Arrays.asList(new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel()));
-
-        presenterMedia.initGallery(Arrays.asList(new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel(),
-                new NewsSimpleModel()));
-
 
     }
 

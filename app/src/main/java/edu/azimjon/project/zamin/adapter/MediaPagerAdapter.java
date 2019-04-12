@@ -29,14 +29,9 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
     FragmentVideoInMedia tab2;
     FragmentGalleryInMedia tab3;
 
-    ViewGroup player;
-
     Context context;
     private int tabs_number;
 
-    public void setPlayer(ViewGroup player) {
-        this.player = player;
-    }
 
     public MediaPagerAdapter(Context context, FragmentManager fm, int tabs) {
         super(fm);
@@ -50,7 +45,6 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 if (tab1 == null)
                     tab1 = new FragmentAudioInMedia();
-                tab1.setPlayer(player);
                 return tab1;
             case 1:
                 if (tab2 == null)

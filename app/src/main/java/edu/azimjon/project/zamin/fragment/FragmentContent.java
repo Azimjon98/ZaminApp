@@ -133,7 +133,6 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
             contentPagerAdapter = new ContentPagerAdapter(getContext(), getChildFragmentManager(), 4);
         contentPager = view.findViewById(R.id.content_pager);
         contentPager.setAdapter(contentPagerAdapter);
-        contentPagerAdapter.setPlayer(view.findViewById(R.id.player_lay));
         contentPager.setOffscreenPageLimit(1);
 
         //when this window comes back continue with old navigation index

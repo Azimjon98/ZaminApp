@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,14 @@ import java.util.List;
 
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
 import edu.azimjon.project.zamin.databinding.ItemNewsMainLargeBinding;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 
@@ -50,10 +53,21 @@ public class MainNewsPagerAdapter extends PagerAdapter {
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         });
 
+        List<String> allFavouriteIds;
+        allFavouriteIds = NavigationActivity.getFavouritesIds();
+        if (allFavouriteIds.contains(binding.getModel().getNewsId())) {
+            binding.getModel().setWished(true);
+        }
 
 
         container.addView(binding.getRoot());
         return binding.getRoot();
+    }
+
+    @Override
+    public void startUpdate(@NonNull ViewGroup container) {
+        Log.d(DELETE_LOG, "update");
+        super.startUpdate(container);
     }
 
     @Override
@@ -62,6 +76,9 @@ public class MainNewsPagerAdapter extends PagerAdapter {
     }
 
     public void init_items(List<NewsSimpleModel> news, int count) {
+        this.count = 0;
+        notifyDataSetChanged();
+
         this.count = count;
         this.news = news;
         notifyDataSetChanged();

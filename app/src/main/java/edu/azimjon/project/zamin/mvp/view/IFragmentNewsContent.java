@@ -9,6 +9,7 @@ public interface IFragmentNewsContent {
 
     void initContent(NewsContentModel model);
 
-    void addLastNews(List<NewsSimpleModel> items);
+    void initLastNews(List<NewsSimpleModel> items, int message);
+    void addLastNews(List<NewsSimpleModel> items, int message);
     void initTags(List<String> tags);
 }

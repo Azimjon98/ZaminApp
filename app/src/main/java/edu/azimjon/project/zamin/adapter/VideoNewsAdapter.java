@@ -16,6 +16,7 @@ import java.util.List;
 
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.addition.Converters;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
@@ -60,7 +61,6 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
                             viewGroup,
                             false));
 
-
     }
 
     @Override
@@ -72,6 +72,12 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;
             myHolder.binding.setModel(items.get(position));
+
+            List<String> allFavouriteIds;
+            allFavouriteIds = NavigationActivity.getFavouritesIds();
+            if (allFavouriteIds.contains(myHolder.binding.getModel().getNewsId())) {
+                myHolder.binding.getModel().setWished(true);
+            }
         }
 
 

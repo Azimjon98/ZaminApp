@@ -71,6 +71,7 @@ public class CategoryNewsAdapter extends BaseRecyclerAdapter<NewsCategoryModel> 
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;
             myHolder.binding.setModel(items.get(position));
+
         }
 
 

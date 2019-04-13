@@ -15,6 +15,7 @@ import java.util.List;
 
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemAudioNewsBinding;
@@ -28,11 +29,20 @@ import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
-    public AudioNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
+    public static interface IMyPlayer {
+        void playPressed(NewsSimpleModel m);
+
+        void pausePressed(NewsSimpleModel m);
+    }
+
+    IMyPlayer myPlayer;
+
+    public AudioNewsAdapter(Context context, ArrayList<NewsSimpleModel> items, IMyPlayer player) {
         super(context, items);
 
         this.context = context;
         this.items = items;
+        this.myPlayer = player;
     }
 
     @NonNull
@@ -69,6 +79,12 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;
             myHolder.binding.setModel(items.get(position));
+
+            List<String> allFavouriteIds;
+            allFavouriteIds = NavigationActivity.getFavouritesIds();
+            if (allFavouriteIds.contains(myHolder.binding.getModel().getNewsId())) {
+                myHolder.binding.getModel().setWished(true);
+            }
         }
 
 
@@ -84,15 +100,27 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     public class MyHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemAudioNewsBinding binding;
-
-        int count = 0;
+        boolean isPlaying;
+        boolean musicEnabled;
 
 
         public MyHolderItem(ItemAudioNewsBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            this.binding.clicker.setOnClickListener(this);
+//            this.binding.clicker.setOnClickListener(this);
 
+            binding.btnPlay.setOnClickListener(v -> {
+                if (!musicEnabled) {
+                    myPlayer.pausePressed(binding.getModel());
+//                    items.restoreState()
+                    return;
+                }
+
+                if (this.isPlaying) {
+                    myPlayer.pausePressed(binding.getModel());
+                }
+
+            });
         }
 
 

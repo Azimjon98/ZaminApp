@@ -32,9 +32,12 @@ public class PresenterNewsContent {
         mainView.initContent(model);
     }
 
+    public void initLastNews(List<NewsSimpleModel> items, int message) {
+        mainView.initLastNews(items, message);
+    }
 
-    public void addLastNews(List<NewsSimpleModel> items) {
-        mainView.addLastNews(items);
+    public void addLastNews(List<NewsSimpleModel> items, int message) {
+        mainView.addLastNews(items, message);
     }
 
     public void initTags(List<String> tags) {

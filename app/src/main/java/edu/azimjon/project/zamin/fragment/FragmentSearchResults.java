@@ -27,7 +27,10 @@ import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
+import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
+import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowSearchResultsBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.view.IFragmentSearchNewsResult;
@@ -50,6 +53,8 @@ import static edu.azimjon.project.zamin.addition.Constants.SEARCH_TAG;
 
 public class FragmentSearchResults extends Fragment implements IFragmentSearchNewsResult {
     WindowSearchResultsBinding binding;
+    WindowNoConnectionBinding bindingNoConnection;
+    FooterNoConnectionBinding bindingFooter;
 
     //retrofit call
     Retrofit retrofit;
@@ -101,7 +106,6 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
         super.onViewCreated(view, savedInstanceState);
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).popBackStack());
 
-        binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).popBackStack());
         binding.toolbar.setTitle(
                 getArguments().getString(KEY_SEARCH_TOOLBAR_NAME)
         );
@@ -111,6 +115,9 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
         adapter = new MediumNewsAdapter(getContext(), new ArrayList<>());
         binding.listSearchResult.setLayoutManager(manager);
         binding.listSearchResult.setAdapter(adapter);
+
+        bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listSearchResult, false);
+        bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
 
 
         //initiate list scrolling state change listener
@@ -141,14 +148,14 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
                     .getNewsWithCategory(String.valueOf(offset),
                             limit,
                             searchingID,
-                            "uz");
+                            MySettings.getInstance().getLang());
         } else if (searchWhere == SEARCH_TAG) {
             searchNews = retrofit
                     .create(MyRestService.class)
                     .getNewsWithTags(String.valueOf(offset),
                             limit,
                             searchingID,
-                            "uz");
+                            MySettings.getInstance().getLang());
         }
 
 
@@ -171,6 +178,11 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
             public void onFailure(@NotNull Call<JsonObject> call, @NotNull Throwable t) {
                 Log.d(API_LOG, "searchNews onFailure" + t.getMessage());
                 binding.progress.setVisibility(View.GONE);
+
+                if (offset == 1)
+                    adapter.withHeaderNoInternet(bindingNoConnection.getRoot());
+                else
+                    adapter.withFooter(bindingFooter.getRoot());
             }
         });
     }
@@ -180,8 +192,7 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
     //TODO: Parsing
     //parsing last news continue(pager news)
     private void parsingLastNewsContinue(JsonObject json) {
-        if (parserSimpleNewsModel == null)
-            parserSimpleNewsModel = new ParserSimpleNewsModel(this);
+        parserSimpleNewsModel = new ParserSimpleNewsModel(this);
 
         //sending data to view
         if (offset == 1)
@@ -194,15 +205,16 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
 
     @Override
     public void initNews(List<NewsSimpleModel> items) {
+        binding.progress.setVisibility(View.GONE);
+        adapter.removeHeaders();
         adapter.init_items(items);
     }
 
     @Override
     public void addNews(List<NewsSimpleModel> items) {
         adapter.hideLoading();
-        adapter.add_all(items);
-
         isLoading = false;
+        adapter.add_all(items);
     }
 
     //####################################################################################
@@ -237,6 +249,8 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
             if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
                 isScrolling = false;
                 isLoading = true;
+
+                adapter.removeFooter();
                 adapter.showLoading();
                 search_text(false);
             }

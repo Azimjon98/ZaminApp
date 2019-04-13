@@ -94,24 +94,24 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
             mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
             binding.listTopNews.setAdapter(mediumNewsAdapter);
             binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+
+            bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listTopNews, false);
+            bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listTopNews, false);
+
+
+            binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+
+
+            binding.swiper.setRefreshing(true);
+            presenterTopNews.init();
         }
 
-        bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listTopNews, false);
-        bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listTopNews, false);
-
-
-        binding.listTopNews.addOnScrollListener(scrollListener);
-
-        binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        binding.swiper.setOnRefreshListener(this);
-
-
         //*****************************************************************************
-
-        presenterTopNews.init();
+        binding.swiper.setOnRefreshListener(this);
+        binding.listTopNews.addOnScrollListener(scrollListener);
     }
 
     //TODO: override methods
@@ -150,12 +150,14 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
         binding.swiper.setRefreshing(false);
 
         if (message == MESSAGE_NO_CONNECTION) {
-            mediumNewsAdapter.withHeader(bindingNoConnection.getRoot());
+            mediumNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
 
             return;
         }
 
         if (message == MESSAGE_OK) {
+            mediumNewsAdapter.removeHeaders();
+
             mediumNewsAdapter.init_items(items);
 
         }
@@ -193,11 +195,11 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_network_changed(NetworkStateChangedEvent event) {
         if (event.state == NETWORK_STATE_CONNECTED && !isConnected_to_Net) {
-            binding.swiper.setRefreshing(false);
+            binding.swiper.setRefreshing(true);
             presenterTopNews.init();
         }
 
-        isConnected_to_Net = event.state == NETWORK_STATE_CONNECTED;
+        isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
     }
 
 

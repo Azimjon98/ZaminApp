@@ -3,6 +3,10 @@ package edu.azimjon.project.zamin.addition;
 public class Constants {
 
     //TODO
+    public static final String EXTRA_CATEGORIES = "categories";
+    public static final String EXTRA_FAVOURITES = "favourites";
+
+
     //logs
     public static final String ERROR_LOG = "myerrorLog";
     public static final String EVENT_LOG = "eventLog";
@@ -48,6 +52,7 @@ public class Constants {
     public static String MY_LOCALE = "locale";
     public static String MY_NUMBER = "number";
     public static String LANG_CHANGED = "lang_changed";
+    public static String CONTENT_STACK = "content_stack";
 
     //TODO: KEYS
     public static String KEY_NEWS_ID = "news_id";

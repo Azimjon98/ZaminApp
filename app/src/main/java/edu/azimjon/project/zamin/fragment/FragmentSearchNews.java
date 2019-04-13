@@ -27,6 +27,7 @@ import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
@@ -131,7 +132,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
                 .searchNewsWithTitle(String.valueOf(offset),
                         limit,
                         searchingText.trim(),
-                        "uz");
+                        MySettings.getInstance().getLang());
 
 
         searchNews.enqueue(new Callback<JsonObject>() {
@@ -168,7 +169,6 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     //TODO: Parsing
     //parsing last news continue(pager news)
     private void parsingLastNewsContinue(JsonObject json) {
-        if (parserSimpleNewsModel == null)
             parserSimpleNewsModel = new ParserSimpleNewsModel(this);
 
         //sending data to view
@@ -183,6 +183,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
 
     @Override
     public void initNews(List<NewsSimpleModel> items, int message) {
+        binding.progress.setVisibility(View.GONE);
         adapter.removeHeaders();
         adapter.init_items(items);
     }
@@ -190,9 +191,9 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     @Override
     public void addNews(List<NewsSimpleModel> items, int message) {
         adapter.hideLoading();
+        isLoading = false;
         adapter.add_all(items);
 
-        isLoading = false;
     }
 
     //####################################################################################
@@ -259,7 +260,6 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
 
     @Override
     public void onStop() {
-        Log.d(CALLBACK_LOG, "Search onStop");
 
         super.onStop();
         MyUtil.closeSoftKeyboard(getActivity());

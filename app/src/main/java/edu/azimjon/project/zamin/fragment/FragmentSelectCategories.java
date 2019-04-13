@@ -22,6 +22,7 @@ import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.adapter.SelectCategoriesAdapter;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.databinding.WindowSelectCategoriesBinding;
+import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
@@ -63,14 +64,7 @@ public class FragmentSelectCategories extends Fragment {
         adapter = new SelectCategoriesAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         binding.list.setAdapter(adapter);
 
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                adapter.init_items(dao.getAll());
-
-                return null;
-            }
-        }.execute();
+        new GetAllCategoriesAsyckTask().execute();
 
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallBack(adapter));
@@ -119,9 +113,9 @@ public class FragmentSelectCategories extends Fragment {
 
     @Override
     public void onStop() {
+        updateDatabase();
         super.onStop();
 
-        updateDatabase();
     }
 
     //TODO: CHECK AND UPDATE DATABASE
@@ -131,10 +125,25 @@ public class FragmentSelectCategories extends Fragment {
             protected Void doInBackground(Void... voids) {
                 dao.deleteAll();
 
-                dao.insertAll(adapter.items);
+                for (NewsCategoryModel i : adapter.items) {
+                    i.setId(0);
+                    dao.insert(i);
+                }
+
 
                 return null;
             }
         }.execute();
+    }
+
+    //Another Thread AsycyTsks
+
+    public class GetAllCategoriesAsyckTask extends AsyncTask{
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            adapter.init_items(dao.getAll());
+
+            return null;
+        }
     }
 }

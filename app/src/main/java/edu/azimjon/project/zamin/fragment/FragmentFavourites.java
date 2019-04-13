@@ -32,11 +32,12 @@ import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 public class FragmentFavourites extends Fragment implements IFragmentFavouriteNews {
 
     //TODO: Constants here
+    LinearLayoutManager manager;
 
 
     //TODO: variables here
     WindowFavouritesBinding binding;
-    PresenterFavouriteNews presenterFavouriteNews;
+//    PresenterFavouriteNews presenterFavouriteNews;
 
     //adapters
     FavouriteNewsAdapter favouriteNewsAdapter;
@@ -44,8 +45,6 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
     //TODO room components
     FavouriteNewsDao dao;
     LiveData<List<FavouriteNewsModel>> allData;
-
-    boolean isContentLoaded = false;
 
 
     //#####################################################################
@@ -72,9 +71,9 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
         super.onViewCreated(view, savedInstanceState);
 
         //initialize adapters and append to lists
-
-        if (!isContentLoaded) {
-            binding.listFavourite.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        if (manager == null) {
+            manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            binding.listFavourite.setLayoutManager(manager);
             favouriteNewsAdapter = new FavouriteNewsAdapter(getContext(), new ArrayList<FavouriteNewsModel>());
             favouriteNewsAdapter.withHeader(LayoutInflater.from(getContext())
                     .inflate(
@@ -82,6 +81,8 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
                             binding.listFavourite,
                             false));
             binding.listFavourite.setAdapter(favouriteNewsAdapter);
+            binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+
         }
 
         //*****************************************************************************
@@ -89,7 +90,6 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
         //room init
         initRoom();
 
-//        presenterFavouriteNews.init();
     }
 
     //TODO: override methods
@@ -103,8 +103,6 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
     @Override
     public void initFavourites(List<FavouriteNewsModel> items) {
-        binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
-
         favouriteNewsAdapter.init_items(items);
     }
 
@@ -124,52 +122,8 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
                 initFavourites(tourModels);
             }
         });
-        isContentLoaded = true;
     }
 
     //#################################################################
-
-    @Override
-    public void onStop() {
-        Log.d(CALLBACK_LOG, "Favourites onStop");
-
-        super.onStop();
-    }
-
-    @Override
-    public void onPause() {
-        Log.d(CALLBACK_LOG, "AudFavouritesio onPause");
-
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroyView() {
-        Log.d(CALLBACK_LOG, "Favourites onDestroyView");
-
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onResume() {
-        Log.d(CALLBACK_LOG, "Favourites onResume");
-
-        super.onResume();
-    }
-
-    @Override
-    public void onDetach() {
-        Log.d(CALLBACK_LOG, "Favourites onDetach");
-
-        super.onDetach();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(CALLBACK_LOG, "Favourites onDestroy");
-
-        super.onDestroy();
-    }
-
 
 }

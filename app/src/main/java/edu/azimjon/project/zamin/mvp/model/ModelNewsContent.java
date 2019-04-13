@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.model.NewsContentModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
@@ -23,6 +24,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class ModelNewsContent {
 
@@ -63,7 +66,7 @@ public class ModelNewsContent {
 
         retrofit.create(MyRestService.class)
                 .getNewsContentWithId(String.valueOf(newsId),
-                        "uz")
+                        MySettings.getInstance().getLang())
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -90,13 +93,16 @@ public class ModelNewsContent {
         retrofit.create(MyRestService.class)
                 .getLastNewsData(String.valueOf(offset),
                         limit,
-                        "uz")
+                        MySettings.getInstance().getLang())
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                         if (response.isSuccessful()) {
                             JsonObject json = response.body();
-                            parsingLastNews(json);
+                            if (offset == 1)
+                                parsingInitLastNews(json);
+                            else
+                                parsingAddLastNews(json);
 
                             offset++;
                         } else {
@@ -107,6 +113,11 @@ public class ModelNewsContent {
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
                         Log.d(API_LOG, "getLastNews onFailure: " + t.getMessage());
+
+                        if (offset == 1)
+                            presenterNewsContent.initLastNews(null, MESSAGE_NO_CONNECTION);
+                        else
+                            presenterNewsContent.addLastNews(null, MESSAGE_NO_CONNECTION);
                     }
                 });
     }
@@ -117,7 +128,7 @@ public class ModelNewsContent {
         retrofit.create(MyRestService.class)
                 .getNewsContentTags(
                         id,
-                        "uz")
+                        MySettings.getInstance().getLang())
                 .enqueue(new Callback<JsonArray>() {
                     @Override
                     public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
@@ -150,11 +161,20 @@ public class ModelNewsContent {
     }
 
     //parsing main news(pager news)
-    private void parsingLastNews(JsonObject json) {
+
+    private void parsingInitLastNews(JsonObject json) {
         List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
 
         //sending data to view
-        presenterNewsContent.addLastNews(items);
+        presenterNewsContent.initLastNews(items, MESSAGE_OK);
+
+    }
+
+    private void parsingAddLastNews(JsonObject json) {
+        List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
+
+        //sending data to view
+        presenterNewsContent.addLastNews(items, MESSAGE_OK);
 
     }
 

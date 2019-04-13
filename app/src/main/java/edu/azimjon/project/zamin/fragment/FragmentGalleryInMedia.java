@@ -52,6 +52,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
     WindowGalleryInsideMediaBinding binding;
     WindowNoConnectionBinding bindingNoConnection;
     FooterNoConnectionBinding bindingFooter;
+    View viewHeader;
 
     PresenterGalleryInMedia presenterGalleryInMedia;
 
@@ -64,7 +65,6 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
     boolean isContentLoaded = false;
 
     int total_items, visible_items, scrollout_items;
-
 
 
     //#####################################################################
@@ -88,24 +88,23 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
         super.onViewCreated(view, savedInstanceState);
 
 
-
         //initialize adapters and append to lists
 
         manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         binding.listVideo.setLayoutManager(manager);
         galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-        galleryAdapter.withHeader(LayoutInflater.from(getContext())
+        viewHeader = LayoutInflater.from(getContext())
                 .inflate(
                         R.layout.header_window_gallery_inside_media,
                         binding.listVideo,
-                        false));
+                        false);
+
+        galleryAdapter.withHeader(viewHeader);
         binding.listVideo.setAdapter(galleryAdapter);
         binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
 
         bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listVideo, false);
         bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listVideo, false);
-
-        binding.listVideo.addOnScrollListener(scrollListener);
 
 
         binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -116,7 +115,10 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
 
         //*****************************************************************************
+        binding.listVideo.addOnScrollListener(scrollListener);
+        binding.swiper.setOnRefreshListener(this);
 
+//        binding.swiper.setRefreshing(true);
         presenterGalleryInMedia.init();
     }
 
@@ -156,12 +158,14 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
         binding.swiper.setRefreshing(false);
 
         if (message == MESSAGE_NO_CONNECTION) {
-            galleryAdapter.withHeader(bindingNoConnection.getRoot());
+            galleryAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
 
             return;
         }
 
         if (message == MESSAGE_OK) {
+            galleryAdapter.withHeader(viewHeader);
+
             galleryAdapter.init_items(items);
 
         }
@@ -203,7 +207,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
             presenterGalleryInMedia.init();
         }
 
-        isConnected_to_Net = event.state == NETWORK_STATE_CONNECTED;
+        isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
     }
 
 

@@ -51,7 +51,7 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
     WindowVideoInsideMediaBinding binding;
     WindowNoConnectionBinding bindingNoConnection;
     FooterNoConnectionBinding bindingFooter;
-
+    View viewHeader;
 
     //adapters
     VideoNewsAdapter videoNewsAdapter;
@@ -86,18 +86,18 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
         super.onViewCreated(view, savedInstanceState);
 
 
-
-
         //initialize adapters and append to lists
 
         manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         binding.listVideo.setLayoutManager(manager);
         videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-        videoNewsAdapter.withHeader(LayoutInflater.from(getContext())
+        viewHeader = LayoutInflater.from(getContext())
                 .inflate(
                         R.layout.header_window_video_inside_media,
                         binding.listVideo,
-                        false));
+                        false);
+
+        videoNewsAdapter.withHeader(viewHeader);
         binding.listVideo.setAdapter(videoNewsAdapter);
         binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
 
@@ -106,7 +106,6 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
         bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listVideo, false);
 
 
-        binding.listVideo.addOnScrollListener(scrollListener);
 
         binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -117,6 +116,14 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
         //*****************************************************************************
 
+        binding.swiper.setOnRefreshListener(this);
+        binding.listVideo.addOnScrollListener(scrollListener);
+
+
+        //*****************************************************************************
+
+
+//        binding.swiper.setRefreshing(true);
         presenterVideoInMedia.init();
 
     }
@@ -159,11 +166,14 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
         binding.swiper.setRefreshing(false);
         if (message == MESSAGE_NO_CONNECTION) {
-            videoNewsAdapter.withHeader(bindingNoConnection.getRoot());
+            videoNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
             return;
         }
 
         if (message == MESSAGE_OK) {
+            videoNewsAdapter.withHeader(viewHeader);
+
+
             videoNewsAdapter.init_items(items);
         }
 
@@ -202,7 +212,7 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
             presenterVideoInMedia.init();
         }
 
-        isConnected_to_Net = event.state == NETWORK_STATE_CONNECTED;
+        isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
     }
 
 

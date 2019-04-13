@@ -1,10 +1,12 @@
 package edu.azimjon.project.zamin.fragment;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +32,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.activity.NavigationActivity;
@@ -37,8 +40,11 @@ import edu.azimjon.project.zamin.adapter.CategoryNewsAdapter;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.Converters;
+import edu.azimjon.project.zamin.addition.MySettings;
+import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.HeaderWindowNewsContentBinding;
 import edu.azimjon.project.zamin.databinding.WindowNewsContentBinding;
+import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsContentModel;
@@ -56,20 +62,25 @@ import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.SEARCH_CATEGORY;
 import static edu.azimjon.project.zamin.addition.Constants.SEARCH_TAG;
 
 public class FragmentNewsContent extends Fragment implements IFragmentNewsContent {
     //TODO: Constants here
-
+    String newsId;
+    NewsSimpleModel simpleModel;
+    NewsContentModel model;
 
     //TODO: variables here
     LinearLayoutManager manager;
     WindowNewsContentBinding binding;
-    NewsSimpleModel simpleModel;
-    NewsContentModel model;
     HeaderWindowNewsContentBinding bindingHeader;
+    WindowNoConnectionBinding bindingNoConnection;
+    FooterNoConnectionBinding bindingFooter;
+
     PresenterNewsContent presenterNewsContent;
 
     //adapters
@@ -88,10 +99,12 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        newsId = getArguments().getString(KEY_NEWS_ID);
         simpleModel = getArguments().getParcelable(KEY_NEWS_MODEL);
         model = Converters.fromSimpleNewstoContentNews(simpleModel);
 
         presenterNewsContent = new PresenterNewsContent(this);
+        MySettings.getInstance().increaseStackCount();
     }
 
     @Nullable
@@ -105,7 +118,9 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding.iconBack.setOnClickListener(v -> Navigation.findNavController(v).popBackStack(R.id.fragmentContent, true));
+        binding.iconBack.setOnClickListener(v -> {
+            new MyAsycTask(this.getActivity(), Navigation.findNavController(v)).execute();
+        });
 
         //initialize adapters and append to lists
 
@@ -118,6 +133,9 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         bindingHeader.setModel(model);
         mediumNewsAdapter.withHeader(bindingHeader.getRoot());
         binding.listLastNews.setAdapter(mediumNewsAdapter);
+
+        bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listLastNews, false);
+        bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listLastNews, false);
 
 
         binding.listLastNews.addOnScrollListener(scrollListener);
@@ -146,12 +164,10 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
             }
         });
-        Log.d(Constants.MY_LOG, "in fragmentview:" + getArguments().getString(Constants.WEB_URL));
+
 
         initIcons();
-        String newsId = getArguments().getString(KEY_NEWS_ID);
         presenterNewsContent.init(newsId);
-
     }
 
     //TODO: override methods
@@ -165,30 +181,55 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     @Override
     public void initContent(NewsContentModel model) {
-
-        final String mimeType = "text/html";
-        final String encoding = "UTF-8";
+//        final String mimeType = "text/html";
+//        final String encoding = "UTF-8";
 
         bindingHeader.contentWeb.loadUrl(model.getContent());
-        Log.d(MY_LOG, "initContent: " + model.getContent());
     }
 
     @Override
-    public void addLastNews(List<NewsSimpleModel> items) {
-        mediumNewsAdapter.add_all(items);
-        if (mediumNewsAdapter.getItemCount() > 1)
-            mediumNewsAdapter.hideLoading();
-        isLoading = false;
+    public void initLastNews(List<NewsSimpleModel> items, int message) {
+        mediumNewsAdapter.removeHeaders();
+
+        if (message == MESSAGE_NO_CONNECTION) {
+            mediumNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
+            return;
+        }
+
+        if (message == MESSAGE_OK) {
+            mediumNewsAdapter.withHeader(bindingHeader.getRoot());
+
+
+            mediumNewsAdapter.init_items(items);
+        }
+
     }
+
+    @Override
+    public void addLastNews(List<NewsSimpleModel> items, int message) {
+        mediumNewsAdapter.hideLoading();
+        isLoading = false;
+
+        if (message == MESSAGE_NO_CONNECTION) {
+            mediumNewsAdapter.withFooter(bindingFooter.getRoot());
+            return;
+        }
+
+        if (message == MESSAGE_OK) {
+            mediumNewsAdapter.add_all(items);
+
+        }
+    }
+
 
     @Override
     public void initTags(List<String> tags) {
-        tags.add("Манчестер Юнайтед");
+//        tags.add("Манчестер Юнайтед");
         LayoutInflater inflater = LayoutInflater.from(getContext());
         for (String tag : tags) {
             Chip chip = (Chip) inflater.inflate(R.layout.item_tag, null, false);
             chip.setText(tag);
-//            chip.setChipBackgroundColorResource(R.color.icon_active);
+//            chip.setChipBackgroundColorResource(R.color.chip_color6);
 
 
             chip.setOnClickListener(v -> {
@@ -210,7 +251,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     //TODO: Additional methods
 
     private void initIcons() {
-        binding.iconBack.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
 
         binding.iconBookmark.setOnClickListener(v -> {
             boolean isWished = bindingHeader.getModel().isWished();
@@ -271,12 +311,38 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
                 isScrolling = false;
                 isLoading = true;
+
+                mediumNewsAdapter.removeFooter();
                 mediumNewsAdapter.showLoading();
                 presenterNewsContent.getContinue();
             }
         }
 
     };
+
+    static class MyAsycTask extends AsyncTask<Void, Void, Void> {
+        Activity activity;
+        int count;
+        NavController controller;
+
+        public MyAsycTask(Activity activity, NavController controller) {
+            this.activity = activity;
+            this.count = count;
+            this.controller = controller;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            final NavController controller = Navigation.findNavController(activity, R.id.nav_host_fragment);
+            for (int i = 0; i < MySettings.getInstance().getContentStack(); i++) {
+                System.out.println("PopBackPressed");
+                controller.popBackStack();
+            }
+            MySettings.getInstance().resetStack();
+
+            return null;
+        }
+    }
 
 
 }

@@ -54,17 +54,17 @@ public class MySettings {
     }
 
 
-    public void setLangChanged(boolean state) {
-        SharedPreferences preferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(LANG_CHANGED, state);
-        editor.apply();
-    }
-
-    public boolean islangChanged() {
-        SharedPreferences preferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
-        return preferences.getBoolean(LANG_CHANGED, false);
-    }
+//    public void setLangChanged(boolean state) {
+//        SharedPreferences preferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.putBoolean(LANG_CHANGED, state);
+//        editor.apply();
+//    }
+//
+//    public boolean islangChanged() {
+//        SharedPreferences preferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+//        return preferences.getBoolean(LANG_CHANGED, false);
+//    }
 
     public void setLoggined(boolean state) {
         SharedPreferences preferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -132,5 +132,26 @@ public class MySettings {
 
     }
 
+
+    public void increaseStackCount() {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(CONTENT_STACK, (sharedPreferences.getInt(CONTENT_STACK, 0) + 1));
+        editor.apply();
+    }
+
+    public void resetStack() {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(CONTENT_STACK, 0);
+        editor.apply();
+    }
+
+
+    public int getContentStack() {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+
+        return sharedPreferences.getInt(CONTENT_STACK, 0);
+    }
 
 }

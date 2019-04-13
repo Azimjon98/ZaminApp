@@ -11,11 +11,15 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.addition.Constants;
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.component.MyApplicationComponent;
+import edu.azimjon.project.zamin.model.NewsCategoryModel;
 
 public class TextBindingAdapters {
 
@@ -66,10 +70,17 @@ public class TextBindingAdapters {
 
     @BindingAdapter("setCategoryName")
     public static void setCategoryName(TextView view, String text) {
-        MyApplicationComponent component = null;
-
-
+//        MyApplicationComponent component = null;
+//        List<NewsCategoryModel> categoryModels;
+////        while (NavigationActivity.getAllCategories() == null || MySettings.getInstance().islangChanged()) ;
+//        categoryModels = NavigationActivity.getAllCategories();
+//
+//        for (NewsCategoryModel c : categoryModels) {
+//            if (text.equals(c.getCategoryId())) {
+//
+//                view.setText(c.getName());
+//                break;
+//            }
+//        }
     }
-
-
 }

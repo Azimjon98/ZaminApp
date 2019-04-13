@@ -16,9 +16,9 @@
             android:layout_width="wrap_content"
             android:layout_height="100dp"
             android:layout_centerInParent="true"
-            android:elevation="4dp"
+            android:elevation="2dp"
             android:fitsSystemWindows="true"
-            android:translationZ="4dp"
+            android:translationZ="2dp"
             app:cardCornerRadius="16dp">
 
             <LinearLayout

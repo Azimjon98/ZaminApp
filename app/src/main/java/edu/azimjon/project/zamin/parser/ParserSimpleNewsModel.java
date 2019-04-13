@@ -1,6 +1,8 @@
 package edu.azimjon.project.zamin.parser;
 
 import android.arch.lifecycle.Observer;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,6 +14,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
@@ -23,20 +26,14 @@ import static edu.azimjon.project.zamin.addition.Constants.ERROR_LOG;
 //Simple news model parser
 public class ParserSimpleNewsModel {
     //list of ids which are favourite
-    List<String> allFavouriteIds;
     List<NewsCategoryModel> categoryModels;
 
     public ParserSimpleNewsModel(Fragment fragment) {
-        allFavouriteIds = NavigationActivity.getFavouritesIds();
-        categoryModels = NavigationActivity.getAllCategories();
+
     }
 
     public List<NewsSimpleModel> parse(JsonObject json) {
-
-        while (allFavouriteIds == null || categoryModels == null) {
-            allFavouriteIds = NavigationActivity.getFavouritesIds();
-            categoryModels = NavigationActivity.getAllCategories();
-        }
+        categoryModels = NavigationActivity.getAllCategories();
 
         List<NewsSimpleModel> items = new ArrayList<>();
 
@@ -57,18 +54,14 @@ public class ParserSimpleNewsModel {
                 model.setImageUrl(article.getAsJsonPrimitive("urlToImage").getAsString());
                 model.setViewedCount(article.getAsJsonPrimitive("viewed").getAsString());
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.d(ERROR_LOG, "Error SimpleNews Parser: " + e.getMessage());
             }
 
 
-            if (allFavouriteIds.contains(model.getNewsId())) {
-                model.setWished(true);
-            }
-
             for (NewsCategoryModel c : categoryModels) {
                 if (model.getCategoryId().equals(c.getCategoryId())) {
-                    Log.d("myLog", "categoryModels in");
+                    Log.d("myLog", "categoryModels in : " + c.getName());
 
                     model.setCategoryName(c.getName());
                     break;
@@ -80,5 +73,14 @@ public class ParserSimpleNewsModel {
         }
 
         return items;
+    }
+
+    class MyHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+
+        }
     }
 }

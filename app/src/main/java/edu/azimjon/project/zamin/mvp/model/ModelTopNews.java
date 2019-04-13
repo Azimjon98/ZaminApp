@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
@@ -56,7 +57,7 @@ public class ModelTopNews {
                 .getTopNews(String.valueOf(offset),
                         limit,
                         "1",
-                        "uz")
+                        MySettings.getInstance().getLang())
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -87,7 +88,7 @@ public class ModelTopNews {
                 .getTopNews(String.valueOf(offset),
                         limit,
                         "1",
-                        "uz")
+                        MySettings.getInstance().getLang())
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

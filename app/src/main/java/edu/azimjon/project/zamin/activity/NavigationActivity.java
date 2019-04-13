@@ -37,6 +37,8 @@ import retrofit2.Response;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.EXTRA_CATEGORIES;
+import static edu.azimjon.project.zamin.addition.Constants.EXTRA_FAVOURITES;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.STATE_LOG;
@@ -52,16 +54,18 @@ public class NavigationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
+        allFavouriteIds = getIntent().getStringArrayListExtra(EXTRA_FAVOURITES);
+        categoryModels = getIntent().getParcelableArrayListExtra(EXTRA_CATEGORIES);
+
         //FIXME: fix this for using in thread
         FavouriteNewsDatabase
                 .getInstance(NavigationActivity.this)
                 .getDao()
-                .getAllIds()
+                .getAllIdsLive()
                 .observe(this, new Observer<List<String>>() {
                     @Override
                     public void onChanged(@Nullable List<String> strings) {
                         allFavouriteIds = strings;
-                        System.out.println("getting all data from favourites: " + strings.size());
                     }
                 });
 
@@ -74,10 +78,8 @@ public class NavigationActivity extends AppCompatActivity {
                     @Override
                     public void onChanged(@Nullable List<NewsCategoryModel> categories) {
                         categoryModels = categories;
-                        System.out.println("getting all data from categories: " + categories.size());
                     }
                 });
-
 
     }
 
@@ -102,8 +104,6 @@ public class NavigationActivity extends AppCompatActivity {
     //TODO: NETWORKING STATES
 
     BroadcastReceiver myConnectivityReceiver = new BroadcastReceiver() {
-
-
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(STATE_LOG, "on_network_changed");
@@ -186,7 +186,6 @@ public class NavigationActivity extends AppCompatActivity {
     public class CheckingDataBaseTask extends AsyncTask<Void, Void, Void> {
         private List<NewsCategoryModel> categoryModels;
 
-
         public CheckingDataBaseTask(List<NewsCategoryModel> models) {
             this.categoryModels = models;
         }
@@ -209,9 +208,7 @@ public class NavigationActivity extends AppCompatActivity {
         List<NewsCategoryModel> newCategories = categoryModels;
 
         //checking if there any categories added or removed
-        if (MySettings.getInstance().islangChanged() ||
-                oldCategories.size() != newCategories.size()) {
-            MySettings.getInstance().setLangChanged(false);
+        if (oldCategories.size() != newCategories.size()) {
             update_database(categoryNewsDao, oldCategories, newCategories);
         }
 
@@ -225,7 +222,7 @@ public class NavigationActivity extends AppCompatActivity {
         //updating isEnabled state of new Categories
         for (NewsCategoryModel new_ : newCategories) {
 
-            for (NewsCategoryModel old : newCategories) {
+            for (NewsCategoryModel old : oldCategories) {
                 if (new_.getCategoryId().equals(old.getCategoryId())) {
                     new_.setEnabled(old.isEnabled());
                 }
@@ -236,7 +233,6 @@ public class NavigationActivity extends AppCompatActivity {
         categoryNewsDao.deleteAll();
         categoryNewsDao.insertAll(newCategories);
     }
-
 
     @Override
     protected void onStop() {

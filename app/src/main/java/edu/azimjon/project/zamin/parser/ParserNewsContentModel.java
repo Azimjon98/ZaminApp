@@ -50,19 +50,6 @@ public class ParserNewsContentModel {
             Log.d(ERROR_LOG, "Error SimpleNews Parser: " + e.getMessage());
         }
 
-        if (allFavouriteIds.contains(model.getNewsId())) {
-            model.setWished(true);
-        }
-
-        for (NewsCategoryModel c : categoryModels) {
-            if (model.getCategoryId().equals(c.getCategoryId())) {
-                Log.d("myLog", "categoryModels in");
-
-                model.setCategoryName(c.getName());
-                break;
-            }
-        }
-
         return model;
     }
 }

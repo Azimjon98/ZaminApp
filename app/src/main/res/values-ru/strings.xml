@@ -33,4 +33,6 @@
     <string name="text_results">qidiruv natijalari</string>
     <string name="title_select_categories">Kategoriyalarni tanlang</string>
     <string name="today">Bugun</string>
+    <string name="text_no_connection">Tilni o\'zgartirish uchun internetga ulaning</string>
+    <string name="check_the_connection">Internetga ulanganingizni tekshirib ko\'ring</string>
 </resources>

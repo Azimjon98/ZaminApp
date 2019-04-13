@@ -28,6 +28,7 @@ import static edu.azimjon.project.zamin.addition.Constants.*;
 
 public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ArrayList<T> items;
+    public ArrayList<Boolean> states;
     public Context context;
 
     //header states
@@ -46,6 +47,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         super();
         this.context = context;
         this.items = items;
+        this.states = new ArrayList<>();
     }
 
     public void withHeader(View headerView) {
@@ -100,19 +102,38 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
     private void clear_items() {
         this.items.clear();
+        this.states.clear();
         this.notifyDataSetChanged();
     }
 
     public void init_items(List<T> items) {
         clear_items();
         this.items.addAll(items);
+        add_states(items);
         this.notifyDataSetChanged();
     }
 
     public void add_all(List<T> items) {
         this.items.addAll(items);
+        add_states(items);
         this.notifyDataSetChanged();
     }
+
+    public void add_states(List<T> items) {
+        List<Boolean> states = new ArrayList<>();
+        for(T t : items)
+            states.add(false);
+
+        this.states.addAll(states);
+    }
+
+    public void restore_state() {
+        for(Boolean t : states)
+            t = false;
+
+    }
+
+
 
 
     //TODO: indicator item show/hide when loading data

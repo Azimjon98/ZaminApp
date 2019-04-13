@@ -33,4 +33,6 @@
     <string name="text_results">қидирув натижалари</string>
     <string name="title_select_categories">Категорияларни танланг</string>
     <string name="today">Бугун</string>
+    <string name="text_no_connection">Tilni o\'zgartirish uchun internetga ulaning</string>
+    <string name="check_the_connection">Internetga ulanganingizni tekshirib ko\'ring</string>
 </resources>

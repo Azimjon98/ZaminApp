@@ -53,6 +53,19 @@ public class MySettings {
         return preferences.getBoolean(IS_LOGINED, false);
     }
 
+
+    public void setLangChanged(boolean state) {
+        SharedPreferences preferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(LANG_CHANGED, state);
+        editor.apply();
+    }
+
+    public boolean islangChanged() {
+        SharedPreferences preferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        return preferences.getBoolean(LANG_CHANGED, false);
+    }
+
     public void setLoggined(boolean state) {
         SharedPreferences preferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -108,6 +121,15 @@ public class MySettings {
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         return sharedPreferences.getString(MY_LOCALE, "default");
+    }
+
+    public String getLang() {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        String lang = sharedPreferences.getString(MY_LOCALE, "default");
+
+        return lang.equals("default") ?
+                "oz" : MySettings.getInstance().getLocale();
+
     }
 
 

@@ -47,6 +47,7 @@ public class Constants {
     public static String MY_EMAIL = "email";
     public static String MY_LOCALE = "locale";
     public static String MY_NUMBER = "number";
+    public static String LANG_CHANGED = "lang_changed";
 
     //TODO: KEYS
     public static String KEY_NEWS_ID = "news_id";

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
@@ -139,7 +140,9 @@ public class NavigationActivity extends AppCompatActivity {
                     getMyApplicationComponent()
                     .getRetrofitApp()
                     .create(MyRestService.class)
-                    .getAllCategories("uz")
+                    .getAllCategories(
+                            MySettings.getInstance().getLang()
+                    )
                     .enqueue(new Callback<JsonArray>() {
                         @Override
                         public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
@@ -206,18 +209,11 @@ public class NavigationActivity extends AppCompatActivity {
         List<NewsCategoryModel> newCategories = categoryModels;
 
         //checking if there any categories added or removed
-        if (oldCategories.size() == newCategories.size())
-            return;
-        else
+        if (MySettings.getInstance().islangChanged() ||
+                oldCategories.size() != newCategories.size()) {
+            MySettings.getInstance().setLangChanged(false);
             update_database(categoryNewsDao, oldCategories, newCategories);
-
-        for (int i = 0; i < oldCategories.size(); i++) {
-            //check if there any index changings in database
-            if (oldCategories.get(i).getId() != newCategories.get(i).getId())
-                update_database(categoryNewsDao, oldCategories, newCategories);
         }
-
-        //else return :)
 
     }
 
@@ -230,7 +226,7 @@ public class NavigationActivity extends AppCompatActivity {
         for (NewsCategoryModel new_ : newCategories) {
 
             for (NewsCategoryModel old : newCategories) {
-                if (new_.getId() == old.getId()) {
+                if (new_.getCategoryId().equals(old.getCategoryId())) {
                     new_.setEnabled(old.isEnabled());
                 }
             }
@@ -246,22 +242,8 @@ public class NavigationActivity extends AppCompatActivity {
     protected void onStop() {
         Log.d(CALLBACK_LOG, "Navigation onStop");
 
-
         super.onStop();
         unregisterReceiver(myConnectivityReceiver);
     }
 
-    @Override
-    protected void onPause() {
-        Log.d(CALLBACK_LOG, "Navigation onPause");
-
-        super.onPause();
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        Log.d(CALLBACK_LOG, "Navigation onDestroy");
-        super.onDestroy();
-    }
 }

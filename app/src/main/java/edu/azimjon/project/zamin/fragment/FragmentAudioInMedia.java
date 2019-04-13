@@ -119,6 +119,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
         audioNewsAdapter.withHeader(viewHeader);
         binding.listAudio.setAdapter(audioNewsAdapter);
         binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+        binding.listAudio.setHasFixedSize(true);
 
         bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listAudio, false);
         bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listAudio, false);

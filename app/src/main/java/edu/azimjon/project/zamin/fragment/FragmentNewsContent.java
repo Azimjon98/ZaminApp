@@ -133,6 +133,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         bindingHeader.setModel(model);
         mediumNewsAdapter.withHeader(bindingHeader.getRoot());
         binding.listLastNews.setAdapter(mediumNewsAdapter);
+        binding.listLastNews.setHasFixedSize(true);
 
         bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listLastNews, false);
         bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listLastNews, false);

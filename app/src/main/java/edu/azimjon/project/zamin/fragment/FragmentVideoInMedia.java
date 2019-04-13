@@ -100,6 +100,7 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
         videoNewsAdapter.withHeader(viewHeader);
         binding.listVideo.setAdapter(videoNewsAdapter);
         binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+        binding.listVideo.setHasFixedSize(true);
 
 
         bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listVideo, false);

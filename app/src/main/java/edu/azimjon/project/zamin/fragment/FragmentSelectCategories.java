@@ -63,6 +63,7 @@ public class FragmentSelectCategories extends Fragment {
         binding.list.setLayoutManager(manager);
         adapter = new SelectCategoriesAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         binding.list.setAdapter(adapter);
+        binding.list.setHasFixedSize(true);
 
         new GetAllCategoriesAsyckTask().execute();
 

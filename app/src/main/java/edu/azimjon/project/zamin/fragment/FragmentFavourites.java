@@ -82,6 +82,7 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
                             false));
             binding.listFavourite.setAdapter(favouriteNewsAdapter);
             binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+            binding.listFavourite.setHasFixedSize(true);
 
         }
 

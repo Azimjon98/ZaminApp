@@ -94,6 +94,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
             mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
             binding.listTopNews.setAdapter(mediumNewsAdapter);
             binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+            binding.listTopNews.setHasFixedSize(true);
 
             bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listTopNews, false);
             bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listTopNews, false);

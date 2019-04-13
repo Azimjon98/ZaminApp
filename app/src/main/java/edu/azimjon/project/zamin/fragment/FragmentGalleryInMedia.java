@@ -102,6 +102,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
         galleryAdapter.withHeader(viewHeader);
         binding.listVideo.setAdapter(galleryAdapter);
         binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+        binding.listVideo.setHasFixedSize(true);
 
         bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listVideo, false);
         bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listVideo, false);

@@ -144,6 +144,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
             //give padding to bottom
             binding.listLastNewsContinue.setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+            binding.listLastNewsContinue.setHasFixedSize(true);
 
 
             binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,

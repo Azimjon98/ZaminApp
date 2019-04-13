@@ -96,6 +96,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
         adapter = new MediumNewsAdapter(getContext(), new ArrayList<>());
         binding.listSearchResult.setLayoutManager(manager);
         binding.listSearchResult.setAdapter(adapter);
+        binding.listSearchResult.setHasFixedSize(true);
 
         bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listSearchResult, false);
         bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);

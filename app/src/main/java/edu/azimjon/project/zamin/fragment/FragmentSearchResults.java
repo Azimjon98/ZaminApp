@@ -193,7 +193,7 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
     //TODO: Parsing
     //parsing last news continue(pager news)
     private void parsingLastNewsContinue(JsonObject json) {
-        parserSimpleNewsModel = new ParserSimpleNewsModel(this);
+        parserSimpleNewsModel = new ParserSimpleNewsModel();
 
         //sending data to view
         if (offset == 1)

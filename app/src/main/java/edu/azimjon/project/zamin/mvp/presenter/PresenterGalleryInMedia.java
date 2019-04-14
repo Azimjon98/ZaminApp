@@ -18,15 +18,19 @@ public class PresenterGalleryInMedia {
     }
 
     public void init() {
-        modelGalleryInMedia.getNews();
+        modelGalleryInMedia.initGalleryNews();
     }
 
     public void getContinue() {
-        modelGalleryInMedia.getNews();
+        modelGalleryInMedia.getGalleryNews();
+    }
+
+    public void initNews(List<NewsSimpleModel> items, int message) {
+        mainView.initGallery(items, message);
     }
 
     public void addNews(List<NewsSimpleModel> items, int message) {
-        mainView.initGallery(items, message);
+        mainView.addGallery(items, message);
     }
 
 }

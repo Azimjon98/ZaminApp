@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
@@ -21,6 +22,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class ModelVideoinMedia {
@@ -43,31 +45,65 @@ public class ModelVideoinMedia {
             e.printStackTrace();
         }
 
-        parserSimpleNewsModel = new ParserSimpleNewsModel(((Fragment)presenterVideoInMedia.mainView));
     }
 
+    public void initTopNews() {
+        offset = 1;
+        getVideoNews();
+    }
 
     //TODO: Networking(getting response from server)
 
 
-    //getting main news(pager news)
-    public void getTopNews() {
+    //getting video news(pager news)
+    public void getVideoNews() {
+        parserSimpleNewsModel = new ParserSimpleNewsModel();
 
-        //declare get data here
+
+        retrofit.create(MyRestService.class)
+                .getNewsWithType(String.valueOf(offset),
+                        limit,
+                        "2",
+                        MySettings.getInstance().getLang())
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        if (response.isSuccessful()) {
+                            JsonObject json = response.body();
+                            parsingVideoNews(json);
+
+
+                            offset++;
+                        } else {
+                            Log.d(API_LOG, "getLastNews onFailure: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        Log.d(API_LOG, "getLastNews onFailure: " + t.getMessage());
+                        if (offset == 1)
+                            presenterVideoInMedia.initNews(null, MESSAGE_NO_CONNECTION);
+                        else
+                            presenterVideoInMedia.addNews(null, MESSAGE_NO_CONNECTION);
+                    }
+                });
     }
 
 
     //TODO: Parsing and sending data to our view
 
     //parsing top news(pager news)
-    private void parsingTopNews(JsonObject json) {
+    private void parsingVideoNews(JsonObject json) {
         List<NewsSimpleModel> items = new ArrayList<>();
 
         //sending data to view
-        presenterVideoInMedia.addNews(items, MESSAGE_OK);
+        if (offset == 1)
+            presenterVideoInMedia.initNews(items, MESSAGE_OK);
+        else
+            presenterVideoInMedia.addNews(items, MESSAGE_OK);
 
     }
-
 
 
 }

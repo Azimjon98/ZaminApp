@@ -18,16 +18,19 @@ public class PresenterAudioInMedia {
     }
 
     public void init() {
-        modelAudioInMedia.getAudioNews();
+        modelAudioInMedia.initAudioNews();
     }
 
     public void getContinue() {
         modelAudioInMedia.getAudioNews();
     }
 
+    public void initNews(List<NewsSimpleModel> items, int message) {
+        mainView.initAudio(items, message);
+    }
 
     public void addNews(List<NewsSimpleModel> items, int message) {
-        mainView.initAudio(items, message);
+        mainView.addAudio(items, message);
     }
 
 

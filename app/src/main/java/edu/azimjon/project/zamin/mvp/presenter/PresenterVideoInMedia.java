@@ -20,15 +20,22 @@ public class PresenterVideoInMedia {
     }
 
     public void init() {
-        modelVideoinMedia.getTopNews();
+        modelVideoinMedia.initTopNews();
     }
 
     public void getContinue() {
-        modelVideoinMedia.getTopNews();
+        modelVideoinMedia.getVideoNews();
     }
 
-    public void addNews(List<NewsSimpleModel> items, int message) {
+    public void initNews(List<NewsSimpleModel> items, int message) {
         mainView.initVideo(items, message);
     }
+
+
+    public void addNews(List<NewsSimpleModel> items, int message) {
+        mainView.addVideo(items, message);
+    }
+
+
 
 }

@@ -49,7 +49,7 @@ public class ModelNewsContent {
             e.printStackTrace();
         }
 
-        parserSimpleNewsModel = new ParserSimpleNewsModel(((Fragment) presenterNewsContent.mainView));
+        parserSimpleNewsModel = new ParserSimpleNewsModel();
     }
 
     public void getAllItems(String newsId) {

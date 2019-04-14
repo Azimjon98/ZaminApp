@@ -64,7 +64,7 @@ public class ModelNewsFeed {
             e.printStackTrace();
         }
 
-        simpleModelParser = new ParserSimpleNewsModel((Fragment) presenterNewsFeed.mainView);
+        simpleModelParser = new ParserSimpleNewsModel();
 
     }
 

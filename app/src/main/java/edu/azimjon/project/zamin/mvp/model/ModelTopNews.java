@@ -43,7 +43,7 @@ public class ModelTopNews {
             e.printStackTrace();
         }
 
-        parserSimpleNewsModel = new ParserSimpleNewsModel(((Fragment) presenterTopNews.mainView));
+        parserSimpleNewsModel = new ParserSimpleNewsModel();
     }
 
 

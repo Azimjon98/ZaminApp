@@ -28,7 +28,7 @@ public class ParserSimpleNewsModel {
     //list of ids which are favourite
     List<NewsCategoryModel> categoryModels;
 
-    public ParserSimpleNewsModel(Fragment fragment) {
+    public ParserSimpleNewsModel() {
 
     }
 

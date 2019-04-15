@@ -25,6 +25,9 @@
         <argument
             android:name="newsId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_fragmentNewsContent_to_fragmentWebView"
+            app:destination="@id/fragmentWebView" />
     </fragment><action android:id="@+id/action_global_fragmentNewsContent" app:destination="@id/fragmentNewsContent"/>
     <fragment
         android:id="@+id/fragmentSearchNews"
@@ -50,4 +53,9 @@
         android:name="edu.azimjon.project.zamin.fragment.FragmentSelectCategories"
         android:label="window_select_categories"
         tools:layout="@layout/window_select_categories" />
+    <fragment
+        android:id="@+id/fragmentWebView"
+        android:name="edu.azimjon.project.zamin.fragment.FragmentWebView"
+        android:label="window_web_view"
+        tools:layout="@layout/window_web_view" />
 </navigation>

@@ -15,6 +15,7 @@ import java.util.List;
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.activity.NavigationActivity;
+import edu.azimjon.project.zamin.addition.Converters;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemFavouriteNewsBinding;
@@ -72,11 +73,6 @@ public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel
             myHolder.binding.setModel(items.get(position));
             myHolder.binding.newsNumber.setText((i + 1) > 9 ? String.valueOf(i + 1) : "0" + i);
 
-            List<String> allFavouriteIds;
-            allFavouriteIds = NavigationActivity.getFavouritesIds();
-            if (allFavouriteIds.contains(myHolder.binding.getModel().getNewsId())) {
-                myHolder.binding.getModel().setWished(true);
-            }
 
             myHolder.binding.favouriteIcon.setImageResource(
                     myHolder.binding.getModel().isWished() ?
@@ -90,8 +86,6 @@ public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel
     //################################################################
 
     //TODO: Hoders
-
-
 
 
     public class MyHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -109,10 +103,10 @@ public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel
                         boolean isWished = binding.getModel().isWished();
                         binding.getModel().setWished(!binding.getModel().isWished());
 
-                binding.favouriteIcon.setImageResource(
-                        binding.getModel().isWished() ?
-                                R.drawable.bookmark_active :
-                                R.drawable.bookmark_inactive);
+                        binding.favouriteIcon.setImageResource(
+                                binding.getModel().isWished() ?
+                                        R.drawable.bookmark_active :
+                                        R.drawable.bookmark_inactive);
                         //delete or inser news to favourites in another thread
                         new Thread(() -> {
                             if (isWished) {
@@ -134,7 +128,7 @@ public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
-            bundle.putParcelable(KEY_NEWS_MODEL, binding.getModel());
+            bundle.putParcelable(KEY_NEWS_MODEL, Converters.fromFavouritestoSimpleNews(binding.getModel()));
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }

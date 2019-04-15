@@ -11,8 +11,8 @@
     <string name="message_no_connection">Internetga ulanishning iloji yo\'q</string>
     <string name="title_audio_news">Audio xabarlar</string>
     <string name="messege_audio">O\'zbekistonda va jahonda bo\'layotgan voqealarning audio xabarlari</string>
-    <string name="title_favourites">Sizning Xabarlaringiz</string>
-    <string name="message_favourites">Zamin siz uchun muhim habarlarni saqlab turadi</string>
+    <string name="title_favourites">Sizning xabarlaringiz</string>
+    <string name="message_favourites">Zamin siz uchun muhim xabarlarni saqlab turadi</string>
     <string name="title_foto">Foto kolleksiya</string>
     <string name="message_foto">O\'zbekistonda va jahonda bo\'layotgan voqealarning foto jamlanmasi</string>
     <string name="text_last_news">So\'nggi yangiliklar</string>

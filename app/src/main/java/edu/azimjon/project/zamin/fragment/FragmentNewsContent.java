@@ -17,11 +17,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -57,6 +59,7 @@ import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
@@ -67,6 +70,7 @@ import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.SEARCH_CATEGORY;
 import static edu.azimjon.project.zamin.addition.Constants.SEARCH_TAG;
+import static edu.azimjon.project.zamin.addition.Constants.WEB_URL;
 
 public class FragmentNewsContent extends Fragment implements IFragmentNewsContent {
     //TODO: Constants here
@@ -127,20 +131,18 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         binding.listLastNews.setLayoutManager(manager);
         mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        binding.getRoot().setPadding(0, 0, 0, MyUtil.dpToPx(24));
 
         bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_content, binding.listLastNews, false);
-        bindingHeader.getRoot().setPadding(0, 0, 0, MyUtil.dpToPx(24));
-        bindingHeader.setModel(model);
-        mediumNewsAdapter.withHeader(bindingHeader.getRoot());
-        binding.listLastNews.setAdapter(mediumNewsAdapter);
-        binding.listLastNews.setHasFixedSize(true);
-
         bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listLastNews, false);
         bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listLastNews, false);
 
 
-        binding.listLastNews.addOnScrollListener(scrollListener);
-
+        bindingHeader.setModel(model);
+        mediumNewsAdapter.withHeader(bindingHeader.getRoot());
+        binding.listLastNews.setAdapter(mediumNewsAdapter);
+        //disable auto scrolling
+        binding.listLastNews.setHasFixedSize(true);
 
         //*****************************************************************************
 
@@ -162,10 +164,20 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 //                injectCSS();
                 super.onPageFinished(view, url);
                 bindingHeader.progress.setVisibility(View.GONE);
+            }
 
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+                Bundle bundle = new Bundle();
+                bundle.putString(WEB_URL, url);
+                Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
+                return true;
             }
         });
 
+
+        binding.listLastNews.addOnScrollListener(scrollListener);
 
         initIcons();
         presenterNewsContent.init(newsId);
@@ -199,7 +211,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
         if (message == MESSAGE_OK) {
             mediumNewsAdapter.withHeader(bindingHeader.getRoot());
-
 
             mediumNewsAdapter.init_items(items);
         }
@@ -253,13 +264,20 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     private void initIcons() {
 
+        binding.iconBookmark.setImageResource(
+                bindingHeader.getModel().isWished() ?
+                        R.drawable.bookmark_active :
+                        R.drawable.bookmark_inactive);
+
         binding.iconBookmark.setOnClickListener(v -> {
             boolean isWished = bindingHeader.getModel().isWished();
-            bindingHeader.getModel().setWished(!bindingHeader.getModel().isWished());
+            bindingHeader.getModel().setWished(!isWished);
 
             binding.iconBookmark.setImageResource(
-                    isWished ? R.drawable.bookmark_active :
-                            R.drawable.bookmark_inactive);
+                    bindingHeader.getModel().isWished ?
+                            R.drawable.bookmark_active :
+                            R.drawable.bookmark_inactive
+            );
             //delete or inser news to favourites in another thread
             new Thread(() -> {
                 if (isWished) {
@@ -270,7 +288,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                     FavouriteNewsDatabase.getInstance(getContext())
                             .getDao()
                             .insert(Converters
-                                    .fromSimpleNewstoFavouriteNews(simpleModel));
+                                    .fromContentNewstoFavouritesNews(bindingHeader.getModel()));
                 }
             }).start();
         });
@@ -279,7 +297,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             String shareBody = bindingHeader.getModel().getOriginalUrl();
-            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Zamin.uz");
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
             startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.text_share)));
         });
@@ -324,6 +341,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     };
 
+    //go navigation to BaseView first Content is called
     static class MyAsycTask extends AsyncTask<Void, Void, Void> {
         Activity activity;
         int count;

@@ -262,20 +262,16 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
     public void initMainNews(List<NewsSimpleModel> items, int message) {
         binding.swiper.setRefreshing(false);
 
-        Log.d(DELETE_LOG, "a");
         if (message == MESSAGE_NO_CONNECTION) {
             lastContinueNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
             return;
         }
 
 
-        Log.d(DELETE_LOG, "b");
-
         if (message == MESSAGE_OK) {
             mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
             bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);
 
-            Log.d(DELETE_LOG, "c index: " + index);
             lastContinueNewsAdapter.withHeader(bindingHeader.getRoot());
             mainNewsPagerAdapter.init_items(items, items.size());
 

@@ -11,8 +11,8 @@
     <string name="message_no_connection">Интернетга уланишнинг иложи йўқ</string>
     <string name="title_audio_news">Аудио хабарлар</string>
     <string name="messege_audio">Ўзбекистонда ва жаҳонда бўлаётган воқеаларнинг аудио хабарлари</string>
-    <string name="title_favourites">Сизнинг Хабарларингиз</string>
-    <string name="message_favourites">Замин сиз учун муҳим ҳабарларни сақлаб туради</string>
+    <string name="title_favourites">Сизнинг хабарларингиз</string>
+    <string name="message_favourites">Замин сиз учун муҳим хабарларни сақлаб туради</string>
     <string name="title_foto">Фото коллексия</string>
     <string name="message_foto">Ўзбекистонда ва жаҳонда бўлаётган воқеаларнинг фото жамланмаси</string>
     <string name="text_last_news">Сўнгги янгиликлар</string>
@@ -35,4 +35,5 @@
     <string name="today">Бугун</string>
     <string name="text_no_connection">Tilni o\'zgartirish uchun internetga ulaning</string>
     <string name="check_the_connection">Internetga ulanganingizni tekshirib ko\'ring</string>
+    <string name="text_share">Янгиликларни улашиш</string>
 </resources>

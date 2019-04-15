@@ -27,7 +27,6 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
 
-import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 
 public class FragmentSelectCategories extends Fragment {
     WindowSelectCategoriesBinding binding;

@@ -1,6 +1,7 @@
 package edu.azimjon.project.zamin;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,10 +44,6 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 allFavouriteIds = FavouriteNewsDatabase.getInstance(getApplicationContext()).getDao().getAllIds();
                 categoryModels = CategoryNewsDatabase.getInstance(getApplicationContext()).getDao().getAll();
-
-                for (NewsCategoryModel m : categoryModels) {
-                    System.out.println("CategoryInit: " + m.getName());
-                }
 
                 handler.sendEmptyMessage(1);
             }

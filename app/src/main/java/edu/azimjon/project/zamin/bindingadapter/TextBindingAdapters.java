@@ -49,7 +49,7 @@ public class TextBindingAdapters {
             return;
         }
 
-        String textToday = view.getContext().getResources().getString(R.string.today);
+        String textToday = view.getContext().getApplicationContext().getResources().getString(R.string.today);
         String[] months = view.getContext().getResources().getStringArray(R.array.months);
         Calendar newsCalendar = new GregorianCalendar();
         calendar.setTimeInMillis(newsDate.getTime());

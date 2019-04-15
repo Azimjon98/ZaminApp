@@ -76,6 +76,8 @@ public class ModelNewsFeed {
     private void continueProcess() {
         getMainNews();
         getLastNews();
+//        getAudioNews();
+        getVideoNews();
     }
 
     //TODO: Networking(getting response from server)
@@ -166,6 +168,64 @@ public class ModelNewsFeed {
                 });
     }
 
+    //getting audio news()
+    public void getAudioNews() {
+
+        retrofit.create(MyRestService.class)
+                .getNewsWithType("1",
+                        "3",
+                        "1",
+                        MySettings.getInstance().getLang())
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        if (response.isSuccessful()) {
+                            JsonObject json = response.body();
+                            parsingAudioNews(json);
+
+
+                        } else {
+                            Log.d(API_LOG, "getLastNews onFailure: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                        presenterNewsFeed.initAudioNews(null, MESSAGE_NO_CONNECTION);
+                    }
+                });
+    }
+
+    //getting video news(pager news)
+    public void getVideoNews() {
+
+
+        retrofit.create(MyRestService.class)
+                .getNewsWithType("1",
+                        "3",
+                        "2",
+                        MySettings.getInstance().getLang())
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        if (response.isSuccessful()) {
+                            JsonObject json = response.body();
+                            parsingVideoNews(json);
+
+                        } else {
+                            Log.d(API_LOG, "getLastNews onFailure: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        Log.d(API_LOG, "getLastNews onFailure: " + t.getMessage());
+                        presenterNewsFeed.initVideoNews(null, MESSAGE_NO_CONNECTION);
+                    }
+                });
+    }
+
 
     //TODO: Parsing and sending data to our view
 
@@ -193,6 +253,23 @@ public class ModelNewsFeed {
 
         //sending data to view
         presenterNewsFeed.addLastNewsContinue(items, MESSAGE_OK);
+    }
+
+    //parsing top news(pager news)
+    private void parsingAudioNews(JsonObject json) {
+        List<NewsSimpleModel> items = simpleModelParser.parse(json);
+
+        presenterNewsFeed.initAudioNews(items, MESSAGE_OK);
+
+    }
+
+    //parsing top news(pager news)
+    private void parsingVideoNews(JsonObject json) {
+        List<NewsSimpleModel> items = simpleModelParser.parse(json);
+
+        //sending data to view
+        presenterNewsFeed.initVideoNews(items, MESSAGE_OK);
+
     }
 
 

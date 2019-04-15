@@ -19,7 +19,7 @@ public interface FavouriteNewsDao {
     @Update
     void update(FavouriteNewsModel entity);
 
-    @Query("DELETE FROM favourites_news WHERE id = :id")
+    @Query("DELETE FROM favourites_news WHERE newsId = :id")
     void delete(String id);
 
     @Query("DELETE FROM favourites_news")

@@ -4,16 +4,14 @@
     <data>
 
         <import type="android.view.View" />
-
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#f6f6f6"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:theme="@style/ContentTheme">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -36,8 +34,19 @@
                     android:padding="6dp"
                     android:src="@drawable/ic_arrow_back" />
 
+                <TextView
+                    android:layout_marginStart="8dp"
+                    android:layout_toEndOf="@id/icon_back"
+                    android:layout_centerVertical="true"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:text="@string/app_name"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
                 <ImageView
-                    android:id="@+id/icon_bookmark"
+                    android:id="@+id/icon_share"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_alignParentEnd="true"
@@ -47,39 +56,30 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="6dp"
-                    android:src="@drawable/bookmark_inactive" />
-
-                <ImageView
-                    android:id="@+id/icon_share"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
-                    android:layout_toStartOf="@id/icon_bookmark"
-                    android:background="@drawable/custom_ripple_borderless"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="6dp"
                     android:src="@drawable/ic_share" />
+
 
 
             </RelativeLayout>
 
         </android.support.design.widget.AppBarLayout>
 
-        <RelativeLayout
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white">
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:paddingTop="-10dp"
+            android:paddingBottom="0dp"
+            android:visibility="visible" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list_last_news"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            </android.support.v7.widget.RecyclerView>
-
-        </RelativeLayout>
+        </WebView>
 
 
     </LinearLayout>

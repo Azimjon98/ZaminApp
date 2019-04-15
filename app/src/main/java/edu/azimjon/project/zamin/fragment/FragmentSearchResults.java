@@ -143,7 +143,6 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
         }
 
         if (searchWhere == SEARCH_CATEGORY) {
-            Log.d(DELETE_LOG, "in search category");
             searchNews = retrofit
                     .create(MyRestService.class)
                     .getNewsWithCategory(String.valueOf(offset),

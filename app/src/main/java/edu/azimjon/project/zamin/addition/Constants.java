@@ -35,8 +35,6 @@ public class Constants {
     public static final String BASE_URL = "http://m.zamin.uz/api/v1/";
     public static final String BASE_KEY = "355f1172-2bf8-4e3e-93f6-83d331f956eb";
 
-    //links
-    public static final String WEB_URL = "my_url";
 
 
     //TODO: STATIC CONSTANTS
@@ -53,6 +51,7 @@ public class Constants {
     public static String MY_NUMBER = "number";
     public static String LANG_CHANGED = "lang_changed";
     public static String CONTENT_STACK = "content_stack";
+    public static String WEB_URL = "web_url";
 
     //TODO: KEYS
     public static String KEY_NEWS_ID = "news_id";

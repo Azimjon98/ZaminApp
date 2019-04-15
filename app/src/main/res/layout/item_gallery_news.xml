@@ -11,165 +11,159 @@
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/clicker"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp">
+        android:layout_height="wrap_content">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/images_card"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="0dp"
-            android:translationZ="0dp"
-            app:cardCornerRadius="8dp"
-            app:cardPreventCornerOverlap="false">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp">
 
-
-            <LinearLayout
+            <android.support.v7.widget.CardView
+                android:id="@+id/images_card"
                 android:layout_width="match_parent"
-                android:layout_height="265dp"
-                android:fitsSystemWindows="true"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:elevation="0dp"
+                android:translationZ="0dp"
+                app:cardCornerRadius="8dp"
+                app:cardPreventCornerOverlap="false">
 
-                <ImageView
-                    giveCornerRadius="give"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="1dp"
-                    android:layout_weight="2"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/image_temp" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="265dp"
+                    android:fitsSystemWindows="true"
+                    android:orientation="horizontal">
 
                     <ImageView
                         giveCornerRadius="give"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginStart="1dp"
-                        android:layout_marginBottom="1dp"
-                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="1dp"
+                        android:layout_weight="2"
                         android:scaleType="centerCrop"
                         android:src="@drawable/image_temp" />
 
-                    <ImageView
-                        giveCornerRadius="give"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginStart="1dp"
-                        android:layout_marginTop="1dp"
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/image_temp" />
+                        android:orientation="vertical">
+
+                        <ImageView
+                            giveCornerRadius="give"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="1dp"
+                            android:layout_marginBottom="1dp"
+                            android:layout_weight="1"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/image_temp" />
+
+                        <ImageView
+                            giveCornerRadius="give"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="1dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_weight="1"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/image_temp" />
+
+                    </LinearLayout>
+
 
                 </LinearLayout>
 
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
+            </android.support.v7.widget.CardView>
 
 
-        <TextView
-            android:id="@+id/news_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/images_card"
-            android:layout_marginTop="16dp"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:lineSpacingExtra="6sp"
-            android:maxLines="3"
-            android:text="@{model.title}"
-            android:textColor="#212121"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <RelativeLayout
-            android:id="@+id/lay_additional"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
-            android:layout_below="@id/news_text"
-            android:layout_marginTop="12dp">
-
-            <LinearLayout
-                android:id="@+id/lay_news_date"
+            <TextView
+                android:id="@+id/news_text"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_below="@id/images_card"
+                android:layout_marginTop="16dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="6sp"
+                android:maxLines="3"
+                android:text="@{model.title}"
+                android:textColor="#212121"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    mySetDate="@{model.date}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:fontFamily="sans-serif"
-                    android:text="@{model.date}"
-                    android:textColor="#9e9e9e"
-                    android:textSize="14dp"
-                    android:textStyle="normal" />
-
-                <View
-                    android:layout_width="4dp"
-                    android:layout_height="4dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/bck_round_shape"
-                    android:backgroundTint="#9e9e9e" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="4dp"
-                    android:fontFamily="sans-serif"
-                    android:text="@{model.categoryName}"
-                    android:textColor="#d32f2f"
-                    android:textSize="14dp"
-                    android:textStyle="normal" />
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/favourite_icon"
-                android:layout_width="24dp"
+            <RelativeLayout
+                android:id="@+id/lay_additional"
+                android:layout_width="match_parent"
                 android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/custom_ripple_borderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="2dp"
-                android:src="@drawable/bookmark_inactive"
-                android:translationZ="2dp" />
+                android:layout_below="@id/news_text"
+                android:layout_marginTop="12dp">
 
+                <LinearLayout
+                    android:id="@+id/lay_news_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        mySetDate="@{model.date}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="sans-serif"
+                        android:textColor="#9e9e9e"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+
+                    <View
+                        android:layout_width="4dp"
+                        android:layout_height="4dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/bck_round_shape"
+                        android:backgroundTint="#9e9e9e" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="4dp"
+                        android:fontFamily="sans-serif"
+                        android:text="@{model.categoryName}"
+                        android:textColor="#d32f2f"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/favourite_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/custom_ripple_borderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="2dp"
+                    android:src="@drawable/bookmark_inactive"
+                    android:translationZ="2dp" />
+
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/lay_additional"
+                android:layout_marginTop="16dp"
+                android:background="#e5e5e5" />
 
         </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/lay_additional"
-            android:layout_marginTop="16dp"
-            android:background="#e5e5e5" />
-
-
-        <View
-            android:id="@+id/clicker"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_alignTop="@id/image_lay"
-            android:layout_alignBottom="@id/lay_additional"
-            android:background="@drawable/custom_ripple"
-            android:clickable="true"
-            android:focusable="true"
-            android:translationZ="2dp" />
-
 
     </RelativeLayout>
 </layout>

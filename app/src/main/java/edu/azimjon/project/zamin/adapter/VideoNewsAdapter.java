@@ -107,6 +107,7 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
         public MyHolderItem(ItemVideoNewsBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            binding.clicker.setOnClickListener(this);
 
             binding.favouriteIcon.setOnClickListener(v -> {
                         boolean isWished = binding.getModel().isWished();

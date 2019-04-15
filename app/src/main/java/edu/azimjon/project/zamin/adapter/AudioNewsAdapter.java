@@ -30,14 +30,15 @@ import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     public boolean isPlaying = false;
-    public int playingMusicId = -1;
+    public String playingMusicId;
 
     public static interface IMyPlayer {
         void playPressed(NewsSimpleModel m);
 
         void pausePressed(NewsSimpleModel m);
 
-        void updateItems();
+        void updateItems(NewsSimpleModel m);
+
     }
 
     IMyPlayer myPlayer;
@@ -87,11 +88,9 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
 
             //FIXME: change icons
-            if (myHolder.binding.getModel().getId() == playingMusicId) {
-
+            if (myHolder.binding.getModel().getNewsId().equals(playingMusicId)) {
                 if (isPlaying) {
                     myHolder.binding.btnPlay.setImageResource(R.drawable.micon_player_pause);
-
                 } else {
                     myHolder.binding.btnPlay.setImageResource(R.drawable.micon_player_play);
 
@@ -121,26 +120,27 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 //            this.binding.clicker.setOnClickListener(this);
 
             binding.btnPlay.setOnClickListener(v -> {
-                //FIXME: change icons
-                if (binding.getModel().getId() == playingMusicId) {
+
+                if (binding.getModel().getNewsId().equals(playingMusicId)) {
                     if (isPlaying) {
                         isPlaying = false;
-                        binding.btnPlay.setImageResource(R.drawable.micon_player_pause);
+                        binding.btnPlay.setImageResource(R.drawable.micon_player_play);
                         myPlayer.pausePressed(binding.getModel());
                     } else {
                         isPlaying = true;
-                        binding.btnPlay.setImageResource(R.drawable.micon_player_play);
+                        binding.btnPlay.setImageResource(R.drawable.micon_player_pause);
                         myPlayer.playPressed(binding.getModel());
                     }
+
                 } else {
-                    playingMusicId = binding.getModel().getId();
-                    binding.btnPlay.setImageResource(R.drawable.micon_player_play);
-                    myPlayer.updateItems();
+                    isPlaying = true;
+                    playingMusicId = binding.getModel().getNewsId();
+                    binding.btnPlay.setImageResource(R.drawable.micon_player_pause);
+                    myPlayer.updateItems(binding.getModel());
                 }
 
             });
         }
-
 
         @Override
         public void onClick(View v) {

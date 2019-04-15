@@ -33,6 +33,7 @@ import edu.azimjon.project.zamin.mvp.view.IFragmentMedia;
 import timber.log.Timber;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 
 public class FragmentMedia extends Fragment{
 
@@ -45,7 +46,6 @@ public class FragmentMedia extends Fragment{
 
     //TODO: variables here
     WindowMediaBinding binding;
-    PresenterMedia presenterMedia;
     int position = 0;
 
     //adapters

@@ -64,24 +64,25 @@ public class MainNewsPagerAdapter extends PagerAdapter {
         //change Icon state when navigating
         binding.favouriteIcon.setImageResource(
                 binding.getModel().isWished() ?
-                        R.drawable.bookmark_inactive :
-                        R.drawable.bookmark_active);
+                        R.drawable.bookmark_active :
+                        R.drawable.bookmark_inactive);
 
         binding.favouriteIcon.setOnClickListener(v -> {
                     boolean isWished = binding.getModel().isWished();
                     binding.getModel().setWished(!binding.getModel().isWished());
 
+                    binding.favouriteIcon.setImageResource(
+                            binding.getModel().isWished() ?
+                                    R.drawable.bookmark_active :
+                                    R.drawable.bookmark_inactive);
                     //delete or inser news to favourites in another thread
                     new Thread(() -> {
                         if (isWished) {
-                            binding.favouriteIcon.setImageResource(R.drawable.bookmark_inactive);
 
                             FavouriteNewsDatabase.getInstance(context)
                                     .getDao()
                                     .delete(binding.getModel().getNewsId());
                         } else {
-                            binding.favouriteIcon.setImageResource(R.drawable.bookmark_active);
-
                             FavouriteNewsDatabase.getInstance(context)
                                     .getDao()
                                     .insert(Converters

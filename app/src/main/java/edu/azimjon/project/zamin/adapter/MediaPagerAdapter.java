@@ -64,6 +64,11 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
         }
     }
 
+    public void closePlayer() {
+        if (tab1 != null)
+            tab1.onPause();
+    }
+
     @Override
     public int getCount() {
         return tabs_number;

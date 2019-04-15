@@ -5,6 +5,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -70,10 +71,11 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     int total_items, visible_items, scrollout_items;
 
     //TODO: Player Variables
-    MyCountDownTimer timer;
+    Handler timer = new Handler();
     String currentTrackUrl = "https://muz11.z1.fm/e/ac/via_marokand_via_marokand_-_tarnov_tarnov_2016_(zf.fm).mp3";
     int musicDuration = -1;
     int currenPosition;
+    NewsSimpleModel currentModel;
 
 
     //#####################################################################
@@ -88,14 +90,6 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.window_audio_inside_media, container, false);
-
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setScreenOnWhilePlaying(true);
-        //mediaPlayer prepare listener
-        mediaPlayer.setOnPreparedListener(prepareListenter);
-        mediaPlayer.setOnErrorListener(this);
-        mediaPlayer.setOnCompletionListener(onCompletionListener);
 
         return binding.getRoot();
     }
@@ -127,17 +121,6 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
         //*****************************************************************************
 
 
-        //TODO: Init media player
-
-        try {
-            mediaPlayer.setDataSource(currentTrackUrl);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
-
-
         binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
@@ -158,30 +141,34 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     public void onStart() {
         super.onStart();
 
-        //FIXME: Delete this code in the end
-        EventBus.getDefault().post(new PlayerStateEvent(PLAYER_HIDE, ""));
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-        EventBus.getDefault().post(new PlayerStateEvent(PLAYER_HIDE, ""));
+        stopPlayerAndTimer();
         EventBus.getDefault().unregister(this);
+
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser == false) {
+            stopPlayerAndTimer();
+        }
+    }
 
     @Override
     public void onRefresh() {
-        if (isConnected_to_Net)
+        if (isConnected_to_Net) {
+            stopPlayerAndTimer();
             presenterAudioInMedia.init();
-        else
+        } else
             binding.swiper.setRefreshing(false);
+
     }
 
     //#################################################################
@@ -191,28 +178,64 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
     @Override
     public void playPressed(NewsSimpleModel m) {
-//        currentTrackUrl = m.getImageUrl();
+        currentModel = m;
         if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.reset();
+            mediaPlayer.start();
         }
+        timer.postDelayed(myTimerRunnable, 1000);
 
-        EventBus.getDefault().post(new PlayerStateEvent(PLAYER_RESET, ""));
+        EventBus.getDefault().post(new PlayerStateEvent(PLAYER_PAUSE_ICON, ""));
     }
 
     @Override
     public void pausePressed(NewsSimpleModel m) {
-//        mediaPlayer.g
+        currentModel = m;
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+        }
+
+        timer.removeCallbacks(myTimerRunnable);
+        EventBus.getDefault().post(new PlayerStateEvent(PLAYER_PLAY_ICON, ""));
     }
 
     @Override
-    public void updateItems() {
+    public void updateItems(NewsSimpleModel m) {
+        currentModel = m;
         audioNewsAdapter.notifyDataSetChanged();
+        timer.removeCallbacks(myTimerRunnable);
+
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setScreenOnWhilePlaying(true);
+        //mediaPlayer prepare listener
+        mediaPlayer.setOnPreparedListener(prepareListenter);
+        mediaPlayer.setOnErrorListener(this);
+        mediaPlayer.setOnCompletionListener(onCompletionListener);
+
+        //TODO: Init media player
+
+        try {
+            mediaPlayer.setDataSource(currentTrackUrl);
+            mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        EventBus.getDefault().post(new PlayerStateEvent(PLAYER_RESET, ""));
+        EventBus.getDefault().post(new PlayerStateEvent(PLAYER_TITLE, m.getTitle()));
     }
 
     @Override
     public void initAudio(List<NewsSimpleModel> items, int message) {
         binding.swiper.setRefreshing(false);
+        audioNewsAdapter.isPlaying = false;
+        audioNewsAdapter.playingMusicId = "";
 
         if (message == MESSAGE_NO_CONNECTION) {
             audioNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
@@ -252,6 +275,21 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
     //TODO: Additional methods
 
+    public void stopPlayerAndTimer() {
+        if (audioNewsAdapter != null) {
+            audioNewsAdapter.isPlaying = false;
+            audioNewsAdapter.playingMusicId = "";
+            audioNewsAdapter.notifyDataSetChanged();
+        }
+
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        EventBus.getDefault().post(new PlayerStateEvent(PLAYER_HIDE, ""));
+        timer.removeCallbacks(myTimerRunnable);
+    }
+
 
     //#################################################################
 
@@ -259,8 +297,15 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-
         mediaPlayer.reset();
+        try {
+            mediaPlayer.setDataSource(currentTrackUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+
         return false;
     }
 
@@ -281,9 +326,19 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_player_state_changed(PlayerStateEvent event) {
         switch (event.state) {
+            case PLAYER_STOP:
+                stopPlayerAndTimer();
+                break;
             case PLAYER_PLAY:
+                if (audioNewsAdapter.isPlaying) {
+                    pausePressed(currentModel);
+                } else
+                    playPressed(currentModel);
+
                 audioNewsAdapter.isPlaying = !audioNewsAdapter.isPlaying;
                 audioNewsAdapter.notifyDataSetChanged();
+
+
                 break;
             case PLAYER_PREV:
                 break;
@@ -330,23 +385,23 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     };
 
     public MediaPlayer.OnPreparedListener prepareListenter = new MediaPlayer.OnPreparedListener() {
-
         @Override
         public void onPrepared(MediaPlayer mp) {
             musicDuration = mediaPlayer.getDuration();
             mediaPlayer.start();
             if (timer != null) {
-                timer.cancel();
-                timer = null;
+                timer.removeCallbacks(myTimerRunnable);
             }
-            timer = new MyCountDownTimer(musicDuration, 1000);
-            timer.start();
+            timer.postDelayed(myTimerRunnable, 1000);
+            EventBus.getDefault().post(new PlayerStateEvent(PLAYER_RESET, ""));
         }
     };
 
     public MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
             try {
                 mediaPlayer.setDataSource(currentTrackUrl);
             } catch (IOException e) {
@@ -357,37 +412,23 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
         }
     };
 
-    public class MyCountDownTimer extends CountDownTimer {
-        /**
-         * @param millisInFuture    The number of millis in the future from the call
-         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
-         *                          is called.
-         * @param countDownInterval The interval along the way to receive
-         *                          {@link #onTick(long)} callbacks.
-         */
-        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
+    public Runnable myTimerRunnable = new Runnable() {
         @Override
-        public void onTick(long millisUntilFinished) {
+        public void run() {
             SimpleDateFormat date = new SimpleDateFormat("mm:ss");
             String timeStart = date.format(new Date(mediaPlayer.getCurrentPosition()));
             String timeEnd = date.format(new Date(musicDuration));
             String progress = String.valueOf(
-                    (int) ((Double.valueOf(musicDuration - mediaPlayer.getCurrentPosition()) / Double.valueOf(musicDuration)) * 100)
+                    (int) ((Double.valueOf(mediaPlayer.getCurrentPosition()) / Double.valueOf(musicDuration)) * 100)
             );
 
             PlayerStateEvent event = new PlayerStateEvent(PLAYER_UPDATE, progress);
             event.startTime = timeStart;
             event.endTime = timeEnd;
             EventBus.getDefault().post(event);
-        }
 
-        @Override
-        public void onFinish() {
-
+            timer.postDelayed(myTimerRunnable, 1000);
         }
-    }
+    };
 
 }

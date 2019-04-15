@@ -38,7 +38,6 @@ public class GalleryAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
     }
 
 
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -82,8 +81,8 @@ public class GalleryAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
             myHolder.binding.favouriteIcon.setImageResource(
                     myHolder.binding.getModel().isWished() ?
-                            R.drawable.bookmark_inactive :
-                            R.drawable.bookmark_active);
+                            R.drawable.bookmark_active :
+                            R.drawable.bookmark_inactive);
         }
 
 
@@ -93,7 +92,6 @@ public class GalleryAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
     //################################################################
 
     //TODO: Holders
-
 
 
     public class MyHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -112,16 +110,18 @@ public class GalleryAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
                         binding.getModel().setWished(!binding.getModel().isWished());
 
 
+                        binding.favouriteIcon.setImageResource(
+                                binding.getModel().isWished() ?
+                                        R.drawable.bookmark_active :
+                                        R.drawable.bookmark_inactive);
                         //delete or inser news to favourites in another thread
                         new Thread(() -> {
                             if (isWished) {
-                                binding.favouriteIcon.setImageResource(R.drawable.bookmark_inactive);
 
                                 FavouriteNewsDatabase.getInstance(context)
                                         .getDao()
                                         .delete(binding.getModel().getNewsId());
                             } else {
-                                binding.favouriteIcon.setImageResource(R.drawable.bookmark_active);
 
                                 FavouriteNewsDatabase.getInstance(context)
                                         .getDao()

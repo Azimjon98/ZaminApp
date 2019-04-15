@@ -10,6 +10,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+
+import edu.azimjon.project.zamin.events.PlayerStateEvent;
 import edu.azimjon.project.zamin.fragment.FragmentAudioInMedia;
 import edu.azimjon.project.zamin.fragment.FragmentFavourites;
 import edu.azimjon.project.zamin.fragment.FragmentGalleryInMedia;
@@ -19,6 +22,8 @@ import edu.azimjon.project.zamin.fragment.FragmentTopNews;
 import edu.azimjon.project.zamin.fragment.FragmentVideoInMedia;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_STOP;
 
 public class ContentPagerAdapter extends FragmentPagerAdapter {
 
@@ -27,7 +32,7 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
     FragmentNewsFeed fragmentNewsFeed;
     FragmentTopNews fragmentTopNews;
     FragmentFavourites fragmentFavourites;
-    FragmentMedia fragmentMedia;
+    FragmentMedia fragmentMedia = new FragmentMedia();
 
     int mediaPosition = 0;
 
@@ -58,8 +63,6 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
                     fragmentFavourites = new FragmentFavourites();
                 return fragmentFavourites;
             case 3:
-                if (fragmentMedia == null)
-                    fragmentMedia = new FragmentMedia();
                 fragmentMedia.setPosition(mediaPosition);
                 return fragmentMedia;
             default:

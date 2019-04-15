@@ -1,6 +1,7 @@
 package edu.azimjon.project.zamin.events;
 
 public class PlayerStateEvent {
+    public static final int PLAYER_STOP = 2000;
     public static final int PLAYER_PREV = 2001;
     public static final int PLAYER_NEXT = 2002;
     public static final int PLAYER_PLAY = 2003;

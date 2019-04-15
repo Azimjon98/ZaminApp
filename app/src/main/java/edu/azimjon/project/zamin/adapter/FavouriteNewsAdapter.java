@@ -80,8 +80,8 @@ public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel
 
             myHolder.binding.favouriteIcon.setImageResource(
                     myHolder.binding.getModel().isWished() ?
-                            R.drawable.bookmark_inactive :
-                            R.drawable.bookmark_active);
+                            R.drawable.bookmark_active :
+                            R.drawable.bookmark_inactive);
         }
 
 
@@ -109,17 +109,17 @@ public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel
                         boolean isWished = binding.getModel().isWished();
                         binding.getModel().setWished(!binding.getModel().isWished());
 
-
+                binding.favouriteIcon.setImageResource(
+                        binding.getModel().isWished() ?
+                                R.drawable.bookmark_active :
+                                R.drawable.bookmark_inactive);
                         //delete or inser news to favourites in another thread
                         new Thread(() -> {
                             if (isWished) {
-                                binding.favouriteIcon.setImageResource(R.drawable.bookmark_inactive);
                                 FavouriteNewsDatabase.getInstance(context)
                                         .getDao()
                                         .delete(binding.getModel().getNewsId());
                             } else {
-                                binding.favouriteIcon.setImageResource(R.drawable.bookmark_active);
-
                                 FavouriteNewsDatabase.getInstance(context)
                                         .getDao()
                                         .insert(binding.getModel());

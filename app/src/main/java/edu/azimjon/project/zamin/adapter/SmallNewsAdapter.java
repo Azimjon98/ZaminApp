@@ -79,8 +79,8 @@ public class SmallNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
             myHolder.binding.favouriteIcon.setImageResource(
                     myHolder.binding.getModel().isWished() ?
-                            R.drawable.bookmark_inactive :
-                            R.drawable.bookmark_active);
+                            R.drawable.bookmark_active :
+                            R.drawable.bookmark_inactive);
         }
 
 
@@ -104,8 +104,9 @@ public class SmallNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
                         binding.getModel().setWished(!binding.getModel().isWished());
 
                 binding.favouriteIcon.setImageResource(
-                        isWished ? R.drawable.bookmark_inactive :
-                                R.drawable.bookmark_active);
+                        binding.getModel().isWished() ?
+                                R.drawable.bookmark_active :
+                                R.drawable.bookmark_inactive);
                         //delete or inser news to favourites in another thread
                         new Thread(() -> {
                             if (isWished) {

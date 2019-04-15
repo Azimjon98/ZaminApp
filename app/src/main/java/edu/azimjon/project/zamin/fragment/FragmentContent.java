@@ -31,6 +31,7 @@ import edu.azimjon.project.zamin.events.MyOnMoreNewsEvent;
 import edu.azimjon.project.zamin.events.PlayerStateEvent;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.events.PlayerStateEvent.*;
 
 public class FragmentContent extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -174,6 +175,7 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
                 appBarLayout.setElevation(12f);
                 return true;
             case R.id.menu_favourites:
+                EventBus.getDefault().post(new PlayerStateEvent(PLAYER_STOP,""));
                 contentPager.setCurrentItem(2);
                 appBarLayout.setElevation(12f);
                 return true;
@@ -210,7 +212,7 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
                 playerView.setVisibility(View.VISIBLE);
                 playerProgress.setProgress(0);
                 playerProgress.setMax(100);
-                playIcon.setImageResource(R.drawable.micon_player_play);
+                playIcon.setImageResource(R.drawable.micon_player_pause);
                 break;
             case PLAYER_PLAY_ICON:
                 playIcon.setImageResource(R.drawable.micon_player_play);

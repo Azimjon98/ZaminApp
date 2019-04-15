@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.fragment.FragmentAudioInMedia;
 import edu.azimjon.project.zamin.fragment.FragmentGalleryInMedia;
 import edu.azimjon.project.zamin.fragment.FragmentVideoInMedia;
@@ -23,7 +24,7 @@ import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 public class MediaPagerAdapter extends FragmentPagerAdapter {
 
     //TODO: - Constants here:
-    String[] titles = {"Audio", "Video", "Galerey"};
+    String[] titles = new String[3];
 
     FragmentAudioInMedia tab1;
     FragmentVideoInMedia tab2;
@@ -37,6 +38,10 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         this.context = context;
         this.tabs_number = tabs;
+
+        titles[0] = context.getResources().getString(R.string.tab_audio);
+        titles[1] = context.getResources().getString(R.string.tab_video);
+        titles[2] = context.getResources().getString(R.string.tab_gallery);
     }
 
     @Override
@@ -63,7 +68,6 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return tabs_number;
     }
-
 
 
     @Nullable

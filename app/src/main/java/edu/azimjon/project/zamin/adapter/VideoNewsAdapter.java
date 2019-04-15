@@ -78,6 +78,11 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
             if (allFavouriteIds.contains(myHolder.binding.getModel().getNewsId())) {
                 myHolder.binding.getModel().setWished(true);
             }
+
+            myHolder.binding.favouriteIcon.setImageResource(
+                    myHolder.binding.getModel().isWished() ?
+                            R.drawable.bookmark_inactive :
+                            R.drawable.bookmark_active);
         }
 
 
@@ -107,7 +112,9 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
                         boolean isWished = binding.getModel().isWished();
                         binding.getModel().setWished(!binding.getModel().isWished());
 
-
+                        binding.favouriteIcon.setImageResource(
+                                isWished ? R.drawable.bookmark_inactive :
+                                        R.drawable.bookmark_active);
                         //delete or inser news to favourites in another thread
                         new Thread(() -> {
                             if (isWished) {

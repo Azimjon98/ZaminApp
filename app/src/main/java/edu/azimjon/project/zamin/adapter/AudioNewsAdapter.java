@@ -29,10 +29,15 @@ import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
+    public boolean isPlaying = false;
+    public int playingMusicId = -1;
+
     public static interface IMyPlayer {
         void playPressed(NewsSimpleModel m);
 
         void pausePressed(NewsSimpleModel m);
+
+        void updateItems();
     }
 
     IMyPlayer myPlayer;
@@ -80,11 +85,19 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
             MyHolderItem myHolder = (MyHolderItem) viewHolder;
             myHolder.binding.setModel(items.get(position));
 
-            List<String> allFavouriteIds;
-            allFavouriteIds = NavigationActivity.getFavouritesIds();
-            if (allFavouriteIds.contains(myHolder.binding.getModel().getNewsId())) {
-                myHolder.binding.getModel().setWished(true);
-            }
+
+            //FIXME: change icons
+            if (myHolder.binding.getModel().getId() == playingMusicId) {
+
+                if (isPlaying) {
+                    myHolder.binding.btnPlay.setImageResource(R.drawable.micon_player_pause);
+
+                } else {
+                    myHolder.binding.btnPlay.setImageResource(R.drawable.micon_player_play);
+
+                }
+            } else
+                myHolder.binding.btnPlay.setImageResource(R.drawable.micon_musci_disabled);
         }
 
 
@@ -100,8 +113,6 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     public class MyHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener {
         ItemAudioNewsBinding binding;
-        boolean isPlaying;
-        boolean musicEnabled;
 
 
         public MyHolderItem(ItemAudioNewsBinding binding) {
@@ -110,14 +121,21 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 //            this.binding.clicker.setOnClickListener(this);
 
             binding.btnPlay.setOnClickListener(v -> {
-                if (!musicEnabled) {
-                    myPlayer.pausePressed(binding.getModel());
-//                    items.restoreState()
-                    return;
-                }
-
-                if (this.isPlaying) {
-                    myPlayer.pausePressed(binding.getModel());
+                //FIXME: change icons
+                if (binding.getModel().getId() == playingMusicId) {
+                    if (isPlaying) {
+                        isPlaying = false;
+                        binding.btnPlay.setImageResource(R.drawable.micon_player_pause);
+                        myPlayer.pausePressed(binding.getModel());
+                    } else {
+                        isPlaying = true;
+                        binding.btnPlay.setImageResource(R.drawable.micon_player_play);
+                        myPlayer.playPressed(binding.getModel());
+                    }
+                } else {
+                    playingMusicId = binding.getModel().getId();
+                    binding.btnPlay.setImageResource(R.drawable.micon_player_play);
+                    myPlayer.updateItems();
                 }
 
             });

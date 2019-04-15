@@ -59,7 +59,6 @@ public class CategoryNewsAdapter extends BaseRecyclerAdapter<NewsCategoryModel> 
                             viewGroup,
                             false));
 
-
     }
 
     @Override

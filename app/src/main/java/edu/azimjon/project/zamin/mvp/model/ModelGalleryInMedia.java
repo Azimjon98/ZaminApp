@@ -61,7 +61,7 @@ public class ModelGalleryInMedia {
         retrofit.create(MyRestService.class)
                 .getNewsWithType(String.valueOf(offset),
                         limit,
-                        "1",
+                        "3",
                         MySettings.getInstance().getLang())
                 .enqueue(new Callback<JsonObject>() {
                     @Override
@@ -93,7 +93,7 @@ public class ModelGalleryInMedia {
 
     //parsing gallery news(pager news)
     private void parsingGalleryNews(JsonObject json) {
-        List<NewsSimpleModel> items = new ArrayList<>();
+        List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
 
         //sending data to view
         if (offset == 1)

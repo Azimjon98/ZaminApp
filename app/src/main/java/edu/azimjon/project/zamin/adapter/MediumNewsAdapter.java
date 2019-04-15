@@ -98,6 +98,10 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
                 myHolder.binding.getModel().setWished(true);
             }
 
+            myHolder.binding.favouriteIcon.setImageResource(
+                    myHolder.binding.getModel().isWished() ?
+                            R.drawable.bookmark_inactive :
+                            R.drawable.bookmark_active);
         }
 
     }
@@ -123,10 +127,14 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
                         //delete or inser news to favourites in another thread
                         new Thread(() -> {
                             if (isWished) {
+                                binding.favouriteIcon.setImageResource(R.drawable.bookmark_inactive);
+
                                 FavouriteNewsDatabase.getInstance(context)
                                         .getDao()
                                         .delete(binding.getModel().getNewsId());
                             } else {
+                                binding.favouriteIcon.setImageResource(R.drawable.bookmark_active);
+
                                 FavouriteNewsDatabase.getInstance(context)
                                         .getDao()
                                         .insert(Converters

@@ -55,7 +55,7 @@ public class ImageBindingAdapters {
         try {
 
             component.getGlideManager()
-                    .load(url.equals("no_item") ? R.drawable.no_item : url)
+                    .load(url.equals("no_item") ? R.drawable.custom_ripple : url)
                     .into(view);
 
         } catch (Exception e) {

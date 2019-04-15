@@ -38,7 +38,10 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_play" />
+                    android:background="@drawable/custom_ripple_borderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/micon_musci_disabled" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -56,12 +59,12 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_below="@id/lay_title"
-                android:layout_marginStart="52dp"
-                android:layout_marginTop="12dp"
                 android:id="@+id/lay_additional"
                 android:layout_width="match_parent"
-                android:layout_height="24dp">
+                android:layout_height="24dp"
+                android:layout_below="@id/lay_title"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="12dp">
 
                 <LinearLayout
                     android:id="@+id/lay_news_date"
@@ -76,10 +79,10 @@
                         android:layout_gravity="center"
                         android:fontFamily="sans-serif"
                         android:text="@{model.date}"
-                        tools:text="sadasdas"
                         android:textColor="#9e9e9e"
                         android:textSize="14sp"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"
+                        tools:text="sadasdas" />
 
                     <View
                         android:layout_width="4dp"
@@ -100,7 +103,6 @@
                         android:textSize="14sp"
                         android:textStyle="normal" />
                 </LinearLayout>
-
 
 
             </RelativeLayout>

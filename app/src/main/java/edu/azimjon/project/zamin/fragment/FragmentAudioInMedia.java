@@ -4,7 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,39 +16,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
-import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.AudioNewsAdapter;
-import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowAudioInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
-import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.events.PlayerStateEvent;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterAudioInMedia;
-import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentAudioInMedia;
 
-import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
-import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
-import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
-import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_HIDE;
-import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_SHOW;
+import static edu.azimjon.project.zamin.addition.Constants.*;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.*;
 
 public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMedia, MediaPlayer.OnErrorListener, SwipeRefreshLayout.OnRefreshListener, AudioNewsAdapter.IMyPlayer {
 
@@ -73,9 +66,14 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     //scrolling variables
     boolean isScrolling = false;
     boolean isLoading = false;
-    boolean isContentLoaded = false;
 
     int total_items, visible_items, scrollout_items;
+
+    //TODO: Player Variables
+    MyCountDownTimer timer;
+    String currentTrackUrl = "https://muz11.z1.fm/e/ac/via_marokand_via_marokand_-_tarnov_tarnov_2016_(zf.fm).mp3";
+    int musicDuration = -1;
+    int currenPosition;
 
 
     //#####################################################################
@@ -97,6 +95,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
         //mediaPlayer prepare listener
         mediaPlayer.setOnPreparedListener(prepareListenter);
         mediaPlayer.setOnErrorListener(this);
+        mediaPlayer.setOnCompletionListener(onCompletionListener);
 
         return binding.getRoot();
     }
@@ -127,10 +126,11 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
         //*****************************************************************************
 
+
         //TODO: Init media player
 
         try {
-            mediaPlayer.setDataSource("https://muz11.z1.fm/e/ac/via_marokand_via_marokand_-_tarnov_tarnov_2016_(zf.fm).mp3");
+            mediaPlayer.setDataSource(currentTrackUrl);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -158,6 +158,8 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     public void onStart() {
         super.onStart();
 
+        //FIXME: Delete this code in the end
+        EventBus.getDefault().post(new PlayerStateEvent(PLAYER_HIDE, ""));
         EventBus.getDefault().register(this);
     }
 
@@ -189,12 +191,23 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
     @Override
     public void playPressed(NewsSimpleModel m) {
-        EventBus.getDefault().post(new PlayerStateEvent(PLAYER_SHOW, ""));
+//        currentTrackUrl = m.getImageUrl();
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+        }
+
+        EventBus.getDefault().post(new PlayerStateEvent(PLAYER_RESET, ""));
     }
 
     @Override
     public void pausePressed(NewsSimpleModel m) {
+//        mediaPlayer.g
+    }
 
+    @Override
+    public void updateItems() {
+        audioNewsAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -259,7 +272,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     public void on_network_changed(NetworkStateChangedEvent event) {
         if (event.state == NETWORK_STATE_CONNECTED && !isConnected_to_Net) {
             binding.swiper.setRefreshing(false);
-            presenterAudioInMedia.init();
+//            presenterAudioInMedia.init();
         }
 
         isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
@@ -268,12 +281,17 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_player_state_changed(PlayerStateEvent event) {
         switch (event.state) {
-
+            case PLAYER_PLAY:
+                audioNewsAdapter.isPlaying = !audioNewsAdapter.isPlaying;
+                audioNewsAdapter.notifyDataSetChanged();
+                break;
+            case PLAYER_PREV:
+                break;
+            case PLAYER_NEXT:
+                break;
         }
 
     }
-
-
     //TODO: Argument variables
 
     public RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
@@ -315,9 +333,61 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
         @Override
         public void onPrepared(MediaPlayer mp) {
+            musicDuration = mediaPlayer.getDuration();
             mediaPlayer.start();
+            if (timer != null) {
+                timer.cancel();
+                timer = null;
+            }
+            timer = new MyCountDownTimer(musicDuration, 1000);
+            timer.start();
         }
     };
 
+    public MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            try {
+                mediaPlayer.setDataSource(currentTrackUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+        }
+    };
+
+    public class MyCountDownTimer extends CountDownTimer {
+        /**
+         * @param millisInFuture    The number of millis in the future from the call
+         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
+         *                          is called.
+         * @param countDownInterval The interval along the way to receive
+         *                          {@link #onTick(long)} callbacks.
+         */
+        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            SimpleDateFormat date = new SimpleDateFormat("mm:ss");
+            String timeStart = date.format(new Date(mediaPlayer.getCurrentPosition()));
+            String timeEnd = date.format(new Date(musicDuration));
+            String progress = String.valueOf(
+                    (int) ((Double.valueOf(musicDuration - mediaPlayer.getCurrentPosition()) / Double.valueOf(musicDuration)) * 100)
+            );
+
+            PlayerStateEvent event = new PlayerStateEvent(PLAYER_UPDATE, progress);
+            event.startTime = timeStart;
+            event.endTime = timeEnd;
+            EventBus.getDefault().post(event);
+        }
+
+        @Override
+        public void onFinish() {
+
+        }
+    }
 
 }

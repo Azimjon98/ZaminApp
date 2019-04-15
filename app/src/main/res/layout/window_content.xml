@@ -84,7 +84,7 @@
             android:background="@color/white">
 
             <TextView
-                android:id="@+id/time_start"
+                android:id="@+id/player_time_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -97,7 +97,7 @@
                 tools:text="0:48" />
 
             <TextView
-                android:id="@+id/time_end"
+                android:id="@+id/player_time_end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -117,28 +117,30 @@
                 android:layout_marginTop="32dp">
 
                 <ImageView
+                    android:id="@+id/player_prev"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="24dp"
                     android:layout_toStartOf="@id/player_play"
-                    android:src="@drawable/ic_play" />
+                    android:src="@drawable/micon_player_prev" />
 
                 <ImageView
                     android:id="@+id/player_play"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/ic_play_video" />
+                    android:src="@drawable/micon_player_play" />
 
                 <ImageView
+                    android:id="@+id/player_next"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
                     android:layout_toEndOf="@id/player_play"
-                    android:src="@drawable/ic_play" />
+                    android:src="@drawable/micon_player_next" />
 
 
             </RelativeLayout>
@@ -171,29 +173,16 @@
             android:layout_height="32dp"
             android:background="@android:color/transparent">
 
-            <ProgressBar
-                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+            <SeekBar
+                android:id="@+id/player_seek_bar"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:layout_centerInParent="true"
-                android:progress="12" />
-
-            <android.support.v7.widget.CardView
-                android:layout_width="6dp"
-                android:layout_height="20dp"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="44dp"
-                android:translationZ="2dp"
-                app:cardCornerRadius="4dp"
-                app:cardPreventCornerOverlap="true">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                </RelativeLayout>
-
-            </android.support.v7.widget.CardView>
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                android:progress="15"
+                android:progressDrawable="@drawable/thumb"
+                android:thumb="@drawable/custom_thumb" />
 
         </RelativeLayout>
 

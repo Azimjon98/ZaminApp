@@ -94,7 +94,7 @@ public class ModelAudioInMedia {
 
     //parsing top news(pager news)
     private void parsingAudioNews(JsonObject json) {
-        List<NewsSimpleModel> items = new ArrayList<>();
+        List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
 
         //sending data to view
         if (offset == 1)

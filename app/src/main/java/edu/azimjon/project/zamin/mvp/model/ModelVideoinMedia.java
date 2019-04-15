@@ -95,7 +95,7 @@ public class ModelVideoinMedia {
 
     //parsing top news(pager news)
     private void parsingVideoNews(JsonObject json) {
-        List<NewsSimpleModel> items = new ArrayList<>();
+        List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
 
         //sending data to view
         if (offset == 1)

@@ -257,6 +257,9 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             boolean isWished = bindingHeader.getModel().isWished();
             bindingHeader.getModel().setWished(!bindingHeader.getModel().isWished());
 
+            binding.iconBookmark.setImageResource(
+                    isWished ? R.drawable.bookmark_inactive :
+                            R.drawable.bookmark_active);
             //delete or inser news to favourites in another thread
             new Thread(() -> {
                 if (isWished) {

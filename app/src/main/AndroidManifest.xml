@@ -31,7 +31,9 @@
         <activity
             android:name=".activity.NavigationActivity"
             android:launchMode="singleTask"
-            android:theme="@style/ContentTheme"></activity>
+            android:theme="@style/ContentTheme">
+
+        </activity>
         <activity android:name=".activity.TestActivity">
 
             <!-- <intent-filter> -->

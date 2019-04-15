@@ -43,4 +43,5 @@
     <color name="colorWhite">#fff</color>
     <color name="progressback">#7d000000</color>
     <color name="account_color">#000</color>
+    <color name="player_bck">#e5e5e5</color>
 </resources>

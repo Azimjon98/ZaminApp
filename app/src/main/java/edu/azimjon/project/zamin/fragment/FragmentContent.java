@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -29,8 +31,7 @@ import edu.azimjon.project.zamin.events.MyOnMoreNewsEvent;
 import edu.azimjon.project.zamin.events.PlayerStateEvent;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
-import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_HIDE;
-import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_SHOW;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.*;
 
 public class FragmentContent extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -47,8 +48,9 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
     ImageView profileIcon;
 
     RelativeLayout playerView;
-    TextView title;
-    ImageView prevIcon, PlayIcon, NextIcon;
+    TextView playerTitle, playerStartTime, playerEndTime;
+    ImageView prevIcon, playIcon, nextIcon;
+    SeekBar playerProgress;
 
     View baseView;
 
@@ -82,7 +84,14 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         toolbarTitle = view.findViewById(R.id.toolbar_title);
 
         playerView = view.findViewById(R.id.player_lay);
-
+        playerTitle = view.findViewById(R.id.player_title);
+        prevIcon = view.findViewById(R.id.player_play);
+        playerStartTime = view.findViewById(R.id.player_time_start);
+        playerEndTime = view.findViewById(R.id.player_time_end);
+        playIcon = view.findViewById(R.id.player_play);
+        nextIcon = view.findViewById(R.id.player_next);
+        playerProgress = view.findViewById(R.id.player_seek_bar);
+        initPlayerIcons();
 
         if (contentPagerAdapter == null)
             contentPagerAdapter = new ContentPagerAdapter(getContext(), getChildFragmentManager(), 4);
@@ -111,6 +120,21 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         profileIcon.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_fragmentContent_to_fragmentProfile));
 
         navigationView.setOnNavigationItemSelectedListener(this);
+    }
+
+    //TODO: Player initialization
+    private void initPlayerIcons() {
+        playIcon.setOnClickListener(v -> {
+            EventBus.getDefault().post(new PlayerStateEvent(PLAYER_PLAY, ""));
+        });
+
+        prevIcon.setOnClickListener(v -> {
+            EventBus.getDefault().post(new PlayerStateEvent(PLAYER_PREV, ""));
+        });
+
+        nextIcon.setOnClickListener(v -> {
+            EventBus.getDefault().post(new PlayerStateEvent(PLAYER_NEXT, ""));
+        });
     }
 
     //TODO: override methods
@@ -182,13 +206,28 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_player_state_changed(PlayerStateEvent event) {
         switch (event.state) {
-            case PLAYER_SHOW:
+            case PLAYER_RESET:
                 playerView.setVisibility(View.VISIBLE);
-
+                playerProgress.setProgress(0);
+                playerProgress.setMax(100);
+                playIcon.setImageResource(R.drawable.micon_player_play);
+                break;
+            case PLAYER_PLAY_ICON:
+                playIcon.setImageResource(R.drawable.micon_player_play);
+                break;
+            case PLAYER_PAUSE_ICON:
+                playIcon.setImageResource(R.drawable.micon_player_pause);
                 break;
             case PLAYER_HIDE:
                 playerView.setVisibility(View.GONE);
                 break;
+            case PLAYER_TITLE:
+                playerTitle.setText(event.value);
+                break;
+            case PLAYER_UPDATE:
+                playerStartTime.setText(event.startTime);
+                playerEndTime.setText(event.endTime);
+                playerProgress.setProgress(Integer.valueOf(event.value));
 
         }
 

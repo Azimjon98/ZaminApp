@@ -17,10 +17,12 @@ import java.util.List;
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.activity.NavigationActivity;
+import edu.azimjon.project.zamin.addition.Converters;
 import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
 import edu.azimjon.project.zamin.databinding.ItemNewsMainLargeBinding;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
@@ -59,16 +61,41 @@ public class MainNewsPagerAdapter extends PagerAdapter {
             binding.getModel().setWished(true);
         }
 
+        //change Icon state when navigating
+        binding.favouriteIcon.setImageResource(
+                binding.getModel().isWished() ?
+                        R.drawable.bookmark_inactive :
+                        R.drawable.bookmark_active);
+
+        binding.favouriteIcon.setOnClickListener(v -> {
+                    boolean isWished = binding.getModel().isWished();
+                    binding.getModel().setWished(!binding.getModel().isWished());
+
+                    //delete or inser news to favourites in another thread
+                    new Thread(() -> {
+                        if (isWished) {
+                            binding.favouriteIcon.setImageResource(R.drawable.bookmark_inactive);
+
+                            FavouriteNewsDatabase.getInstance(context)
+                                    .getDao()
+                                    .delete(binding.getModel().getNewsId());
+                        } else {
+                            binding.favouriteIcon.setImageResource(R.drawable.bookmark_active);
+
+                            FavouriteNewsDatabase.getInstance(context)
+                                    .getDao()
+                                    .insert(Converters
+                                            .fromSimpleNewstoFavouriteNews(binding.getModel()));
+                        }
+                    }).start();
+                }
+        );
+
 
         container.addView(binding.getRoot());
         return binding.getRoot();
     }
 
-    @Override
-    public void startUpdate(@NonNull ViewGroup container) {
-        Log.d(DELETE_LOG, "update");
-        super.startUpdate(container);
-    }
 
     @Override
     public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {

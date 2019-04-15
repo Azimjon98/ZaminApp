@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
+
+    <item
+        android:id="@android:id/background"
+        android:height="8dp"
+        android:bottom="6dp"
+        android:drawable="@color/player_bck"
+        android:top="6dp" />
+
+    <item
+        android:id="@android:id/progress"
+        android:height="8dp"
+        android:bottom="6dp"
+        android:top="6dp">
+        <scale
+            android:drawable="@color/colorAccent"
+            android:scaleWidth="100%" />
+    </item>
+
+    <item
+        android:id="@android:id/secondaryProgress"
+        android:height="8dp"
+        android:bottom="6dp"
+        android:top="6dp">
+        <scale
+            android:drawable="@color/white"
+            android:scaleWidth="100%" />
+    </item>
+
+</layer-list>

@@ -22,9 +22,9 @@
     <string name="text_video_news">Video yangiliklar</string>
     <string name="title_video_news">Видео хабарлар</string>
     <string name="message_video">Zamin studiyasining dolzarb mavzudagi intervyulari</string>
-    <string name="tab_audio">Audio</string>
-    <string name="tab_video">Video</string>
-    <string name="tab_gallery">Galereya</string>
+    <string name="tab_audio">Аудио</string>
+    <string name="tab_video">Видео</string>
+    <string name="tab_gallery">Галерея</string>
     <string name="toolbar_profile">Profil</string>
     <string name="text_notification">Bildirishlar</string>
     <string name="text_categories">Ruknlar</string>

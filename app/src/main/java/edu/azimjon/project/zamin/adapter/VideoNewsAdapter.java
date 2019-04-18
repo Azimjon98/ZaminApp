@@ -7,6 +7,7 @@ import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,10 +44,14 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(context);
+        Log.d(DELETE_LOG, "onCreateViewHolder: " + i);
+
 
         //header with bottom padding
         if (i == TYPE_HEADER)
             return new MyBaseHolder(headerView);
+        if (i == TYPE_HEADER_NO_INTERNET)
+            return new MyBaseHolder(headerNoInternetView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
         else if (i == TYPE_LOADING)
@@ -65,6 +70,8 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+        Log.d(DELETE_LOG, "onBindViewHolder: " + i);
+
         if (viewHolder instanceof MyHolderItem) {
             int position = i;
             if (hasHeader)

@@ -275,7 +275,6 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             return;
         }
 
-
         if (message == MESSAGE_OK) {
             mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
             bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);

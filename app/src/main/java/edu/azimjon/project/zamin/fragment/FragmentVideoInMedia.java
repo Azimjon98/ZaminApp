@@ -134,7 +134,6 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
         presenterVideoInMedia.init();
 
     }
-
     //TODO: override methods
 
 
@@ -174,12 +173,12 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
         binding.swiper.setRefreshing(false);
         if (message == MESSAGE_NO_CONNECTION) {
             videoNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
+
             return;
         }
 
         if (message == MESSAGE_OK) {
             videoNewsAdapter.withHeader(viewHeader);
-
 
             videoNewsAdapter.init_items(items);
         }

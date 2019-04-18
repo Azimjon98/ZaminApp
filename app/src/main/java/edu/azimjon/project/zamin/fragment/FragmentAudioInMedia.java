@@ -140,8 +140,6 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
 //        binding.swiper.setRefreshing(true);
         presenterAudioInMedia.init();
-
-
     }
 
 //TODO: override methods
@@ -248,7 +246,6 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
         if (message == MESSAGE_NO_CONNECTION) {
             audioNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
-
             return;
         }
 
@@ -256,7 +253,6 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
             audioNewsAdapter.withHeader(viewHeader);
 
             audioNewsAdapter.init_items(items);
-
         }
 
     }

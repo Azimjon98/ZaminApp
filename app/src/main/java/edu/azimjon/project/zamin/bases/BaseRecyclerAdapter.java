@@ -51,32 +51,41 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void withHeader(View headerView) {
+        Log.d(DELETE_LOG, "withHeader");
+
+        hasHeaderNoInternet = false;
         this.headerView = headerView;
         hasHeader = true;
-        hasHeaderNoInternet = false;
         notifyDataSetChanged();
     }
 
     public void withHeaderNoInternet(View headerView) {
-        this.headerNoInternetView = headerView;
+        Log.d(DELETE_LOG, "withHeaderNoInternet");
+
         hasHeader = false;
+        this.headerNoInternetView = headerView;
         hasHeaderNoInternet = true;
         notifyDataSetChanged();
     }
 
     public void withFooter(View footerView) {
+        Log.d(DELETE_LOG, "withFooter");
+
         this.footerView = footerView;
         hasFooter = true;
         notifyDataSetChanged();
     }
 
     public void removeHeaders() {
+        Log.d(DELETE_LOG, "removeHeaders");
+
         hasHeader = false;
         hasHeaderNoInternet = false;
         notifyDataSetChanged();
     }
 
     public void removeFooter() {
+        Log.d(DELETE_LOG, "removeFooter");
         hasFooter = false;
         notifyDataSetChanged();
     }
@@ -121,19 +130,17 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
     public void add_states(List<T> items) {
         List<Boolean> states = new ArrayList<>();
-        for(T t : items)
+        for (T t : items)
             states.add(false);
 
         this.states.addAll(states);
     }
 
     public void restore_state() {
-        for(Boolean t : states)
+        for (Boolean t : states)
             t = false;
 
     }
-
-
 
 
     //TODO: indicator item show/hide when loading data

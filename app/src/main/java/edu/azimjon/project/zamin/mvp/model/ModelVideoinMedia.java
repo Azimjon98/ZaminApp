@@ -72,7 +72,6 @@ public class ModelVideoinMedia {
                             JsonObject json = response.body();
                             parsingVideoNews(json);
 
-
                             offset++;
                         } else {
                             Log.d(API_LOG, "getLastNews onFailure: " + response.message());

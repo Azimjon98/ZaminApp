@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -35,6 +36,7 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterVideoInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentVideoInMedia;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
@@ -123,8 +125,12 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
         //*****************************************************************************
 
+        //TODO: init locales
+        ((TextView) viewHeader.findViewById(R.id.text_title)).setText(MyUtil.getLocalizedString(getContext(), R.string.title_video_news));
+        ((TextView) viewHeader.findViewById(R.id.text_1)).setText(MyUtil.getLocalizedString(getContext(), R.string.message_video));
+        //############################################################
 
-//        binding.swiper.setRefreshing(true);
+        binding.swiper.setRefreshing(true);
         presenterVideoInMedia.init();
 
     }

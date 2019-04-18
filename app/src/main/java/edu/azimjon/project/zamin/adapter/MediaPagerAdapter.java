@@ -18,6 +18,7 @@ import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.fragment.FragmentAudioInMedia;
 import edu.azimjon.project.zamin.fragment.FragmentGalleryInMedia;
 import edu.azimjon.project.zamin.fragment.FragmentVideoInMedia;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 
@@ -39,9 +40,9 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
         this.context = context;
         this.tabs_number = tabs;
 
-        titles[0] = context.getResources().getString(R.string.tab_audio);
-        titles[1] = context.getResources().getString(R.string.tab_video);
-        titles[2] = context.getResources().getString(R.string.tab_gallery);
+        titles[0] = MyUtil.getLocalizedString(context, R.string.tab_audio);
+        titles[1] = MyUtil.getLocalizedString(context, R.string.tab_video);
+        titles[2] = MyUtil.getLocalizedString(context, R.string.tab_gallery);
     }
 
     @Override

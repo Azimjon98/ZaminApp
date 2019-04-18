@@ -26,6 +26,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +105,12 @@ public class FragmentProfile extends Fragment {
                     }
                 });
 
+        //TODO: localize texts
+        binding.toolbar.setTitle(MyUtil.getLocalizedString(getContext(), R.string.toolbar_profile));
+        binding.textNotification.setText(MyUtil.getLocalizedString(getContext(), R.string.text_notification));
+        binding.textCateg.setText(MyUtil.getLocalizedString(getContext(), R.string.text_categories));
+        binding.textLanguage.setText(MyUtil.getLocalizedString(getContext(), R.string.text_select_language));
+        binding.textCurrentLang.setText(MyUtil.getLocalizedString(getContext(), R.string.language));
 
     }
 
@@ -130,6 +138,13 @@ public class FragmentProfile extends Fragment {
                 null,
                 false);
 
+        //TODO: change locale
+        bindingDialog.textSelectLanguage.setText(MyUtil.getLocalizedString(getContext(), R.string.text_choose_language));
+        bindingDialog.btnCancel.setText(MyUtil.getLocalizedString(getContext(), R.string.text_back));
+        bindingDialog.btnSubmit.setText(MyUtil.getLocalizedString(getContext(), R.string.text_submit));
+
+        //#######################################
+
         AlertDialog dialog =
                 new AlertDialog.Builder(getContext())
                         .setView(bindingDialog.getRoot())
@@ -137,9 +152,9 @@ public class FragmentProfile extends Fragment {
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-        if (language.equals("default"))
+        if (language.equals("uz"))
             bindingDialog.lottieAnimationUz.setProgress(1f);
-        else if (language.equals("uz"))
+        else if (language.equals("kr"))
             bindingDialog.lottieAnimationKr.setProgress(1f);
 
         animator1 = ValueAnimator.ofFloat(0f, 1f).setDuration(500);
@@ -149,6 +164,10 @@ public class FragmentProfile extends Fragment {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 bindingDialog.lottieAnimationUz.setProgress((Float) animation.getAnimatedValue());
+
+                if ((Float)animation.getAnimatedValue() == 1f)
+                    bindingDialog.lottieAnimationKr.setProgress(0);
+
             }
         });
 
@@ -156,18 +175,23 @@ public class FragmentProfile extends Fragment {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 bindingDialog.lottieAnimationKr.setProgress((Float) animation.getAnimatedValue());
+
+                if ((Float)animation.getAnimatedValue() == 1f)
+                    bindingDialog.lottieAnimationUz.setProgress(0);
             }
         });
 
         bindingDialog.languageLt.setOnClickListener(v1 -> {
-            newLang[0] = "default";
+            newLang[0] = "uz";
             animator1.start();
+            animator2.cancel();
             bindingDialog.lottieAnimationKr.setProgress(0f);
         });
 
         bindingDialog.languageKr.setOnClickListener(v1 -> {
-            newLang[0] = "uz";
+            newLang[0] = "kr";
             animator2.start();
+            animator1.cancel();
             bindingDialog.lottieAnimationUz.setProgress(0f);
         });
 
@@ -186,7 +210,9 @@ public class FragmentProfile extends Fragment {
 
     void change_language(String newLang) {
         if (!MyUtil.hasConnectionToNet(getActivity())) {
-            Toast.makeText(getContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),
+                    MyUtil.getLocalizedString(getContext(), R.string.text_no_connection)
+                    , Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -198,12 +224,12 @@ public class FragmentProfile extends Fragment {
                     .getRetrofitApp()
                     .create(MyRestService.class)
                     .getAllCategories(
-                            newLang.equals("default") ?
-                                    "oz" : newLang
+                            newLang.equals("uz") ?
+                                    "oz" : "uz"
                     )
                     .enqueue(new Callback<JsonArray>() {
                         @Override
-                        public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                        public void onResponse(@NotNull Call<JsonArray> call, @NotNull Response<JsonArray> response) {
                             if (response.isSuccessful()) {
 
                                 //Creating a categories array from server
@@ -225,7 +251,9 @@ public class FragmentProfile extends Fragment {
 
                             } else {
                                 Log.d(API_LOG, "onResponse: " + response.message());
-                                Toast.makeText(getContext(), getResources().getString(R.string.check_the_connection), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(),
+                                        MyUtil.getLocalizedString(getContext(), R.string.check_the_connection),
+                                        Toast.LENGTH_SHORT).show();
                                 binding.progressLay.setVisibility(View.GONE);
 
                             }
@@ -234,7 +262,9 @@ public class FragmentProfile extends Fragment {
                         @Override
                         public void onFailure(Call<JsonArray> call, Throwable t) {
                             Log.d(API_LOG, "onFailure: " + t.getMessage());
-                            Toast.makeText(getContext(), getResources().getString(R.string.check_the_connection), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),
+                                    MyUtil.getLocalizedString(getContext(), R.string.check_the_connection),
+                                    Toast.LENGTH_SHORT).show();
                             binding.progressLay.setVisibility(View.GONE);
 
 
@@ -247,7 +277,7 @@ public class FragmentProfile extends Fragment {
     }
 
     //TODO: Checking database for changings in another Thread
-    public class ChangeLanguageThread extends AsyncTask<Void, Void, Void>{
+    public class ChangeLanguageThread extends AsyncTask<Void, Void, Void> {
         List<NewsCategoryModel> categories;
         String newLang;
 

@@ -26,6 +26,7 @@ import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 
 public class FragmentSelectCategories extends Fragment {
@@ -55,7 +56,9 @@ public class FragmentSelectCategories extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).popBackStack());
-
+        //TODO: set locale
+        binding.toolbar.setTitle(MyUtil.getLocalizedString(getContext(), R.string.title_select_categories));
+        //############################################################
 
         manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
@@ -138,7 +141,7 @@ public class FragmentSelectCategories extends Fragment {
 
     //Another Thread AsycyTsks
 
-    public class GetAllCategoriesAsyckTask extends AsyncTask{
+    public class GetAllCategoriesAsyckTask extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] objects) {
             adapter.init_items(dao.getAll());

@@ -51,9 +51,10 @@
 
             <LinearLayout
                 android:id="@+id/lay_news_date"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="24dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginTop="12dp"
                 android:orientation="horizontal">
 
@@ -64,7 +65,8 @@
                     android:layout_gravity="center"
                     android:fontFamily="sans-serif"
                     android:textColor="#9e9e9e"
-                    android:textSize="15dp"
+                    tools:text="12 Aprel 2019"
+                    android:textSize="14sp"
                     android:textStyle="normal" />
 
                 <View
@@ -82,9 +84,23 @@
                     android:layout_marginStart="4dp"
                     android:fontFamily="sans-serif"
                     android:text="@{model.categoryName}"
+                    tools:text="Dunyo"
                     android:textColor="#d32f2f"
-                    android:textSize="15dp"
+                    android:textSize="14sp"
                     android:textStyle="normal" />
+
+                <TextView
+                    android:drawablePadding="4dp"
+                    android:drawableEnd="@drawable/micon_viewed"
+                    android:id="@+id/viewed"
+                    android:layout_gravity="center"
+                    android:gravity="end"
+                    android:text="@{model.viewedCount}"
+                    tools:text="1333"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
             </LinearLayout>
 
             <ImageView

@@ -283,7 +283,9 @@ public class ModelNewsFeed {
                     .getDao().getAll();
 
             if (oldCategories.size() == 0) {
+                System.out.println("in a");
                 try {
+                System.out.println("in a1");
                     MyApplication.getInstance().
                             getMyApplicationComponent()
                             .getRetrofitApp()
@@ -307,20 +309,32 @@ public class ModelNewsFeed {
                                                     ""
                                             );
                                             categories.add(model);
-
-                                            new Thread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    CategoryNewsDatabase
-                                                            .getInstance(application)
-                                                            .getDao().insertAll(new ArrayList<>(categories));
-
-                                                    handler.sendEmptyMessage(1);
-                                                }
-                                            }).start();
-
-
                                         }
+
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                System.out.println("in b");
+                                                CategoryNewsDatabase
+                                                        .getInstance(application)
+                                                        .getDao().insertAll(new ArrayList<>(categories));
+                                                handler.sendEmptyMessage(1);
+                                            }
+                                        }).start();
+
+//                                        new AsyncTask<Void, Void, Void>() {
+//
+//                                            @Override
+//                                            protected Void doInBackground(Void... voids) {
+//                                                System.out.println("in b");
+//                                                CategoryNewsDatabase
+//                                                        .getInstance(application)
+//                                                        .getDao().insertAll(new ArrayList<>(categories));
+//                                                handler.sendEmptyMessage(1);
+//
+//                                                return null;
+//                                            }
+//                                        }.execute();
 
                                     } else {
                                         Log.d(API_LOG, "onResponse: " + response.message());
@@ -352,6 +366,7 @@ public class ModelNewsFeed {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            System.out.println("in c");
 
             continueProcess();
         }

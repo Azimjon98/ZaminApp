@@ -3,6 +3,7 @@ package edu.azimjon.project.zamin.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -26,6 +27,9 @@ import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Locale;
+
+import edu.azimjon.project.zamin.addition.MySettings;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
@@ -167,4 +171,19 @@ public class MyUtil {
             return false;
         }
     }
+
+    public static String getLocalizedString(Context context, int resourceId) {
+        Configuration configuration = context.getResources().getConfiguration();
+        String language = MySettings.getInstance().getLocale();
+        configuration.setLocale(new Locale(language));
+        return context.createConfigurationContext(configuration).getResources().getString(resourceId);
+    }
+
+    public static String[] getLocalizedArray(Context context, int resourceId) {
+        Configuration configuration = context.getResources().getConfiguration();
+        String language = MySettings.getInstance().getLocale();
+        configuration.setLocale(new Locale(language));
+        return context.createConfigurationContext(configuration).getResources().getStringArray(resourceId);
+    }
+
 }

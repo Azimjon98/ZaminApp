@@ -30,6 +30,8 @@ import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +138,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_content, binding.listLastNews, false);
         bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listLastNews, false);
         bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listLastNews, false);
-
 
         bindingHeader.setModel(model);
         mediumNewsAdapter.withHeader(bindingHeader.getRoot());
@@ -298,7 +299,10 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             sharingIntent.setType("text/plain");
             String shareBody = bindingHeader.getModel().getOriginalUrl();
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-            startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.text_share)));
+
+            startActivity(Intent.createChooser(sharingIntent,
+                    MyUtil.getLocalizedString(getContext(), R.string.text_share)
+            ));
         });
     }
 

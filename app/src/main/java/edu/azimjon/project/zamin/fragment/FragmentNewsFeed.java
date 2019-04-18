@@ -46,6 +46,7 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsFeed;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static com.arlib.floatingsearchview.util.Util.dpToPx;
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
@@ -135,7 +136,6 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             lastContinueNewsAdapter = new NewsFeedAdapter(getContext(), new ArrayList<NewsSimpleModel>());
             binding.listLastNewsContinue.setAdapter(lastContinueNewsAdapter);
 
-
             bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_feed, binding.listLastNewsContinue, false);
             bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listLastNewsContinue, false);
             bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listLastNewsContinue, false);
@@ -181,9 +181,17 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
             bindingHeader.listVideoNews.setAdapter(videoNewsAdapter);
 
+            //TODO: Change locale
+            bindingHeader.textMainNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_main_news));
+            bindingHeader.textLastNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_last_news));
+            bindingHeader.textAudioNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_audio_news2));
+            bindingHeader.textVideoNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_video_news));
+            bindingHeader.clickerAllAudio.setText(MyUtil.getLocalizedString(getContext(), R.string.text_all));
+            bindingHeader.clickerAllVideo.setText(MyUtil.getLocalizedString(getContext(), R.string.text_all));
 
-            presenterNewsFeed.init();
+
             binding.swiper.setRefreshing(true);
+            presenterNewsFeed.init();
         }
         //####################################################################################
 

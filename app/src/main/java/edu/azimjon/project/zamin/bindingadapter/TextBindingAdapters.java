@@ -1,5 +1,6 @@
 package edu.azimjon.project.zamin.bindingadapter;
 
+import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.util.Log;
 import android.widget.ImageView;
@@ -20,11 +21,18 @@ import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.component.MyApplicationComponent;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 public class TextBindingAdapters {
 
     @BindingAdapter("mySetDate")
     public static void setDate(TextView view, String text) {
+        Context context = null;
+        try {
+            context = MyApplication.getInstance();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         if (text == null)
             return;
 
@@ -49,9 +57,8 @@ public class TextBindingAdapters {
             return;
         }
 
-        String textToday = view.getContext().getApplicationContext().getResources().getString(R.string.today);
-        String[] months = view.getContext().getResources().getStringArray(R.array.months);
-        Calendar newsCalendar = new GregorianCalendar();
+        String textToday = MyUtil.getLocalizedString(context,R.string.today);
+        String[] months = MyUtil.getLocalizedArray(context,R.array.months);
         calendar.setTimeInMillis(newsDate.getTime());
 
         if (newsDate.after(todayDate)) {

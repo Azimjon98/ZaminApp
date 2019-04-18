@@ -120,15 +120,20 @@ public class MySettings {
     public String getLocale() {
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
 
-        return sharedPreferences.getString(MY_LOCALE, "default");
+        return sharedPreferences.getString(MY_LOCALE, "uz");
     }
 
     public String getLang() {
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
-        String lang = sharedPreferences.getString(MY_LOCALE, "default");
+        String locale = sharedPreferences.getString(MY_LOCALE, "uz");
+        String lang = "";
 
-        return lang.equals("default") ?
-                "oz" : MySettings.getInstance().getLocale();
+        if (locale.equals("uz"))
+            lang = "oz";
+        else if (locale.equals("kr"))
+            lang = "uz";
+
+        return lang;
 
     }
 

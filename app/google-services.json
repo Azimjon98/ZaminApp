@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "298247931918",
+    "firebase_url": "https://zamin-7b1da.firebaseio.com",
+    "project_id": "zamin-7b1da",
+    "storage_bucket": "zamin-7b1da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298247931918:android:4dddc96c087cffce",
+        "android_client_info": {
+          "package_name": "edu.azimjon.project.zamin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "298247931918-s5q261p7a8hhref70un3vkcdj9aq1kn6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.azimjon.project.zamin",
+            "certificate_hash": "1d830f711ee999025a91e0a039701594bdec6123"
+          }
+        },
+        {
+          "client_id": "298247931918-0avf20tbms7kc7itqg6scm6vp894ufsj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFMdS-GjGd1YICVdm_UFTa4Mv4bMtJh3A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "298247931918-0avf20tbms7kc7itqg6scm6vp894ufsj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

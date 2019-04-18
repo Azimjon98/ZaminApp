@@ -29,6 +29,7 @@ import edu.azimjon.project.zamin.adapter.ContentPagerAdapter;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.events.MyOnMoreNewsEvent;
 import edu.azimjon.project.zamin.events.PlayerStateEvent;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
@@ -42,7 +43,6 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
 
     //TODO: Views here
     BottomNavigationView navigationView;
-    TextView toolbarTitle;
     ViewPager contentPager;
     AppBarLayout appBarLayout;
     ImageView searchIcon;
@@ -82,7 +82,6 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         appBarLayout = view.findViewById(R.id.app_bar);
         searchIcon = view.findViewById(R.id.toolbar_search);
         profileIcon = view.findViewById(R.id.toolbar_ic_more);
-        toolbarTitle = view.findViewById(R.id.toolbar_title);
 
         playerView = view.findViewById(R.id.player_lay);
         playerTitle = view.findViewById(R.id.player_title);
@@ -121,6 +120,12 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         profileIcon.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_fragmentContent_to_fragmentProfile));
 
         navigationView.setOnNavigationItemSelectedListener(this);
+
+        //Changing locale of menu
+        navigationView.getMenu().getItem(0).setTitle(MyUtil.getLocalizedString(getContext(), R.string.menu_news_feed));
+        navigationView.getMenu().getItem(1).setTitle(MyUtil.getLocalizedString(getContext(), R.string.menu_top));
+        navigationView.getMenu().getItem(2).setTitle(MyUtil.getLocalizedString(getContext(), R.string.menu_favourites));
+        navigationView.getMenu().getItem(3).setTitle(MyUtil.getLocalizedString(getContext(), R.string.menu_media));
     }
 
     //TODO: Player initialization
@@ -164,7 +169,6 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         savedId = navigationView.getSelectedItemId();
-        toolbarTitle.setText(item.getTitle());
         switch (item.getItemId()) {
             case R.id.menu_news_feed:
                 contentPager.setCurrentItem(0);
@@ -175,7 +179,7 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
                 appBarLayout.setElevation(12f);
                 return true;
             case R.id.menu_favourites:
-                EventBus.getDefault().post(new PlayerStateEvent(PLAYER_STOP,""));
+                EventBus.getDefault().post(new PlayerStateEvent(PLAYER_STOP, ""));
                 contentPager.setCurrentItem(2);
                 appBarLayout.setElevation(12f);
                 return true;

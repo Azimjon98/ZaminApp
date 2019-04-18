@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -40,6 +41,7 @@ import edu.azimjon.project.zamin.events.PlayerStateEvent;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterAudioInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentAudioInMedia;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.*;
 import static edu.azimjon.project.zamin.events.PlayerStateEvent.*;
@@ -127,12 +129,19 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
                 android.R.color.holo_red_light);
 
 
+
         binding.swiper.setOnRefreshListener(this);
         binding.listAudio.addOnScrollListener(scrollListener);
 
-//        binding.swiper.setRefreshing(true);
+        //TODO: localize here
+        ((TextView) viewHeader.findViewById(R.id.text_title)).setText(MyUtil.getLocalizedString(getContext(), R.string.title_audio_news));
+        ((TextView) viewHeader.findViewById(R.id.text_1)).setText(MyUtil.getLocalizedString(getContext(), R.string.messege_audio));
+        //############################################################
 
+//        binding.swiper.setRefreshing(true);
         presenterAudioInMedia.init();
+
+
     }
 
 //TODO: override methods

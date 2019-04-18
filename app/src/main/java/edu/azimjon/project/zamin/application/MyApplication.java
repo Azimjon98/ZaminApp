@@ -3,6 +3,8 @@ package edu.azimjon.project.zamin.application;
 import android.app.Application;
 import android.util.Log;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.component.DaggerMyApplicationComponent;
@@ -31,6 +33,7 @@ public class MyApplication extends Application {
         Log.d(Constants.CALLBACK_LOG, "init application");
         instance = this;
         MySettings.initInstance(this);
+
 
         myApplicationComponent = DaggerMyApplicationComponent.builder()
                 .contextModule(new ContextModule(this))

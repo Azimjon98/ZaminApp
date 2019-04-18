@@ -12,6 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ import edu.azimjon.project.zamin.mvp.presenter.PresenterFavouriteNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentFavouriteNews;
 import edu.azimjon.project.zamin.room.dao.FavouriteNewsDao;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 
@@ -37,7 +41,8 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
     //TODO: variables here
     WindowFavouritesBinding binding;
-//    PresenterFavouriteNews presenterFavouriteNews;
+    //    PresenterFavouriteNews presenterFavouriteNews;
+    View viewHeader;
 
     //adapters
     FavouriteNewsAdapter favouriteNewsAdapter;
@@ -75,11 +80,12 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
             manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             binding.listFavourite.setLayoutManager(manager);
             favouriteNewsAdapter = new FavouriteNewsAdapter(getContext(), new ArrayList<FavouriteNewsModel>());
-            favouriteNewsAdapter.withHeader(LayoutInflater.from(getContext())
+            viewHeader = LayoutInflater.from(getContext())
                     .inflate(
                             R.layout.header_window_favourites,
                             binding.listFavourite,
-                            false));
+                            false);
+            favouriteNewsAdapter.withHeader(viewHeader);
             binding.listFavourite.setAdapter(favouriteNewsAdapter);
             binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
             binding.listFavourite.setHasFixedSize(true);
@@ -90,6 +96,10 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
         //room init
         initRoom();
+
+        //TODO: init locales
+        ((TextView) viewHeader.findViewById(R.id.text_title)).setText(MyUtil.getLocalizedString(getContext(), R.string.title_favourites));
+        ((TextView) viewHeader.findViewById(R.id.text_1)).setText(MyUtil.getLocalizedString(getContext(), R.string.message_favourites));
 
     }
 

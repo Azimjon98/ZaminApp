@@ -165,6 +165,7 @@
                                 android:src="@drawable/micon_notification" />
 
                             <TextView
+                                android:id="@+id/text_notification"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -210,6 +211,7 @@
                                 android:src="@drawable/lenta" />
 
                             <TextView
+                                android:id="@+id/text_categ"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -276,6 +278,7 @@
                                 android:src="@drawable/micon_translate" />
 
                             <TextView
+                                android:id="@+id/text_language"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -288,6 +291,7 @@
                                 android:textSize="16sp" />
 
                             <TextView
+                                android:id="@+id/text_current_lang"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"

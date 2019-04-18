@@ -29,15 +29,13 @@
                 android:padding="6dp"
                 android:src="@drawable/micon_search" />
 
-            <TextView
-                android:id="@+id/toolbar_title"
+            <ImageView
+                android:id="@+id/toolbar_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
-                android:text="@string/text_news"
-                android:textColor="@color/black"
-                android:textSize="20dp" />
+                android:src="@drawable/logo" />
 
             <ImageView
                 android:id="@+id/toolbar_ic_more"

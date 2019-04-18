@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,6 +35,7 @@ import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterGalleryInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentGalleryInMedia;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
@@ -119,7 +121,13 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
         binding.listVideo.addOnScrollListener(scrollListener);
         binding.swiper.setOnRefreshListener(this);
 
-//        binding.swiper.setRefreshing(true);
+        //TODO: init locales
+        ((TextView) viewHeader.findViewById(R.id.text_title)).setText(MyUtil.getLocalizedString(getContext(), R.string.title_foto));
+        ((TextView) viewHeader.findViewById(R.id.text_1)).setText(MyUtil.getLocalizedString(getContext(), R.string.message_foto));
+        //###################################
+
+
+        binding.swiper.setRefreshing(true);
         presenterGalleryInMedia.init();
     }
 

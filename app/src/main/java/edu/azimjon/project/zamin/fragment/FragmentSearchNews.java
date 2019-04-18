@@ -108,6 +108,8 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
         //initiate list scrolling state change listener
         binding.listSearchResult.addOnScrollListener(scrollListener);
 
+        //TODO: changing locale
+        binding.edSearch.setHint(MyUtil.getLocalizedString(getContext(), R.string.text_news));
     }
 
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="months">
+        <item>Январ</item>
+        <item>Феврал</item>
+        <item>Март</item>
+        <item>Апрел</item>
+        <item>Май</item>
+        <item>Июн</item>
+        <item>Июл</item>
+        <item>Август</item>
+        <item>Сентабр</item>
+        <item>Октабр</item>
+        <item>Ноябр</item>
+        <item>Декабр</item>
+    </string-array>
+
+    <string-array name="weekday">
+        <item>Якшанба</item>
+        <item>Душанба</item>
+        <item>Сешанба</item>
+        <item>Чоршанба</item>
+        <item>Пайшанба</item>
+        <item>Жума</item>
+        <item>Шанба</item>
+    </string-array>
+
+
+</resources>

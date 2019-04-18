@@ -145,6 +145,14 @@ public class MySettings {
         editor.apply();
     }
 
+    public void decreaseStackCount() {
+
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(CONTENT_STACK, (sharedPreferences.getInt(CONTENT_STACK, 0) - 1));
+        editor.apply();
+    }
+
     public void resetStack() {
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

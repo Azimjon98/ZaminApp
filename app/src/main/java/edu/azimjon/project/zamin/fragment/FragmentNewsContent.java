@@ -133,7 +133,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         binding.listLastNews.setLayoutManager(manager);
         mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-        binding.getRoot().setPadding(0, 0, 0, MyUtil.dpToPx(24));
 
         bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_content, binding.listLastNews, false);
         bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listLastNews, false);
@@ -182,6 +181,19 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
         initIcons();
         presenterNewsContent.init(newsId);
+
+        //You need to add the following line for this solution to work; thanks skayred
+        this.getView().setFocusableInTouchMode(true);
+        this.getView().requestFocus();
+        this.getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction()== KeyEvent.ACTION_DOWN) {
+                    MySettings.getInstance().decreaseStackCount();
+                }
+                return false;
+            }
+        });
     }
 
     //TODO: override methods
@@ -360,6 +372,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         @Override
         protected Void doInBackground(Void... voids) {
             final NavController controller = Navigation.findNavController(activity, R.id.nav_host_fragment);
+            Log.d(DELETE_LOG, "fragment Count: " + MySettings.getInstance().getContentStack());
             for (int i = 0; i < MySettings.getInstance().getContentStack(); i++) {
                 System.out.println("PopBackPressed");
                 controller.popBackStack();

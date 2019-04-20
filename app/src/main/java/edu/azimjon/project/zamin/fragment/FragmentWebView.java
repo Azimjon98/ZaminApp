@@ -31,7 +31,6 @@ public class FragmentWebView extends Fragment {
         super.onCreate(savedInstanceState);
 
         url = getArguments().getString(WEB_URL);
-        Log.d(DELETE_LOG, "url: " + url);
     }
 
     @Nullable

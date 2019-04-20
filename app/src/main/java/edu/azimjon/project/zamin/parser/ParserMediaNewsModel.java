@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.azimjon.project.zamin.activity.NavigationActivity;
+import edu.azimjon.project.zamin.fragment.FragmentWebView;
 import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
@@ -49,7 +50,6 @@ public class ParserMediaNewsModel {
                 model.setOriginalUrl(article.getAsJsonPrimitive("url").getAsString());
 
                 if (type == 3) {
-                    Log.d(DELETE_LOG, "Parse Gallery");
                     model.titleImages[0] = article.getAsJsonPrimitive("urlToImage").getAsString();
                     model.titleImages[1] = article.getAsJsonPrimitive("urlToImage2").getAsString();
                     model.titleImages[2] = article.getAsJsonPrimitive("urlToImage3").getAsString();
@@ -58,6 +58,7 @@ public class ParserMediaNewsModel {
             } catch (Exception e) {
                 Log.d(ERROR_LOG, "Error MediaNews Parser: " + e.getMessage());
             }
+
 
 
             for (NewsCategoryModel c : categoryModels) {

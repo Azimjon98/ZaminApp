@@ -85,9 +85,9 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
 
         playerView = view.findViewById(R.id.player_lay);
         playerTitle = view.findViewById(R.id.player_title);
-        prevIcon = view.findViewById(R.id.player_play);
         playerStartTime = view.findViewById(R.id.player_time_start);
         playerEndTime = view.findViewById(R.id.player_time_end);
+        prevIcon = view.findViewById(R.id.player_prev);
         playIcon = view.findViewById(R.id.player_play);
         nextIcon = view.findViewById(R.id.player_next);
         playerProgress = view.findViewById(R.id.player_seek_bar);

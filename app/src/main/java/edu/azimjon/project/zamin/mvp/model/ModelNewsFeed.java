@@ -177,7 +177,7 @@ public class ModelNewsFeed {
         retrofit.create(MyRestService.class)
                 .getNewsWithType("1",
                         "3",
-                        "1",
+                        "3",
                         MySettings.getInstance().getLang())
                 .enqueue(new Callback<JsonObject>() {
                     @Override
@@ -260,7 +260,7 @@ public class ModelNewsFeed {
 
     //parsing top news(pager news)
     private void parsingAudioNews(JsonObject json) {
-        List<MediaNewsModel> items = mediaNewsModel.parse(json, 1);
+        List<MediaNewsModel> items = mediaNewsModel.parse(json, 3);
 
         presenterNewsFeed.initAudioNews(items, MESSAGE_OK);
     }

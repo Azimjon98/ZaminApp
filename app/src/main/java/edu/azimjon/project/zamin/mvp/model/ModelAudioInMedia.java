@@ -61,7 +61,7 @@ public class ModelAudioInMedia {
         retrofit.create(MyRestService.class)
                 .getNewsWithType(String.valueOf(offset),
                         limit,
-                        "1",
+                        "3",
                         MySettings.getInstance().getLang())
                 .enqueue(new Callback<JsonObject>() {
                     @Override
@@ -93,7 +93,7 @@ public class ModelAudioInMedia {
 
     //parsing top news(pager news)
     private void parsingAudioNews(JsonObject json) {
-        List<MediaNewsModel> items = parserMediaNewsModel.parse(json, 1);
+        List<MediaNewsModel> items = parserMediaNewsModel.parse(json, 3);
 
         //sending data to view
         if (offset == 1)

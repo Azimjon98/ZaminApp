@@ -50,15 +50,19 @@ public class ParserMediaNewsModel {
                 model.setOriginalUrl(article.getAsJsonPrimitive("url").getAsString());
 
                 if (type == 3) {
+
+                } else if (type == 2) {
+                    model.setImageUrl(article.getAsJsonPrimitive("urlToImage").getAsString());
+                } else if (type == 1) {
                     model.titleImages[0] = article.getAsJsonPrimitive("urlToImage").getAsString();
                     model.titleImages[1] = article.getAsJsonPrimitive("urlToImage2").getAsString();
                     model.titleImages[2] = article.getAsJsonPrimitive("urlToImage3").getAsString();
                 }
 
             } catch (Exception e) {
+                e.printStackTrace();
                 Log.d(ERROR_LOG, "Error MediaNews Parser: " + e.getMessage());
             }
-
 
 
             for (NewsCategoryModel c : categoryModels) {

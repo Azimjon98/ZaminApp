@@ -44,6 +44,7 @@ import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class FragmentSearchNews extends Fragment implements IFragmentSearchNews {
@@ -99,7 +100,6 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
 
         bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
 
-
         //initiate search Edit text Watcher
         binding.edSearch.addTextChangedListener(myTextWatcher);
 
@@ -115,12 +115,12 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
 
     //search news with title
     void search_text(boolean fromBegin) {
-        adapter.clear_items();
         if (TextUtils.isEmpty(searchingText.trim())) {
             return;
         }
 
         if (fromBegin) {
+            adapter.clear_items();
             offset = 1;
             binding.progress.setVisibility(View.VISIBLE);
         }
@@ -173,6 +173,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     private void parsingLastNewsContinue(JsonObject json) {
         parserSimpleNewsModel = new ParserSimpleNewsModel();
 
+        Log.d(DELETE_LOG, "offset: " + offset);
         //sending data to view
         if (offset == 1)
             initNews(parserSimpleNewsModel.parse(json), MESSAGE_OK);
@@ -250,7 +251,6 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
                 isScrolling = false;
                 isLoading = true;
 
-                adapter.removeFooter();
                 adapter.showLoading();
                 search_text(false);
             }

@@ -35,12 +35,10 @@ import static edu.azimjon.project.zamin.addition.Constants.*;
 //*///////////////////////
 //All rights are reserved Numonov Azimjon© 2019
 //T is model of items is used in adapter
-//M is bindingView class for store data(ViewHolder)
 //
 ///////////////////////*//
 public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ArrayList<T> items;
-    public ArrayList<Boolean> states;
     public Context context;
 
     //header states
@@ -59,11 +57,9 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         super();
         this.context = context;
         this.items = items;
-        this.states = new ArrayList<>();
     }
 
     public void withHeader(View headerView) {
-
         hasHeaderNoInternet = false;
         this.headerView = headerView;
         hasHeader = true;
@@ -71,30 +67,35 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void withHeaderNoInternet(View headerView) {
-
-        hasHeader = false;
-        this.headerNoInternetView = headerView;
         hasHeaderNoInternet = true;
-        notifyDataSetChanged();
+        this.headerNoInternetView = headerView;
+        if (hasHeader) {
+            hasHeader = false;
+            notifyItemChanged(0);
+        } else {
+            notifyItemInserted(0);
+        }
     }
 
     public void withFooter(View footerView) {
-
         this.footerView = footerView;
         hasFooter = true;
-        notifyDataSetChanged();
+        notifyItemInserted(getItemCount());
     }
 
     public void removeHeaders() {
-
-        hasHeader = false;
-        hasHeaderNoInternet = false;
-        notifyDataSetChanged();
+        if (hasHeaderNoInternet || hasHeader) {
+            hasHeader = false;
+            hasHeaderNoInternet = false;
+            notifyDataSetChanged();
+        }
     }
 
     public void removeFooter() {
-        hasFooter = false;
-        notifyDataSetChanged();
+        if (hasFooter) {
+            hasFooter = false;
+            notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -112,58 +113,40 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
             return TYPE_ITEM;
     }
 
-
     //########################################################################
 
     //TODO: Additional methods
 
     public void clear_items() {
         this.items.clear();
-        this.states.clear();
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     public void init_items(List<T> items) {
         clear_items();
         this.items.addAll(items);
-        add_states(items);
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     public void add_all(List<T> items) {
+        int start = getItemCount();
         this.items.addAll(items);
-        add_states(items);
-        this.notifyDataSetChanged();
-    }
-
-    public void add_states(List<T> items) {
-        List<Boolean> states = new ArrayList<>();
-        for (T t : items)
-            states.add(false);
-
-        this.states.addAll(states);
-    }
-
-    public void restore_state() {
-        for (Boolean t : states)
-            t = false;
-
+        notifyItemRangeInserted(start, items.size());
     }
 
 
     //TODO: indicator item show/hide when loading data
     public void showLoading() {
         isLoading = true;
-        notifyDataSetChanged();
+        notifyItemInserted(getItemCount());
     }
 
     public void hideLoading() {
         isLoading = false;
-        notifyDataSetChanged();
+        notifyItemRemoved(getItemCount());
     }
 
     //#######################################################
-
 
     @Override
     public int getItemCount() {
@@ -175,7 +158,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
         return count;
     }
-
 
     //################################################################
 

@@ -26,6 +26,7 @@ import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_OPEN_GALLERY_ITEM;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
@@ -142,6 +143,7 @@ public class GalleryAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
+            bundle.putInt(KEY_OPEN_GALLERY_ITEM, 1);
             bundle.putParcelable(KEY_NEWS_MODEL,
                     Converters.fromMediaNewstoContentNews(binding.getModel()));
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);

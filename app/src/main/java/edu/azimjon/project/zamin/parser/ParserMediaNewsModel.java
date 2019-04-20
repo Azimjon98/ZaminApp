@@ -48,6 +48,7 @@ public class ParserMediaNewsModel {
                 model.setDate(article.getAsJsonPrimitive("publishedAt").getAsString());
                 model.setCategoryId(article.getAsJsonPrimitive("categoryID").getAsString());
                 model.setOriginalUrl(article.getAsJsonPrimitive("url").getAsString());
+                model.setViewedCount(article.getAsJsonPrimitive("viewed").getAsString());
 
                 if (type == 3) {
 

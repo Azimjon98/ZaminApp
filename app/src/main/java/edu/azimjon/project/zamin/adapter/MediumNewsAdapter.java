@@ -33,6 +33,16 @@ import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
+    public interface ScrollingState {
+        void scrollingStarts();
+    }
+
+    ScrollingState state;
+
+    public void setScrollingState(ScrollingState scrollingState) {
+        state = scrollingState;
+    }
+
     public MediumNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
         super(context, items);
         this.context = context;
@@ -43,6 +53,8 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        Log.d(DELETE_LOG, "onCreateViewHolder: " + i);
+
         LayoutInflater inflater = LayoutInflater.from(context);
 
         //header with bottom padding
@@ -69,11 +81,19 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+        Log.d(DELETE_LOG, "onBindViewHolder: " + i);
+
         if (viewHolder instanceof MyHolderItem) {
+
 
             int position = i;
             if (hasHeader || hasHeaderNoInternet)
                 position--;
+
+            if (position == items.size() - 3) {
+                if (state != null)
+                    state.scrollingStarts();
+            }
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;
             myHolder.binding.setModel(items.get(position));

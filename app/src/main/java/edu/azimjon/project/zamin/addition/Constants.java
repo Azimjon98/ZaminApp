@@ -60,6 +60,7 @@ public class Constants {
     public static String KEY_SEARCH_TOOLBAR_NAME = "toolbar_name";
     public static String KEY_SEARCH_WHERE = "search_where";
     public static String KEY_SEARCH_ID = "search_id";
+    public static String KEY_OPEN_GALLERY_ITEM = "open_gallery_item";
 
     //TODO: Recycler view Constants
     public final static int TYPE_HEADER = 1;

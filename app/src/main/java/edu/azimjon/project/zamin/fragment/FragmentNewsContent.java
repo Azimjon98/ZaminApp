@@ -1,11 +1,10 @@
 package edu.azimjon.project.zamin.fragment;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
-import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,34 +13,26 @@ import android.support.design.chip.Chip;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AbsListView;
-import android.widget.Toast;
-
-import com.crashlytics.android.Crashlytics;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
-import edu.azimjon.project.zamin.activity.NavigationActivity;
-import edu.azimjon.project.zamin.adapter.CategoryNewsAdapter;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.Converters;
@@ -50,34 +41,30 @@ import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.HeaderWindowNewsContentBinding;
 import edu.azimjon.project.zamin.databinding.WindowNewsContentBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
-import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
-import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsContentModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsContent;
-import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsContent;
-import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
+import edu.azimjon.project.zamin.util.MyChromeClient;
 import edu.azimjon.project.zamin.util.MyUtil;
 
-import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
+import static edu.azimjon.project.zamin.addition.Constants.KEY_OPEN_GALLERY_ITEM;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
-import static edu.azimjon.project.zamin.addition.Constants.MY_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.SEARCH_CATEGORY;
 import static edu.azimjon.project.zamin.addition.Constants.SEARCH_TAG;
 import static edu.azimjon.project.zamin.addition.Constants.WEB_URL;
 
 public class FragmentNewsContent extends Fragment implements IFragmentNewsContent {
     //TODO: Constants here
     String newsId;
+    int isFromGallery;
     NewsContentModel model;
 
     //TODO: variables here
@@ -106,16 +93,17 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         newsId = getArguments().getString(KEY_NEWS_ID);
+        isFromGallery = getArguments().getInt(KEY_OPEN_GALLERY_ITEM, -1);
         model = getArguments().getParcelable(KEY_NEWS_MODEL);
 
         presenterNewsContent = new PresenterNewsContent(this);
-        MySettings.getInstance().increaseStackCount();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.window_news_content, container, false);
+        MySettings.getInstance().increaseStackCount();
 
         return binding.getRoot();
     }
@@ -145,15 +133,21 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
         //*****************************************************************************
 
+        if (isFromGallery == 1)
+            bindingHeader.img.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0));
+
         //TODO: Header binding initializators
         // Enable Javascript
-        bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true);
         File file = new File(getContext().getCacheDir(), "WebCache");
-        Log.d(DELETE_LOG, file.getPath());
-        Log.d(DELETE_LOG, file.getAbsolutePath());
-        bindingHeader.contentWeb.getSettings().setAppCachePath(file.getPath());
+        bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true);
+        bindingHeader.contentWeb.getSettings().setLoadWithOverviewMode(true);
+        bindingHeader.contentWeb.getSettings().setAllowFileAccess(true);
+        bindingHeader.contentWeb.getSettings().setAppCachePath(file.getAbsolutePath());
         bindingHeader.contentWeb.getSettings().setAppCacheEnabled(true);
         bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        bindingHeader.contentWeb.setWebChromeClient(new MyChromeClient(getActivity()));
+
+        bindingHeader.contentWeb.getSettings().setMinimumFontSize(15);
 
         bindingHeader.contentWeb.setWebViewClient(new WebViewClient() {
             @Override
@@ -179,7 +173,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                 return true;
             }
         });
-
 
         binding.listLastNews.addOnScrollListener(scrollListener);
 
@@ -257,7 +250,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             //check if news contains news with this id
             List<NewsSimpleModel> news = new ArrayList<>(items);
             for (NewsSimpleModel i : news) {
-                if (i.getNewsId().equals(newsId)){
+                if (i.getNewsId().equals(newsId)) {
                     news.remove(i);
                     break;
                 }
@@ -272,7 +265,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     @Override
     public void initTags(List<String> tags) {
-//        tags.add("Манчестер Юнайтед");
         LayoutInflater inflater = LayoutInflater.from(getContext());
         for (String tag : tags) {
             Chip chip = (Chip) inflater.inflate(R.layout.item_tag, null, false);
@@ -398,13 +390,13 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             Log.d(DELETE_LOG, "fragment Count: " + MySettings.getInstance().getContentStack());
             for (int i = 0; i < MySettings.getInstance().getContentStack(); i++) {
                 System.out.println("PopBackPressed");
-                controller.popBackStack();
+//                controller.popBackStack();
             }
+            controller.popBackStack(R.id.fragmentContent, false);
             MySettings.getInstance().resetStack();
 
             return null;
         }
     }
-
 
 }

@@ -40,7 +40,7 @@ import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
-public class FragmentTopNews extends Fragment implements IFragmentTopNews, SwipeRefreshLayout.OnRefreshListener {
+public class FragmentTopNews extends Fragment implements IFragmentTopNews, SwipeRefreshLayout.OnRefreshListener, MediumNewsAdapter.ScrollingState {
 
     //TODO: Constants here
     LinearLayoutManager manager;
@@ -92,6 +92,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
 
             binding.listTopNews.setLayoutManager(manager);
             mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+            mediumNewsAdapter.setScrollingState(this);
             binding.listTopNews.setAdapter(mediumNewsAdapter);
             binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
             binding.listTopNews.setHasFixedSize(true);
@@ -229,6 +230,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
                     "visible_items: " + visible_items + " " +
                     "scrollout_items: " + scrollout_items);
 
+//            if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
             if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
                 isScrolling = false;
                 isLoading = true;
@@ -242,4 +244,14 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
     };
 
 
+    @Override
+    public void scrollingStarts() {
+        Log.d(DELETE_LOG, "scrollingStarts");
+//        isLoading = true;
+//        mediumNewsAdapter.notify
+
+//        mediumNewsAdapter.removeFooter();
+//        mediumNewsAdapter.showLoading();
+//        presenterTopNews.getContinue();
+    }
 }

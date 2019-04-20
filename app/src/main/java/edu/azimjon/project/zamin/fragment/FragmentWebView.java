@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.databinding.WindowWebViewBinding;
+import edu.azimjon.project.zamin.util.MyChromeClient;
 
 import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.WEB_URL;
@@ -63,6 +64,7 @@ public class FragmentWebView extends Fragment {
         binding.webview.setInitialScale(1);
         binding.webview.getSettings().setLoadWithOverviewMode(true);
         binding.webview.getSettings().setUseWideViewPort(true);
+        binding.webview.setWebChromeClient(new MyChromeClient(getActivity()));
 
 
         binding.webview.setWebViewClient(new WebViewClient() {

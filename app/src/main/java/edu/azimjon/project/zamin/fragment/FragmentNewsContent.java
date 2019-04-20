@@ -257,8 +257,10 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             //check if news contains news with this id
             List<NewsSimpleModel> news = new ArrayList<>(items);
             for (NewsSimpleModel i : news) {
-                if (i.getNewsId().equals(newsId))
+                if (i.getNewsId().equals(newsId)){
                     news.remove(i);
+                    break;
+                }
             }
 
 

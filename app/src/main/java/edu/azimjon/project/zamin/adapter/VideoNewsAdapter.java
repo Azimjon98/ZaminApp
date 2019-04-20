@@ -25,15 +25,16 @@ import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemAudioNewsBinding;
 import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
 import edu.azimjon.project.zamin.databinding.ItemVideoNewsBinding;
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.*;
 
-public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
+public class VideoNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
 
-    public VideoNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
+    public VideoNewsAdapter(Context context, ArrayList<MediaNewsModel> items) {
         super(context, items);
         this.context = context;
         this.items = items;
@@ -50,7 +51,7 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
         //header with bottom padding
         if (i == TYPE_HEADER)
             return new MyBaseHolder(headerView);
-        if (i == TYPE_HEADER_NO_INTERNET)
+        else if (i == TYPE_HEADER_NO_INTERNET)
             return new MyBaseHolder(headerNoInternetView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
@@ -134,7 +135,7 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
                                 FavouriteNewsDatabase.getInstance(context)
                                         .getDao()
                                         .insert(Converters
-                                                .fromSimpleNewstoFavouriteNews(binding.getModel()));
+                                                .fromMediaNewstoFavouriteNews(binding.getModel()));
                             }
                         }).start();
                     }
@@ -147,7 +148,8 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
-            bundle.putParcelable(KEY_NEWS_MODEL, binding.getModel());
+            bundle.putParcelable(KEY_NEWS_MODEL,
+                    Converters.fromMediaNewstoContentNews(binding.getModel()));
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }

@@ -43,7 +43,7 @@ public class OkHttpClientModule {
 
     @Provides
     public Cache cache(File file) {
-        return new Cache(file, 100 * 1000 * 1000); //10mb
+        return new Cache(file, 1000 * 1000 * 1000); //1000mb
     }
 
     @Provides

@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="edu.azimjon.project.zamin.model.NewsSimpleModel" />
+            type="edu.azimjon.project.zamin.model.MediaNewsModel" />
 
     </data>
 

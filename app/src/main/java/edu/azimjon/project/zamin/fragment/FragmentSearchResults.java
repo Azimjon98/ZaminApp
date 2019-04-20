@@ -128,7 +128,7 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
         search_text(true);
 
         //set locale
-        binding.toolbar.setSubtitle(MyUtil.getLocalizedString(getContext(), R.string.text_results));
+//        binding.toolbar.setSubtitle(MyUtil.getLocalizedString(getContext(), R.string.text_results));
     }
 
     //TODO: Networking:

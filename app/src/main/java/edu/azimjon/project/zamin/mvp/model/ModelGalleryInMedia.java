@@ -4,13 +4,13 @@ import android.util.Log;
 
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterGalleryInMedia;
+import edu.azimjon.project.zamin.parser.ParserMediaNewsModel;
 import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
 import retrofit2.Call;
@@ -24,7 +24,7 @@ import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class ModelGalleryInMedia {
 
-    ParserSimpleNewsModel parserSimpleNewsModel;
+    ParserMediaNewsModel parserMediaNewsModel;
 
     Retrofit retrofit;
     PresenterGalleryInMedia presenterGalleryInMedia;
@@ -42,7 +42,7 @@ public class ModelGalleryInMedia {
             e.printStackTrace();
         }
 
-        parserSimpleNewsModel = new ParserSimpleNewsModel();
+        parserMediaNewsModel = new ParserMediaNewsModel();
     }
 
     public void initGalleryNews() {
@@ -56,7 +56,7 @@ public class ModelGalleryInMedia {
 
     //gtting gallery news
     public void getGalleryNews() {
-        parserSimpleNewsModel = new ParserSimpleNewsModel();
+        parserMediaNewsModel = new ParserMediaNewsModel();
 
         retrofit.create(MyRestService.class)
                 .getNewsWithType(String.valueOf(offset),
@@ -93,7 +93,7 @@ public class ModelGalleryInMedia {
 
     //parsing gallery news(pager news)
     private void parsingGalleryNews(JsonObject json) {
-        List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
+        List<MediaNewsModel> items = parserMediaNewsModel.parse(json, 3);
 
         //sending data to view
         if (offset == 1)

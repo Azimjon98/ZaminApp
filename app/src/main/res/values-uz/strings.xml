@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Zamin</string>
     <string name="menu_news_feed">Lenta</string>
     <string name="menu_top">Top</string>
     <string name="menu_favourites">Tanlanganlar</string>
@@ -36,5 +35,8 @@
     <string name="text_share">Yangilikni ulashish</string>
     <string name="text_no_connection">Tilni o\'zgartirish uchun internetga ulaning</string>
     <string name="check_the_connection">Internetga ulanganingizni tekshirib ko\'ring</string>
+    <string name="text_no_favourites">Saqlangan xabarlar topilmadi</string>
+    <string name="text_no_audio">Audio xabarlar topilmadi</string>
+    <string name="text_registration">Ro\'yxatdan o\'tish</string>
 
 </resources>

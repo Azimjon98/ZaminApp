@@ -48,7 +48,6 @@ import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class FragmentSearchNews extends Fragment implements IFragmentSearchNews {
     WindowSearchBinding binding;
-    WindowNoConnectionBinding bindingNoConnection;
     FooterNoConnectionBinding bindingFooter;
 
     //retrofit call
@@ -98,7 +97,6 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
         binding.listSearchResult.setAdapter(adapter);
         binding.listSearchResult.setHasFixedSize(true);
 
-        bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listSearchResult, false);
         bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
 
 
@@ -117,6 +115,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
 
     //search news with title
     void search_text(boolean fromBegin) {
+        adapter.clear_items();
         if (TextUtils.isEmpty(searchingText.trim())) {
             return;
         }
@@ -159,9 +158,9 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
                 Log.d(API_LOG, "searchNews onFailure" + t.getMessage());
                 binding.progress.setVisibility(View.GONE);
 
-                if (offset == 1)
-                    adapter.withHeaderNoInternet(bindingNoConnection.getRoot());
-                else
+                if (offset == 1) {
+//                    adapter.withHeaderNoInternet(bindingNoConnection.getRoot());
+                } else
                     adapter.withFooter(bindingFooter.getRoot());
             }
         });
@@ -172,7 +171,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     //TODO: Parsing
     //parsing last news continue(pager news)
     private void parsingLastNewsContinue(JsonObject json) {
-            parserSimpleNewsModel = new ParserSimpleNewsModel();
+        parserSimpleNewsModel = new ParserSimpleNewsModel();
 
         //sending data to view
         if (offset == 1)
@@ -263,7 +262,6 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
 
     @Override
     public void onStop() {
-
         super.onStop();
         MyUtil.closeSoftKeyboard(getActivity());
     }

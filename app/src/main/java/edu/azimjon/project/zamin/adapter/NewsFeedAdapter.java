@@ -119,10 +119,10 @@ public class NewsFeedAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
                         boolean isWished = binding.getModel().isWished();
                         binding.getModel().setWished(!binding.getModel().isWished());
 
-                binding.favouriteIcon.setImageResource(
-                        binding.getModel().isWished() ?
-                                R.drawable.bookmark_active :
-                                R.drawable.bookmark_inactive);
+                        binding.favouriteIcon.setImageResource(
+                                binding.getModel().isWished() ?
+                                        R.drawable.bookmark_active :
+                                        R.drawable.bookmark_inactive);
                         //delete or inser news to favourites in another thread
                         new Thread(() -> {
                             if (isWished) {
@@ -146,7 +146,8 @@ public class NewsFeedAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
-            bundle.putParcelable(KEY_NEWS_MODEL, binding.getModel());
+            bundle.putParcelable(KEY_NEWS_MODEL,
+                    Converters.fromSimpleNewstoContentNews(binding.getModel()));
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }

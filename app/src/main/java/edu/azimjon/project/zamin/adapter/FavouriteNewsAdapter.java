@@ -26,6 +26,7 @@ import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel> {
@@ -45,6 +46,8 @@ public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel
         //header with bottom padding
         if (i == TYPE_HEADER)
             return new MyBaseHolder(headerView);
+        else if (i == TYPE_HEADER_NO_INTERNET)
+            return new MyBaseHolder(headerNoInternetView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
         else if (i == TYPE_LOADING)
@@ -128,7 +131,7 @@ public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
-            bundle.putParcelable(KEY_NEWS_MODEL, Converters.fromFavouritestoSimpleNews(binding.getModel()));
+            bundle.putParcelable(KEY_NEWS_MODEL, Converters.fromFavouritestoContentNews(binding.getModel()));
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }

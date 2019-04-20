@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="edu.azimjon.project.zamin.model.NewsSimpleModel" />
+            type="edu.azimjon.project.zamin.model.MediaNewsModel" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -45,9 +45,10 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="1dp"
+                        imageUrl="@{model.titleImages[0]}"
                         android:layout_weight="2"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/image_temp" />
+                        tools:src="@drawable/image_temp" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -62,6 +63,7 @@
                             android:layout_marginStart="1dp"
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
+                            imageUrl="@{model.titleImages[1]}"
                             android:scaleType="centerCrop"
                             android:src="@drawable/image_temp" />
 
@@ -71,6 +73,7 @@
                             android:layout_height="0dp"
                             android:layout_marginStart="1dp"
                             android:layout_marginTop="1dp"
+                            imageUrl="@{model.titleImages[2]}"
                             android:layout_weight="1"
                             android:scaleType="centerCrop"
                             android:src="@drawable/image_temp" />

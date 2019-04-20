@@ -2,57 +2,45 @@ package edu.azimjon.project.zamin.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.media.MediaPlayer;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-@Entity(tableName = "favourites_news")
-public class FavouriteNewsModel implements Parcelable {
+@Entity(tableName = "media_simple")
+public class MediaNewsModel implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     int id;
 
     @ColumnInfo(name = "newsId")
-    public String newsId;
+    String newsId;
 
-    public String title;
+    String title;
 
-    public String imageUrl;
+    String imageUrl;
 
-    public String originalUrl;
+    String originalUrl;
 
-    public String categoryId;
+    String categoryId;
 
-    public String categoryName;
+    String categoryName;
 
-    public String date;
+    String date;
 
-    public String viewedCount;
+    String viewedCount;
 
-    public boolean isWished;
+    boolean isWished;
 
-    String savedDate;
+    public String[] titleImages;
 
-    public FavouriteNewsModel() {
+    public MediaNewsModel() {
         isWished = false;
+        titleImages = new String[3];
     }
 
-    @Ignore
-    public FavouriteNewsModel(String newsId, String title, String imageUrl, String originalUrl, String categoryId, String date, String viewedCount, boolean isWished, String savedDate) {
-
-        this.newsId = newsId;
-        this.title = title;
-        this.imageUrl = imageUrl;
-        this.originalUrl = originalUrl;
-        this.categoryId = categoryId;
-        this.date = date;
-        this.viewedCount = viewedCount;
-        this.isWished = isWished;
-        this.savedDate = savedDate;
-    }
-
-    protected FavouriteNewsModel(Parcel in) {
+    protected MediaNewsModel(Parcel in) {
+        this();
         id = in.readInt();
         newsId = in.readString();
         title = in.readString();
@@ -63,18 +51,18 @@ public class FavouriteNewsModel implements Parcelable {
         date = in.readString();
         viewedCount = in.readString();
         isWished = in.readByte() != 0;
-        savedDate = in.readString();
+        titleImages = in.createStringArray();
     }
 
-    public static final Creator<FavouriteNewsModel> CREATOR = new Creator<FavouriteNewsModel>() {
+    public static final Creator<MediaNewsModel> CREATOR = new Creator<MediaNewsModel>() {
         @Override
-        public FavouriteNewsModel createFromParcel(Parcel in) {
-            return new FavouriteNewsModel(in);
+        public MediaNewsModel createFromParcel(Parcel in) {
+            return new MediaNewsModel(in);
         }
 
         @Override
-        public FavouriteNewsModel[] newArray(int size) {
-            return new FavouriteNewsModel[size];
+        public MediaNewsModel[] newArray(int size) {
+            return new MediaNewsModel[size];
         }
     };
 
@@ -102,6 +90,10 @@ public class FavouriteNewsModel implements Parcelable {
         this.categoryId = categoryId;
     }
 
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     public void setDate(String date) {
         this.date = date;
     }
@@ -114,8 +106,8 @@ public class FavouriteNewsModel implements Parcelable {
         isWished = wished;
     }
 
-    public void setSavedDate(String savedDate) {
-        this.savedDate = savedDate;
+    public void setTitleImages(String[] titleImages) {
+        this.titleImages = titleImages;
     }
 
     public int getId() {
@@ -142,6 +134,10 @@ public class FavouriteNewsModel implements Parcelable {
         return categoryId;
     }
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+
     public String getDate() {
         return date;
     }
@@ -154,16 +150,8 @@ public class FavouriteNewsModel implements Parcelable {
         return isWished;
     }
 
-    public String getSavedDate() {
-        return savedDate;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
+    public String[] getTitleImages() {
+        return titleImages;
     }
 
     @Override
@@ -183,6 +171,6 @@ public class FavouriteNewsModel implements Parcelable {
         dest.writeString(date);
         dest.writeString(viewedCount);
         dest.writeByte((byte) (isWished ? 1 : 0));
-        dest.writeString(savedDate);
+        dest.writeStringArray(titleImages);
     }
 }

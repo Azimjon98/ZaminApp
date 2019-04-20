@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,6 @@ import static edu.azimjon.project.zamin.addition.Constants.WEB_URL;
 public class FragmentNewsContent extends Fragment implements IFragmentNewsContent {
     //TODO: Constants here
     String newsId;
-    NewsSimpleModel simpleModel;
     NewsContentModel model;
 
     //TODO: variables here
@@ -106,8 +106,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         newsId = getArguments().getString(KEY_NEWS_ID);
-        simpleModel = getArguments().getParcelable(KEY_NEWS_MODEL);
-        model = Converters.fromSimpleNewstoContentNews(simpleModel);
+        model = getArguments().getParcelable(KEY_NEWS_MODEL);
 
         presenterNewsContent = new PresenterNewsContent(this);
         MySettings.getInstance().increaseStackCount();
@@ -149,7 +148,12 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         //TODO: Header binding initializators
         // Enable Javascript
         bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true);
-
+        File file = new File(getContext().getCacheDir(), "WebCache");
+        Log.d(DELETE_LOG, file.getPath());
+        Log.d(DELETE_LOG, file.getAbsolutePath());
+        bindingHeader.contentWeb.getSettings().setAppCachePath(file.getPath());
+        bindingHeader.contentWeb.getSettings().setAppCacheEnabled(true);
+        bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
 
         bindingHeader.contentWeb.setWebViewClient(new WebViewClient() {
             @Override
@@ -188,7 +192,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         this.getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction()== KeyEvent.ACTION_DOWN) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
                     MySettings.getInstance().decreaseStackCount();
                 }
                 return false;
@@ -223,9 +227,18 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         }
 
         if (message == MESSAGE_OK) {
+            //check if news contains news with this id
+            List<NewsSimpleModel> news = new ArrayList<>(items);
+            for (NewsSimpleModel i : news) {
+                if (i.getNewsId().equals(newsId)) {
+                    news.remove(i);
+                    break;
+                }
+            }
+
             mediumNewsAdapter.withHeader(bindingHeader.getRoot());
 
-            mediumNewsAdapter.init_items(items);
+            mediumNewsAdapter.init_items(news);
         }
 
     }
@@ -241,7 +254,15 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         }
 
         if (message == MESSAGE_OK) {
-            mediumNewsAdapter.add_all(items);
+            //check if news contains news with this id
+            List<NewsSimpleModel> news = new ArrayList<>(items);
+            for (NewsSimpleModel i : news) {
+                if (i.getNewsId().equals(newsId))
+                    news.remove(i);
+            }
+
+
+            mediumNewsAdapter.add_all(news);
 
         }
     }

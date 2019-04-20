@@ -51,7 +51,8 @@ public class MainNewsPagerAdapter extends PagerAdapter {
         binding.clicker.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
-            bundle.putParcelable(KEY_NEWS_MODEL, binding.getModel());
+            bundle.putParcelable(KEY_NEWS_MODEL,
+                    Converters.fromSimpleNewstoContentNews(binding.getModel()));
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         });
 

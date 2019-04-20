@@ -32,6 +32,7 @@ import edu.azimjon.project.zamin.databinding.WindowGalleryInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowVideoInsideMediaBinding;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterGalleryInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentGalleryInMedia;
@@ -94,7 +95,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
         manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         binding.listVideo.setLayoutManager(manager);
-        galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<MediaNewsModel>());
         viewHeader = LayoutInflater.from(getContext())
                 .inflate(
                         R.layout.header_window_gallery_inside_media,
@@ -163,7 +164,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
     //TODO: all methods from interface
 
     @Override
-    public void initGallery(List<NewsSimpleModel> items, int message) {
+    public void initGallery(List<MediaNewsModel> items, int message) {
         binding.swiper.setRefreshing(false);
 
         if (message == MESSAGE_NO_CONNECTION) {
@@ -183,7 +184,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
 
     @Override
-    public void addGallery(List<NewsSimpleModel> items, int message) {
+    public void addGallery(List<MediaNewsModel> items, int message) {
         galleryAdapter.hideLoading();
         isLoading = false;
 

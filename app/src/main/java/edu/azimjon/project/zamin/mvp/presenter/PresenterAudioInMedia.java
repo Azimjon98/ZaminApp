@@ -2,6 +2,7 @@ package edu.azimjon.project.zamin.mvp.presenter;
 
 import java.util.List;
 
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.model.ModelAudioInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentAudioInMedia;
@@ -25,11 +26,11 @@ public class PresenterAudioInMedia {
         modelAudioInMedia.getAudioNews();
     }
 
-    public void initNews(List<NewsSimpleModel> items, int message) {
+    public void initNews(List<MediaNewsModel> items, int message) {
         mainView.initAudio(items, message);
     }
 
-    public void addNews(List<NewsSimpleModel> items, int message) {
+    public void addNews(List<MediaNewsModel> items, int message) {
         mainView.addAudio(items, message);
     }
 

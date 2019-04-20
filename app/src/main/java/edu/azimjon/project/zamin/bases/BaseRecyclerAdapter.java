@@ -2,6 +2,7 @@ package edu.azimjon.project.zamin.bases;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,11 +15,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.adapter.AudioNewsAdapter;
+import edu.azimjon.project.zamin.adapter.NewsFeedAdapter;
 import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
 import edu.azimjon.project.zamin.addition.Converters;
+import edu.azimjon.project.zamin.databinding.ItemNewsMainMediumBinding;
 import edu.azimjon.project.zamin.databinding.ItemVideoNewsBinding;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
@@ -26,6 +32,12 @@ import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.*;
 
+//*///////////////////////
+//All rights are reserved Numonov Azimjon© 2019
+//T is model of items is used in adapter
+//M is bindingView class for store data(ViewHolder)
+//
+///////////////////////*//
 public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ArrayList<T> items;
     public ArrayList<Boolean> states;
@@ -51,7 +63,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void withHeader(View headerView) {
-        Log.d(DELETE_LOG, "withHeader");
 
         hasHeaderNoInternet = false;
         this.headerView = headerView;
@@ -60,7 +71,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void withHeaderNoInternet(View headerView) {
-        Log.d(DELETE_LOG, "withHeaderNoInternet");
 
         hasHeader = false;
         this.headerNoInternetView = headerView;
@@ -69,7 +79,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void withFooter(View footerView) {
-        Log.d(DELETE_LOG, "withFooter");
 
         this.footerView = footerView;
         hasFooter = true;
@@ -77,7 +86,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void removeHeaders() {
-        Log.d(DELETE_LOG, "removeHeaders");
 
         hasHeader = false;
         hasHeaderNoInternet = false;
@@ -85,7 +93,6 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void removeFooter() {
-        Log.d(DELETE_LOG, "removeFooter");
         hasFooter = false;
         notifyDataSetChanged();
     }
@@ -105,11 +112,12 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
             return TYPE_ITEM;
     }
 
+
     //########################################################################
 
     //TODO: Additional methods
 
-    private void clear_items() {
+    public void clear_items() {
         this.items.clear();
         this.states.clear();
         this.notifyDataSetChanged();

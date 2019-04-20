@@ -59,7 +59,7 @@ public interface MyRestService {
                                         @Query("key") String key,
                                         @Query("lang") String lang);
 
-    @GET("index.php")
+    @GET("media.php")
     Call<JsonObject> getNewsWithType(@Query("offset") String offset,
                                          @Query("limit") String limit,
                                          @Query("type") String type,

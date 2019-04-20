@@ -41,6 +41,7 @@ import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.events.MyOnMoreNewsEvent;
 import edu.azimjon.project.zamin.events.PlayerStateEvent;
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
@@ -174,11 +175,11 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             bindingHeader.listLastNews.setAdapter(smallNewsAdapter);
 
             bindingHeader.listAudioNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-            audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>(), null);
+            audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<MediaNewsModel>(), null);
             bindingHeader.listAudioNews.setAdapter(audioNewsAdapter);
 
             bindingHeader.listVideoNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-            videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+            videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<MediaNewsModel>());
             bindingHeader.listVideoNews.setAdapter(videoNewsAdapter);
 
             //TODO: Change locale
@@ -306,7 +307,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
     }
 
     @Override
-    public void initAudioNews(List<NewsSimpleModel> items, int message) {
+    public void initAudioNews(List<MediaNewsModel> items, int message) {
 
         if (message == MESSAGE_NO_CONNECTION) {
             bindingHeader.audioLay.setVisibility(View.GONE);
@@ -321,7 +322,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
     }
 
     @Override
-    public void initVideoNews(List<NewsSimpleModel> items, int message) {
+    public void initVideoNews(List<MediaNewsModel> items, int message) {
 
         if (message == MESSAGE_NO_CONNECTION) {
             bindingHeader.videoLay.setVisibility(View.GONE);

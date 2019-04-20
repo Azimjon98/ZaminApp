@@ -1,19 +1,17 @@
 package edu.azimjon.project.zamin.mvp.model;
 
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
-import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterVideoInMedia;
+import edu.azimjon.project.zamin.parser.ParserMediaNewsModel;
 import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
 import retrofit2.Call;
@@ -27,7 +25,7 @@ import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class ModelVideoinMedia {
 
-    ParserSimpleNewsModel parserSimpleNewsModel;
+    ParserMediaNewsModel parserMediaNewsModel;
 
     Retrofit retrofit;
     PresenterVideoInMedia presenterVideoInMedia;
@@ -57,7 +55,7 @@ public class ModelVideoinMedia {
 
     //getting video news(pager news)
     public void getVideoNews() {
-        parserSimpleNewsModel = new ParserSimpleNewsModel();
+        parserMediaNewsModel = new ParserMediaNewsModel();
 
 
         retrofit.create(MyRestService.class)
@@ -94,7 +92,7 @@ public class ModelVideoinMedia {
 
     //parsing top news(pager news)
     private void parsingVideoNews(JsonObject json) {
-        List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
+        List<MediaNewsModel> items = parserMediaNewsModel.parse(json, 2);
 
         //sending data to view
         if (offset == 1)

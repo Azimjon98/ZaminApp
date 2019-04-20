@@ -14,6 +14,7 @@ import java.util.Set;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 
 import static edu.azimjon.project.zamin.addition.Constants.*;
+import static java.lang.reflect.Array.getInt;
 
 public class MySettings {
     static private Context appContext;
@@ -141,7 +142,10 @@ public class MySettings {
     public void increaseStackCount() {
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(CONTENT_STACK, (sharedPreferences.getInt(CONTENT_STACK, 0) + 1));
+        int a = sharedPreferences.getInt(CONTENT_STACK, 0) + 1;
+        Log.d(DELETE_LOG, "increaseStackCount: " + a);
+
+        editor.putInt(CONTENT_STACK, a);
         editor.apply();
     }
 
@@ -149,11 +153,16 @@ public class MySettings {
 
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(CONTENT_STACK, (sharedPreferences.getInt(CONTENT_STACK, 0) - 1));
+        int a = sharedPreferences.getInt(CONTENT_STACK, 0) - 1;
+        Log.d(DELETE_LOG, "decreaseStackCount: " + a);
+
+        editor.putInt(CONTENT_STACK, a);
         editor.apply();
     }
 
     public void resetStack() {
+        Log.d(DELETE_LOG, "resetStack");
+
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(CONTENT_STACK, 0);
@@ -162,6 +171,8 @@ public class MySettings {
 
 
     public int getContentStack() {
+        Log.d(DELETE_LOG, "getContentStack");
+
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         return sharedPreferences.getInt(CONTENT_STACK, 0);

@@ -20,6 +20,7 @@ import edu.azimjon.project.zamin.addition.Converters;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemGalleryNewsBinding;
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
@@ -27,11 +28,12 @@ import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
-public class GalleryAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
+public class GalleryAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
 
-    public GalleryAdapter(Context context, ArrayList<NewsSimpleModel> items) {
+    public GalleryAdapter(Context context, ArrayList<MediaNewsModel> items) {
         super(context, items);
         this.context = context;
         this.items = items;
@@ -46,6 +48,8 @@ public class GalleryAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
         //header with bottom padding
         if (i == TYPE_HEADER)
             return new MyBaseHolder(headerView);
+        else if (i == TYPE_HEADER_NO_INTERNET)
+            return new MyBaseHolder(headerNoInternetView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
         else if (i == TYPE_LOADING)
@@ -126,7 +130,7 @@ public class GalleryAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
                                 FavouriteNewsDatabase.getInstance(context)
                                         .getDao()
                                         .insert(Converters
-                                                .fromSimpleNewstoFavouriteNews(binding.getModel()));
+                                                .fromMediaNewstoFavouriteNews(binding.getModel()));
                             }
                         }).start();
                     }
@@ -138,7 +142,8 @@ public class GalleryAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
-            bundle.putParcelable(KEY_NEWS_MODEL, binding.getModel());
+            bundle.putParcelable(KEY_NEWS_MODEL,
+                    Converters.fromMediaNewstoContentNews(binding.getModel()));
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }

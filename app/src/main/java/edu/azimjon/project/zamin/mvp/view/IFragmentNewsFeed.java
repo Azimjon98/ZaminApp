@@ -2,6 +2,7 @@ package edu.azimjon.project.zamin.mvp.view;
 
 import java.util.List;
 
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 
@@ -11,9 +12,9 @@ public interface IFragmentNewsFeed {
 
     void initLastAndContinueNews(List<NewsSimpleModel> items, int messege);
 
-    void initAudioNews(List<NewsSimpleModel> items, int messege);
+    void initAudioNews(List<MediaNewsModel> items, int messege);
 
-    void initVideoNews(List<NewsSimpleModel> items, int messege);
+    void initVideoNews(List<MediaNewsModel> items, int messege);
 
     void addLastNewsContinue(List<NewsSimpleModel> items, int messege);
 }

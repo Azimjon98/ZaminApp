@@ -2,6 +2,7 @@ package edu.azimjon.project.zamin.mvp.presenter;
 
 import java.util.List;
 
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.model.ModelNewsFeed;
@@ -38,11 +39,11 @@ public class PresenterNewsFeed {
         mainView.initLastAndContinueNews(items, message);
     }
 
-    public void initAudioNews(List<NewsSimpleModel> items, int message) {
+    public void initAudioNews(List<MediaNewsModel> items, int message) {
         mainView.initAudioNews(items, message);
     }
 
-    public void initVideoNews(List<NewsSimpleModel> items, int message) {
+    public void initVideoNews(List<MediaNewsModel> items, int message) {
         mainView.initVideoNews(items, message);
     }
 

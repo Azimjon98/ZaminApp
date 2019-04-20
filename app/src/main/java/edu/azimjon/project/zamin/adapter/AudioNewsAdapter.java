@@ -20,6 +20,7 @@ import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemAudioNewsBinding;
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 
 import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
@@ -27,25 +28,26 @@ import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
-public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
+public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
 
     public boolean isPlaying = false;
     public String playingMusicId;
 
     public static interface IMyPlayer {
-        void playPressed(NewsSimpleModel m);
+        void playPressed(MediaNewsModel m);
 
-        void pausePressed(NewsSimpleModel m);
+        void pausePressed(MediaNewsModel m);
 
-        void updateItems(NewsSimpleModel m);
+        void updateItems(MediaNewsModel m);
 
     }
 
     IMyPlayer myPlayer;
 
-    public AudioNewsAdapter(Context context, ArrayList<NewsSimpleModel> items, IMyPlayer player) {
+    public AudioNewsAdapter(Context context, ArrayList<MediaNewsModel> items, IMyPlayer player) {
         super(context, items);
 
         this.context = context;
@@ -61,6 +63,8 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
         //header with bottom padding
         if (i == TYPE_HEADER)
             return new MyBaseHolder(headerView);
+        else if (i == TYPE_HEADER_NO_INTERNET)
+            return new MyBaseHolder(headerNoInternetView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
         else if (i == TYPE_LOADING)

@@ -87,6 +87,9 @@ public class FragmentProfile extends Fragment {
 
         binding.categoryLay.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_fragmentProfile_to_fragmentSelectCategories));
         binding.languageLay.setOnClickListener(languageListener);
+        binding.registrationLay.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Ro'yxatdan o'tishning iloji yo'q", Toast.LENGTH_SHORT).show();
+        });
 
         dao.
                 getAllEnabledCategoriesLive().
@@ -111,6 +114,7 @@ public class FragmentProfile extends Fragment {
         binding.textCateg.setText(MyUtil.getLocalizedString(getContext(), R.string.text_categories));
         binding.textLanguage.setText(MyUtil.getLocalizedString(getContext(), R.string.text_select_language));
         binding.textCurrentLang.setText(MyUtil.getLocalizedString(getContext(), R.string.language));
+        binding.textRegistration.setText(MyUtil.getLocalizedString(getContext(), R.string.text_registration));
 
     }
 
@@ -165,7 +169,7 @@ public class FragmentProfile extends Fragment {
             public void onAnimationUpdate(ValueAnimator animation) {
                 bindingDialog.lottieAnimationUz.setProgress((Float) animation.getAnimatedValue());
 
-                if ((Float)animation.getAnimatedValue() == 1f)
+                if ((Float) animation.getAnimatedValue() == 1f)
                     bindingDialog.lottieAnimationKr.setProgress(0);
 
             }
@@ -176,7 +180,7 @@ public class FragmentProfile extends Fragment {
             public void onAnimationUpdate(ValueAnimator animation) {
                 bindingDialog.lottieAnimationKr.setProgress((Float) animation.getAnimatedValue());
 
-                if ((Float)animation.getAnimatedValue() == 1f)
+                if ((Float) animation.getAnimatedValue() == 1f)
                     bindingDialog.lottieAnimationUz.setProgress(0);
             }
         });

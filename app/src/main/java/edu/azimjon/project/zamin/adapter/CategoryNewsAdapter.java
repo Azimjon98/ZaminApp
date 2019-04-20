@@ -26,6 +26,7 @@ import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
 import static edu.azimjon.project.zamin.addition.Constants.SEARCH_CATEGORY;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class CategoryNewsAdapter extends BaseRecyclerAdapter<NewsCategoryModel> {
@@ -45,6 +46,8 @@ public class CategoryNewsAdapter extends BaseRecyclerAdapter<NewsCategoryModel> 
         //header with bottom padding
         if (i == TYPE_HEADER)
             return new MyBaseHolder(headerView);
+        else if (i == TYPE_HEADER_NO_INTERNET)
+            return new MyBaseHolder(headerNoInternetView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
         else if (i == TYPE_LOADING)
@@ -87,7 +90,6 @@ public class CategoryNewsAdapter extends BaseRecyclerAdapter<NewsCategoryModel> 
             super(binding.getRoot());
             this.binding = binding;
             this.binding.cardNewsCategory.setOnClickListener(this);
-
         }
 
 

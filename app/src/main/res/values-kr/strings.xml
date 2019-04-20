@@ -36,4 +36,7 @@
     <string name="text_no_connection">Tilni o\'zgartirish uchun internetga ulaning</string>
     <string name="check_the_connection">Internetga ulanganingizni tekshirib ko\'ring</string>
     <string name="text_share">Янгиликларни улашиш</string>
+    <string name="text_no_favourites">Сақланган хабарлар топилмади</string>
+    <string name="text_no_audio">Аудио хабарлар топилмади</string>
+    <string name="text_registration">Рўйхатдан ўтиш</string>
 </resources>

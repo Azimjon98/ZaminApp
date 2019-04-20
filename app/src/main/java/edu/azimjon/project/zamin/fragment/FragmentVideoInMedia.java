@@ -32,6 +32,7 @@ import edu.azimjon.project.zamin.databinding.WindowAudioInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowVideoInsideMediaBinding;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterVideoInMedia;
@@ -92,7 +93,7 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
         manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         binding.listVideo.setLayoutManager(manager);
-        videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<MediaNewsModel>());
         viewHeader = LayoutInflater.from(getContext())
                 .inflate(
                         R.layout.header_window_video_inside_media,
@@ -107,7 +108,6 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
         bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listVideo, false);
         bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listVideo, false);
-
 
 
         binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -167,7 +167,7 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
 
     @Override
-    public void initVideo(List<NewsSimpleModel> items, int message) {
+    public void initVideo(List<MediaNewsModel> items, int message) {
         videoNewsAdapter.removeHeaders();
 
         binding.swiper.setRefreshing(false);
@@ -186,7 +186,7 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
     }
 
     @Override
-    public void addVideo(List<NewsSimpleModel> items, int message) {
+    public void addVideo(List<MediaNewsModel> items, int message) {
         videoNewsAdapter.hideLoading();
         isLoading = false;
 

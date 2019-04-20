@@ -43,6 +43,7 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
     WindowFavouritesBinding binding;
     //    PresenterFavouriteNews presenterFavouriteNews;
     View viewHeader;
+    View viewHeaderNoItem;
 
     //adapters
     FavouriteNewsAdapter favouriteNewsAdapter;
@@ -85,6 +86,11 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
                             R.layout.header_window_favourites,
                             binding.listFavourite,
                             false);
+            viewHeaderNoItem = LayoutInflater.from(getContext())
+                    .inflate(
+                            R.layout.header_window_favourites_noitem,
+                            binding.listFavourite,
+                            false);
             favouriteNewsAdapter.withHeader(viewHeader);
             binding.listFavourite.setAdapter(favouriteNewsAdapter);
             binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
@@ -100,6 +106,8 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
         //TODO: init locales
         ((TextView) viewHeader.findViewById(R.id.text_title)).setText(MyUtil.getLocalizedString(getContext(), R.string.title_favourites));
         ((TextView) viewHeader.findViewById(R.id.text_1)).setText(MyUtil.getLocalizedString(getContext(), R.string.message_favourites));
+        ((TextView) viewHeaderNoItem.findViewById(R.id.text_title)).setText(MyUtil.getLocalizedString(getContext(), R.string.title_favourites));
+        ((TextView) viewHeaderNoItem.findViewById(R.id.text_1)).setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_favourites));
 
     }
 
@@ -130,6 +138,11 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
             @Override
             public void onChanged(@Nullable List<FavouriteNewsModel> tourModels) {
                 Log.d(Constants.MY_LOG, "in favourite onChanged");
+                if (tourModels.size() == 0)
+                    favouriteNewsAdapter.withHeaderNoInternet(viewHeaderNoItem);
+                else
+                    favouriteNewsAdapter.withHeader(viewHeader);
+
                 initFavourites(tourModels);
             }
         });

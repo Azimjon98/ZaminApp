@@ -38,6 +38,7 @@ import edu.azimjon.project.zamin.databinding.WindowAudioInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.events.PlayerStateEvent;
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterAudioInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentAudioInMedia;
@@ -60,6 +61,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     WindowNoConnectionBinding bindingNoConnection;
     FooterNoConnectionBinding bindingFooter;
     View viewHeader;
+    View viewHeaderNoItem;
 
     PresenterAudioInMedia presenterAudioInMedia;
 
@@ -77,7 +79,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     String currentTrackUrl = "https://muz11.z1.fm/e/ac/via_marokand_via_marokand_-_tarnov_tarnov_2016_(zf.fm).mp3";
     int musicDuration = -1;
     int currenPosition;
-    NewsSimpleModel currentModel;
+    MediaNewsModel currentModel;
 
 
     //#####################################################################
@@ -104,10 +106,15 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
         manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         binding.listAudio.setLayoutManager(manager);
-        audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>(), this);
+        audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<MediaNewsModel>(), this);
         viewHeader = LayoutInflater.from(getContext())
                 .inflate(
                         R.layout.header_window_audio_inside_media,
+                        binding.listAudio,
+                        false);
+        viewHeaderNoItem = LayoutInflater.from(getContext())
+                .inflate(
+                        R.layout.no_item_window_audio,
                         binding.listAudio,
                         false);
 
@@ -129,13 +136,14 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
                 android.R.color.holo_red_light);
 
 
-
         binding.swiper.setOnRefreshListener(this);
         binding.listAudio.addOnScrollListener(scrollListener);
 
         //TODO: localize here
         ((TextView) viewHeader.findViewById(R.id.text_title)).setText(MyUtil.getLocalizedString(getContext(), R.string.title_audio_news));
         ((TextView) viewHeader.findViewById(R.id.text_1)).setText(MyUtil.getLocalizedString(getContext(), R.string.messege_audio));
+        ((TextView) viewHeaderNoItem.findViewById(R.id.text_title)).setText(MyUtil.getLocalizedString(getContext(), R.string.title_audio_news));
+        ((TextView) viewHeaderNoItem.findViewById(R.id.text_1)).setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_audio));
         //############################################################
 
 //        binding.swiper.setRefreshing(true);
@@ -184,7 +192,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     //TODO: all methods from interface
 
     @Override
-    public void playPressed(NewsSimpleModel m) {
+    public void playPressed(MediaNewsModel m) {
         currentModel = m;
         if (mediaPlayer != null) {
             mediaPlayer.start();
@@ -195,7 +203,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     }
 
     @Override
-    public void pausePressed(NewsSimpleModel m) {
+    public void pausePressed(MediaNewsModel m) {
         currentModel = m;
         if (mediaPlayer != null) {
             mediaPlayer.pause();
@@ -206,7 +214,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     }
 
     @Override
-    public void updateItems(NewsSimpleModel m) {
+    public void updateItems(MediaNewsModel m) {
         currentModel = m;
         audioNewsAdapter.notifyDataSetChanged();
         timer.removeCallbacks(myTimerRunnable);
@@ -239,7 +247,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     }
 
     @Override
-    public void initAudio(List<NewsSimpleModel> items, int message) {
+    public void initAudio(List<MediaNewsModel> items, int message) {
         binding.swiper.setRefreshing(false);
         audioNewsAdapter.isPlaying = false;
         audioNewsAdapter.playingMusicId = "";
@@ -259,7 +267,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
 
     @Override
-    public void addAudio(List<NewsSimpleModel> items, int message) {
+    public void addAudio(List<MediaNewsModel> items, int message) {
         audioNewsAdapter.hideLoading();
         isLoading = false;
 

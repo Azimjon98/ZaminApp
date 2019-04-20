@@ -20,9 +20,11 @@ import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.fragment.FragmentProfile;
+import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
+import edu.azimjon.project.zamin.parser.ParserMediaNewsModel;
 import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
@@ -47,7 +49,7 @@ public class ModelNewsFeed {
 
     //parser variables
     ParserSimpleNewsModel simpleModelParser;
-
+    ParserMediaNewsModel mediaNewsModel;
 
     public ModelNewsFeed(PresenterNewsFeed presenterNewsFeed) {
         handler = new MyHandler();
@@ -65,6 +67,7 @@ public class ModelNewsFeed {
         }
 
         simpleModelParser = new ParserSimpleNewsModel();
+        mediaNewsModel = new ParserMediaNewsModel();
 
     }
 
@@ -257,19 +260,17 @@ public class ModelNewsFeed {
 
     //parsing top news(pager news)
     private void parsingAudioNews(JsonObject json) {
-        List<NewsSimpleModel> items = simpleModelParser.parse(json);
+        List<MediaNewsModel> items = mediaNewsModel.parse(json, 1);
 
         presenterNewsFeed.initAudioNews(items, MESSAGE_OK);
-
     }
 
     //parsing top news(pager news)
     private void parsingVideoNews(JsonObject json) {
-        List<NewsSimpleModel> items = simpleModelParser.parse(json);
+        List<MediaNewsModel> items = mediaNewsModel.parse(json,2);
 
         //sending data to view
         presenterNewsFeed.initVideoNews(items, MESSAGE_OK);
-
     }
 
 

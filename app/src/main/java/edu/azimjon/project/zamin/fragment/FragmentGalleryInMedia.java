@@ -81,7 +81,8 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.window_gallery_inside_media, container, false);
+        if (binding == null)
+            binding = DataBindingUtil.inflate(inflater, R.layout.window_gallery_inside_media, container, false);
 
         return binding.getRoot();
     }
@@ -93,23 +94,29 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
         //initialize adapters and append to lists
 
-        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        binding.listVideo.setLayoutManager(manager);
-        galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<MediaNewsModel>());
-        viewHeader = LayoutInflater.from(getContext())
-                .inflate(
-                        R.layout.header_window_gallery_inside_media,
-                        binding.listVideo,
-                        false);
+        if (manager == null) {
 
-        galleryAdapter.withHeader(viewHeader);
-        binding.listVideo.setAdapter(galleryAdapter);
-        binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
-        binding.listVideo.setHasFixedSize(true);
 
-        bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listVideo, false);
-        bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listVideo, false);
+            manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            binding.listVideo.setLayoutManager(manager);
+            galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<MediaNewsModel>());
+            viewHeader = LayoutInflater.from(getContext())
+                    .inflate(
+                            R.layout.header_window_gallery_inside_media,
+                            binding.listVideo,
+                            false);
 
+            galleryAdapter.withHeader(viewHeader);
+            binding.listVideo.setAdapter(galleryAdapter);
+            binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+            binding.listVideo.setHasFixedSize(true);
+
+            bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listVideo, false);
+            bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listVideo, false);
+
+            binding.swiper.setRefreshing(true);
+            presenterGalleryInMedia.init();
+        }
 
         binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -128,8 +135,6 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
         //###################################
 
 
-        binding.swiper.setRefreshing(true);
-        presenterGalleryInMedia.init();
     }
 
     //TODO: override methods

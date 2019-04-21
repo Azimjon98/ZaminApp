@@ -70,7 +70,6 @@ public class NewsFeedAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-//        Log.d(DELETE_LOG, "onBindViewHolder: " + i);
 
         if (viewHolder instanceof MyHolderItem) {
             int position = i;

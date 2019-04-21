@@ -78,6 +78,8 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Log.d(CALLBACK_LOG, "FragmentContent: onViewCreated");
         super.onViewCreated(view, savedInstanceState);
+        //set that news content opened from search news
+        MySettings.getInstance().setWhichIdCallsContent(R.id.fragmentContent);
         navigationView = view.findViewById(R.id.bottom_navigation);
         appBarLayout = view.findViewById(R.id.app_bar);
         searchIcon = view.findViewById(R.id.toolbar_search);

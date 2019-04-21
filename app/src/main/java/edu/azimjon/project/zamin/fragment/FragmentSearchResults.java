@@ -96,14 +96,16 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.window_search_results, container, false);
-
+        if (binding == null)
+            binding = DataBindingUtil.inflate(inflater, R.layout.window_search_results, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //set that news content opened from search news
+        MySettings.getInstance().setWhichIdCallsContent(R.id.fragmentSearchResults);
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).popBackStack());
 
         binding.toolbar.setTitle(
@@ -111,21 +113,23 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
         );
 
 
-        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        adapter = new MediumNewsAdapter(getContext(), new ArrayList<>());
-        binding.listSearchResult.setLayoutManager(manager);
-        binding.listSearchResult.setAdapter(adapter);
-        binding.listSearchResult.setHasFixedSize(true);
+        if (manager == null) {
+            manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            adapter = new MediumNewsAdapter(getContext(), new ArrayList<>());
+            binding.listSearchResult.setLayoutManager(manager);
+            binding.listSearchResult.setAdapter(adapter);
+            binding.listSearchResult.setHasFixedSize(true);
 
-        bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listSearchResult, false);
-        bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
+            bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listSearchResult, false);
+            bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
 
+            //starting
+            search_text(true);
+        }
 
         //initiate list scrolling state change listener
         binding.listSearchResult.addOnScrollListener(scrollListener);
 
-        //starting
-        search_text(true);
 
         //set locale
 //        binding.toolbar.setSubtitle(MyUtil.getLocalizedString(getContext(), R.string.text_results));

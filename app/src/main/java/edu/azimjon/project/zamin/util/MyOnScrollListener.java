@@ -6,9 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.AbsListView;
 
-import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
-import edu.azimjon.project.zamin.fragment.FragmentNewsFeed;
 
 public class MyOnScrollListener extends RecyclerView.OnScrollListener {
 

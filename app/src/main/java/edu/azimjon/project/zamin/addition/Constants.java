@@ -52,6 +52,7 @@ public class Constants {
     public static String LANG_CHANGED = "lang_changed";
     public static String CONTENT_STACK = "content_stack";
     public static String WEB_URL = "web_url";
+    public static String OPEN_CONTENT_FROM_ID = "from_which_content_opened";
 
     //TODO: KEYS
     public static String KEY_NEWS_ID = "news_id";

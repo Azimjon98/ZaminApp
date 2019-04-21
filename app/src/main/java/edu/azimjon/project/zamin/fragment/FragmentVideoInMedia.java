@@ -79,7 +79,8 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.window_video_inside_media, container, false);
+        if (binding == null)
+            binding = DataBindingUtil.inflate(inflater, R.layout.window_video_inside_media, container, false);
 
         return binding.getRoot();
     }
@@ -91,24 +92,28 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
         //initialize adapters and append to lists
 
-        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        binding.listVideo.setLayoutManager(manager);
-        videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<MediaNewsModel>());
-        viewHeader = LayoutInflater.from(getContext())
-                .inflate(
-                        R.layout.header_window_video_inside_media,
-                        binding.listVideo,
-                        false);
+        if (manager == null) {
+            manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            binding.listVideo.setLayoutManager(manager);
+            videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<MediaNewsModel>());
+            viewHeader = LayoutInflater.from(getContext())
+                    .inflate(
+                            R.layout.header_window_video_inside_media,
+                            binding.listVideo,
+                            false);
 
-        videoNewsAdapter.withHeader(viewHeader);
-        binding.listVideo.setAdapter(videoNewsAdapter);
-        binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
-        binding.listVideo.setHasFixedSize(true);
+            videoNewsAdapter.withHeader(viewHeader);
+            binding.listVideo.setAdapter(videoNewsAdapter);
+            binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
+            binding.listVideo.setHasFixedSize(true);
 
 
-        bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listVideo, false);
-        bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listVideo, false);
+            bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listVideo, false);
+            bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listVideo, false);
 
+            binding.swiper.setRefreshing(true);
+            presenterVideoInMedia.init();
+        }
 
         binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -129,13 +134,10 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
         ((TextView) viewHeader.findViewById(R.id.text_title)).setText(MyUtil.getLocalizedString(getContext(), R.string.title_video_news));
         ((TextView) viewHeader.findViewById(R.id.text_1)).setText(MyUtil.getLocalizedString(getContext(), R.string.message_video));
         //############################################################
-
-        binding.swiper.setRefreshing(true);
-        presenterVideoInMedia.init();
-
     }
-    //TODO: override methods
 
+
+    //TODO: override methods
 
     @Override
     public void onStart() {

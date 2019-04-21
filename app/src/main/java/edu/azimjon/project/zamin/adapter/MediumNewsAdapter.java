@@ -53,7 +53,6 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        Log.d(DELETE_LOG, "onCreateViewHolder: " + i);
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
@@ -81,7 +80,6 @@ public class MediumNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        Log.d(DELETE_LOG, "onBindViewHolder: " + i);
 
         if (viewHolder instanceof MyHolderItem) {
 

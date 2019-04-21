@@ -103,7 +103,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.window_news_content, container, false);
-        MySettings.getInstance().increaseStackCount();
 
         return binding.getRoot();
     }
@@ -178,19 +177,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
         initIcons();
         presenterNewsContent.init(newsId);
-
-        //You need to add the following line for this solution to work; thanks skayred
-        this.getView().setFocusableInTouchMode(true);
-        this.getView().requestFocus();
-        this.getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    MySettings.getInstance().decreaseStackCount();
-                }
-                return false;
-            }
-        });
     }
 
     //TODO: override methods
@@ -375,25 +361,17 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     //go navigation to BaseView first Content is called
     static class MyAsycTask extends AsyncTask<Void, Void, Void> {
         Activity activity;
-        int count;
         NavController controller;
 
         public MyAsycTask(Activity activity, NavController controller) {
             this.activity = activity;
-            this.count = count;
             this.controller = controller;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             final NavController controller = Navigation.findNavController(activity, R.id.nav_host_fragment);
-            Log.d(DELETE_LOG, "fragment Count: " + MySettings.getInstance().getContentStack());
-            for (int i = 0; i < MySettings.getInstance().getContentStack(); i++) {
-                System.out.println("PopBackPressed");
-//                controller.popBackStack();
-            }
-            controller.popBackStack(R.id.fragmentContent, false);
-            MySettings.getInstance().resetStack();
+            controller.popBackStack(MySettings.getInstance().getWhichIdCallsContent(), false);
 
             return null;
         }

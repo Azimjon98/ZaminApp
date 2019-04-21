@@ -135,47 +135,19 @@ public class MySettings {
             lang = "uz";
 
         return lang;
-
     }
 
-
-    public void increaseStackCount() {
+    public void setWhichIdCallsContent(int id) {
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        int a = sharedPreferences.getInt(CONTENT_STACK, 0) + 1;
-        Log.d(DELETE_LOG, "increaseStackCount: " + a);
-
-        editor.putInt(CONTENT_STACK, a);
+        editor.putInt(OPEN_CONTENT_FROM_ID, id);
         editor.apply();
     }
 
-    public void decreaseStackCount() {
-
-        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        int a = sharedPreferences.getInt(CONTENT_STACK, 0) - 1;
-        Log.d(DELETE_LOG, "decreaseStackCount: " + a);
-
-        editor.putInt(CONTENT_STACK, a);
-        editor.apply();
-    }
-
-    public void resetStack() {
-        Log.d(DELETE_LOG, "resetStack");
-
-        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(CONTENT_STACK, 0);
-        editor.apply();
-    }
-
-
-    public int getContentStack() {
-        Log.d(DELETE_LOG, "getContentStack");
-
+    public int getWhichIdCallsContent() {
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
 
-        return sharedPreferences.getInt(CONTENT_STACK, 0);
+        return sharedPreferences.getInt(OPEN_CONTENT_FROM_ID, -1);
     }
 
 }

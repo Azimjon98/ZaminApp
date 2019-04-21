@@ -83,23 +83,27 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.window_search, container, false);
+        if (binding == null)
+            binding = DataBindingUtil.inflate(inflater, R.layout.window_search, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //set that news content opened from search news
+        MySettings.getInstance().setWhichIdCallsContent(R.id.fragmentSearchNews);
         binding.iconBack.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
 
-        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        adapter = new MediumNewsAdapter(getContext(), new ArrayList<>());
-        binding.listSearchResult.setLayoutManager(manager);
-        binding.listSearchResult.setAdapter(adapter);
-        binding.listSearchResult.setHasFixedSize(true);
+        if (manager == null) {
+            manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            adapter = new MediumNewsAdapter(getContext(), new ArrayList<>());
+            binding.listSearchResult.setLayoutManager(manager);
+            binding.listSearchResult.setAdapter(adapter);
+            binding.listSearchResult.setHasFixedSize(true);
 
-        bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
-
+            bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
+        }
         //initiate search Edit text Watcher
         binding.edSearch.addTextChangedListener(myTextWatcher);
 
@@ -214,6 +218,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (!TextUtils.isEmpty(s.toString().trim())) {
                 searchingText = s.toString();
+                Log.d(DELETE_LOG, "onTextChanged");
                 search_text(true);
             }
         }
@@ -263,6 +268,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     @Override
     public void onStop() {
         super.onStop();
+        binding.edSearch.setText("");
         MyUtil.closeSoftKeyboard(getActivity());
     }
 

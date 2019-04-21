@@ -224,8 +224,8 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_more_news(MyOnMoreNewsEvent event) {
-        navigationView.setSelectedItemId(R.id.menu_media);
         contentPagerAdapter.setPositionOfMediaNews(event.getPosition());
+        navigationView.setSelectedItemId(R.id.menu_media);
 
     }
 

@@ -32,7 +32,7 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
     FragmentNewsFeed fragmentNewsFeed;
     FragmentTopNews fragmentTopNews;
     FragmentFavourites fragmentFavourites;
-    FragmentMedia fragmentMedia = new FragmentMedia();
+    FragmentMedia fragmentMedia;
 
     int mediaPosition = 0;
 
@@ -63,6 +63,8 @@ public class ContentPagerAdapter extends FragmentPagerAdapter {
                     fragmentFavourites = new FragmentFavourites();
                 return fragmentFavourites;
             case 3:
+                if (fragmentMedia == null)
+                    fragmentMedia = new FragmentMedia();
                 fragmentMedia.setPosition(mediaPosition);
                 return fragmentMedia;
             default:

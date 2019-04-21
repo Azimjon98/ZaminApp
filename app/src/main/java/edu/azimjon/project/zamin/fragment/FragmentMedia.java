@@ -35,7 +35,7 @@ import timber.log.Timber;
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 
-public class FragmentMedia extends Fragment{
+public class FragmentMedia extends Fragment {
 
     //TODO: Constants here
 
@@ -46,12 +46,10 @@ public class FragmentMedia extends Fragment{
 
     //TODO: variables here
     WindowMediaBinding binding;
-    int position = 0;
+    int position = -1;
 
     //adapters
     MediaPagerAdapter pagerAdapter;
-
-    boolean isContentLoaded;
 
 
     //#####################################################################
@@ -81,14 +79,15 @@ public class FragmentMedia extends Fragment{
 
 
         //initialize adapters and append to lists or pagers
-        if (!isContentLoaded) {
-            pagerAdapter = new MediaPagerAdapter(getContext(), getChildFragmentManager(), 3);
-            binding.mediaPager.setAdapter(pagerAdapter);
+        pagerAdapter = new MediaPagerAdapter(getContext(), getChildFragmentManager(), 3);
+        binding.mediaPager.setAdapter(pagerAdapter);
 //        binding.mediaPager.addOnPageChangeListener(this);
-            binding.tabMedia.setupWithViewPager(binding.mediaPager);
+        binding.tabMedia.setupWithViewPager(binding.mediaPager);
+        binding.mediaPager.setOffscreenPageLimit(1);
+
+
+        if (position != -1)
             binding.mediaPager.setCurrentItem(position);
-            binding.mediaPager.setOffscreenPageLimit(1);
-        }
         //*****************************************************************************
 
         //transfarmation in viewPager
@@ -97,6 +96,14 @@ public class FragmentMedia extends Fragment{
     }
 
     //TODO: override methods
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.d(DELETE_LOG, "setUserVisibleHint: " + isVisibleToUser);
+
+
+    }
 
 
     //#################################################################

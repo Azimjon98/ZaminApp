@@ -143,6 +143,24 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         nextIcon.setOnClickListener(v -> {
             EventBus.getDefault().post(new PlayerStateEvent(PLAYER_NEXT, ""));
         });
+
+        playerProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                EventBus.getDefault().post(new PlayerStateEvent(PLAYER_PROGRESS_CHANGED, "" + progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                //call event seek to that position
+                EventBus.getDefault().post(new PlayerStateEvent(PLAYER_PROGRESS_CHANGED, "" + playerProgress.getProgress()));
+            }
+        });
     }
 
     //TODO: override methods
@@ -215,16 +233,22 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
     public void on_player_state_changed(PlayerStateEvent event) {
         switch (event.state) {
             case PLAYER_RESET:
+                playerStartTime.setText("00:00");
+                playerEndTime.setText("00:00");
                 playerView.setVisibility(View.VISIBLE);
                 playerProgress.setProgress(0);
                 playerProgress.setMax(100);
                 playIcon.setImageResource(R.drawable.micon_player_pause);
+                playerProgress.setEnabled(true);
+                EventBus.getDefault().post(new PlayerStateEvent(PLAYER_OPENED_GET_HEIGHT, String.valueOf(playerView.getMeasuredHeight())));
                 break;
             case PLAYER_PLAY_ICON:
+                playerProgress.setEnabled(false);
                 playIcon.setImageResource(R.drawable.micon_player_play);
                 break;
             case PLAYER_PAUSE_ICON:
                 playIcon.setImageResource(R.drawable.micon_player_pause);
+                playerProgress.setEnabled(true);
                 break;
             case PLAYER_HIDE:
                 playerView.setVisibility(View.GONE);

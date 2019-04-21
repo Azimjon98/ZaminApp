@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.LongFunction;
 import java.util.function.Supplier;
 
 import androidx.navigation.Navigation;
@@ -138,7 +139,13 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     //TODO: indicator item show/hide when loading data
     public void showLoading() {
         isLoading = true;
-        notifyItemInserted(getItemCount());
+        try {
+            notifyItemInserted(getItemCount());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(ERROR_LOG, e.getMessage());
+        }
     }
 
     public void hideLoading() {

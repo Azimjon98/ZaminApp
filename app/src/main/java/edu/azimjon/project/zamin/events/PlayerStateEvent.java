@@ -5,8 +5,8 @@ public class PlayerStateEvent {
     public static final int PLAYER_PREV = 2001;
     public static final int PLAYER_NEXT = 2002;
     public static final int PLAYER_PLAY = 2003;
-    public static final int PLAYER_LAST_TIME = 2004;
-    public static final int PLAYER_NEXT_TIME = 2005;
+    public static final int PLAYER_PROGRESS_CHANGED = 2004;
+    public static final int PLAYER_OPENED_GET_HEIGHT = 2005;
 
     public static final int PLAYER_RESET = 2101;
     public static final int PLAYER_HIDE = 2102;

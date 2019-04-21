@@ -41,7 +41,7 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
 
         void pausePressed(MediaNewsModel m);
 
-        void updateItems(MediaNewsModel m);
+        void updateItems(MediaNewsModel m, int positionTo);
 
     }
 
@@ -99,10 +99,13 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
                     myHolder.binding.btnPlay.setImageResource(R.drawable.micon_player_pause);
                 } else {
                     myHolder.binding.btnPlay.setImageResource(R.drawable.micon_player_play);
-
                 }
-            } else
+                myHolder.binding.clicker.setBackgroundResource(R.color.ripple_color);
+            } else {
                 myHolder.binding.btnPlay.setImageResource(R.drawable.micon_musci_disabled);
+                myHolder.binding.clicker.setBackgroundResource(R.color.white);
+            }
+
         }
 
 
@@ -110,6 +113,41 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
 
 
     //#######################################################
+
+    //TODO: Additional methods
+
+    public void nextMusic(String id) {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getNewsId().equals(id)) {
+                if (i != items.size() - 1) {
+                    isPlaying = true;
+                    MediaNewsModel model = items.get(i + 1);
+                    playingMusicId = model.getNewsId();
+                    myPlayer.updateItems(model, i + 2);
+                    notifyItemChanged(Integer.valueOf(i + 1));
+                    notifyItemChanged(Integer.valueOf(i + 2));
+                }
+                break;
+            }
+        }
+
+    }
+
+    public void prevMusic(String id) {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getNewsId().equals(id)) {
+                if (i != 0) {
+                    isPlaying = true;
+                    MediaNewsModel model = items.get(i - 1);
+                    playingMusicId = model.getNewsId();
+                    myPlayer.updateItems(model, i);
+                    notifyItemChanged(Integer.valueOf(i + 1));
+                    notifyItemChanged(Integer.valueOf(i));
+                }
+                break;
+            }
+        }
+    }
 
     //################################################################
 
@@ -126,6 +164,7 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
 //            this.binding.clicker.setOnClickListener(this);
 
             binding.btnPlay.setOnClickListener(v -> {
+                binding.clicker.setBackgroundResource(R.color.ripple_color);
 
                 if (binding.getModel().getNewsId().equals(playingMusicId)) {
                     if (isPlaying) {
@@ -142,7 +181,7 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
                     isPlaying = true;
                     playingMusicId = binding.getModel().getNewsId();
                     binding.btnPlay.setImageResource(R.drawable.micon_player_pause);
-                    myPlayer.updateItems(binding.getModel());
+                    myPlayer.updateItems(binding.getModel(), getAdapterPosition());
                 }
 
             });

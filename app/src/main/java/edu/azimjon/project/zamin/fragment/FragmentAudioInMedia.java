@@ -75,10 +75,11 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     int total_items, visible_items, scrollout_items;
 
     //TODO: Player Variables
+    int musicPosition = -1;
+    boolean isPrepared = true;
     Handler timer = new Handler();
     String currentTrackUrl = "https://muz11.z1.fm/e/ac/via_marokand_via_marokand_-_tarnov_tarnov_2016_(zf.fm).mp3";
     int musicDuration = -1;
-    int currenPosition;
     MediaNewsModel currentModel;
 
 
@@ -214,9 +215,14 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     }
 
     @Override
-    public void updateItems(MediaNewsModel m) {
+    public void updateItems(MediaNewsModel m, int positionTo) {
+        if (musicPosition != -1)
+            audioNewsAdapter.notifyItemChanged(musicPosition);
+        musicPosition = positionTo;
+
+        binding.listAudio.smoothScrollToPosition(positionTo);
         currentModel = m;
-        audioNewsAdapter.notifyDataSetChanged();
+        currentTrackUrl = m.getUrlAudioFile();
         timer.removeCallbacks(myTimerRunnable);
 
         if (mediaPlayer != null) {
@@ -289,10 +295,12 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     //TODO: Additional methods
 
     public void stopPlayerAndTimer() {
+        if (binding != null && binding.listAudio != null)
+            binding.listAudio.setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
         if (audioNewsAdapter != null) {
             audioNewsAdapter.isPlaying = false;
             audioNewsAdapter.playingMusicId = "";
-            audioNewsAdapter.notifyDataSetChanged();
+            audioNewsAdapter.notifyItemChanged(musicPosition);
         }
 
         if (mediaPlayer != null) {
@@ -349,13 +357,25 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
                     playPressed(currentModel);
 
                 audioNewsAdapter.isPlaying = !audioNewsAdapter.isPlaying;
-                audioNewsAdapter.notifyDataSetChanged();
-
-
+                audioNewsAdapter.notifyItemChanged(musicPosition);
                 break;
             case PLAYER_PREV:
+                audioNewsAdapter.prevMusic(currentModel.getNewsId());
                 break;
             case PLAYER_NEXT:
+                audioNewsAdapter.nextMusic(currentModel.getNewsId());
+                break;
+            case PLAYER_PROGRESS_CHANGED:
+                if (isPrepared)
+                    mediaPlayer.seekTo(
+                            (int) (
+                                    ((double) musicDuration) * (Double.valueOf(event.value) / 100.0)
+                            )
+                    );
+                break;
+            case PLAYER_OPENED_GET_HEIGHT:
+                binding.listAudio.setPadding(0, 0, 0,Double.valueOf(event.value).intValue());
+
                 break;
         }
 
@@ -400,6 +420,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     public MediaPlayer.OnPreparedListener prepareListenter = new MediaPlayer.OnPreparedListener() {
         @Override
         public void onPrepared(MediaPlayer mp) {
+            isPrepared = true;
             musicDuration = mediaPlayer.getDuration();
             mediaPlayer.start();
             if (timer != null) {

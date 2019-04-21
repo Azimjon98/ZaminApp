@@ -32,6 +32,8 @@ public class MediaNewsModel implements Parcelable {
 
     boolean isWished;
 
+    String urlAudioFile;
+
     public String[] titleImages;
 
     public MediaNewsModel() {
@@ -40,7 +42,6 @@ public class MediaNewsModel implements Parcelable {
     }
 
     protected MediaNewsModel(Parcel in) {
-        this();
         id = in.readInt();
         newsId = in.readString();
         title = in.readString();
@@ -51,6 +52,7 @@ public class MediaNewsModel implements Parcelable {
         date = in.readString();
         viewedCount = in.readString();
         isWished = in.readByte() != 0;
+        urlAudioFile = in.readString();
         titleImages = in.createStringArray();
     }
 
@@ -154,6 +156,14 @@ public class MediaNewsModel implements Parcelable {
         return titleImages;
     }
 
+    public void setUrlAudioFile(String urlAudioFile) {
+        this.urlAudioFile = urlAudioFile;
+    }
+
+    public String getUrlAudioFile() {
+        return urlAudioFile;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -171,6 +181,7 @@ public class MediaNewsModel implements Parcelable {
         dest.writeString(date);
         dest.writeString(viewedCount);
         dest.writeByte((byte) (isWished ? 1 : 0));
+        dest.writeString(urlAudioFile);
         dest.writeStringArray(titleImages);
     }
 }

@@ -64,7 +64,6 @@ import static edu.azimjon.project.zamin.addition.Constants.WEB_URL;
 public class FragmentNewsContent extends Fragment implements IFragmentNewsContent {
     //TODO: Constants here
     String newsId;
-    int isFromGallery;
     NewsContentModel model;
 
     //TODO: variables here
@@ -93,7 +92,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         newsId = getArguments().getString(KEY_NEWS_ID);
-        isFromGallery = getArguments().getInt(KEY_OPEN_GALLERY_ITEM, -1);
         model = getArguments().getParcelable(KEY_NEWS_MODEL);
 
         presenterNewsContent = new PresenterNewsContent(this);
@@ -131,9 +129,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         binding.listLastNews.setHasFixedSize(true);
 
         //*****************************************************************************
-
-        if (isFromGallery == 1)
-            bindingHeader.img.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0));
 
         //TODO: Header binding initializators
         // Enable Javascript

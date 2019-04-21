@@ -51,13 +51,14 @@ public class ParserMediaNewsModel {
                 model.setViewedCount(article.getAsJsonPrimitive("viewed").getAsString());
 
                 if (type == 3) {
-
+                    model.setUrlAudioFile(article.getAsJsonPrimitive("urlToAudio").getAsString());
                 } else if (type == 2) {
                     model.setImageUrl(article.getAsJsonPrimitive("urlToImage").getAsString());
                 } else if (type == 1) {
                     model.titleImages[0] = article.getAsJsonPrimitive("urlToImage").getAsString();
                     model.titleImages[1] = article.getAsJsonPrimitive("urlToImage2").getAsString();
                     model.titleImages[2] = article.getAsJsonPrimitive("urlToImage3").getAsString();
+                    model.setImageUrl(model.titleImages[0]);
                 }
 
             } catch (Exception e) {

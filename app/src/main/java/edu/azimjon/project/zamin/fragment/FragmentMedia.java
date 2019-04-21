@@ -39,6 +39,7 @@ import timber.log.Timber;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.ERROR_LOG;
 
 public class FragmentMedia extends Fragment {
 
@@ -90,6 +91,7 @@ public class FragmentMedia extends Fragment {
 //        binding.mediaPager.addOnPageChangeListener(this);
             binding.tabMedia.setupWithViewPager(binding.mediaPager);
             binding.mediaPager.setOffscreenPageLimit(1);
+            binding.mediaPager.setCurrentItem(position);
         }
 
 
@@ -106,7 +108,15 @@ public class FragmentMedia extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        binding.tabMedia.getTabAt(position).select();
+        //Trying to open tab item when navigationg from newsFeed
+        if (binding != null && binding.tabMedia != null) {
+            try {
+                binding.tabMedia.getTabAt(position).select();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d(ERROR_LOG, e.getMessage());
+            }
+        }
 
     }
 
@@ -133,7 +143,6 @@ public class FragmentMedia extends Fragment {
     //Inside method setPosition:
 
     //#################################################################
-
 
 
     //TODO: argument Variables

@@ -17,6 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +30,7 @@ import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.databinding.WindowMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
+import edu.azimjon.project.zamin.events.MyOnMoreNewsEvent;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterMedia;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
@@ -79,15 +84,15 @@ public class FragmentMedia extends Fragment {
 
 
         //initialize adapters and append to lists or pagers
-        pagerAdapter = new MediaPagerAdapter(getContext(), getChildFragmentManager(), 3);
-        binding.mediaPager.setAdapter(pagerAdapter);
+        if (pagerAdapter == null) {
+            pagerAdapter = new MediaPagerAdapter(getContext(), getChildFragmentManager(), 3);
+            binding.mediaPager.setAdapter(pagerAdapter);
 //        binding.mediaPager.addOnPageChangeListener(this);
-        binding.tabMedia.setupWithViewPager(binding.mediaPager);
-        binding.mediaPager.setOffscreenPageLimit(1);
+            binding.tabMedia.setupWithViewPager(binding.mediaPager);
+            binding.mediaPager.setOffscreenPageLimit(1);
+        }
 
 
-        if (position != -1)
-            binding.mediaPager.setCurrentItem(position);
         //*****************************************************************************
 
         //transfarmation in viewPager
@@ -97,11 +102,11 @@ public class FragmentMedia extends Fragment {
 
     //TODO: override methods
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        Log.d(DELETE_LOG, "setUserVisibleHint: " + isVisibleToUser);
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.tabMedia.getTabAt(position).select();
 
     }
 
@@ -128,6 +133,8 @@ public class FragmentMedia extends Fragment {
     //Inside method setPosition:
 
     //#################################################################
+
+
 
     //TODO: argument Variables
 

@@ -45,7 +45,6 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        Log.d(DELETE_LOG, "onCreateViewHolder: " + i);
 
 
         //header with bottom padding
@@ -71,7 +70,6 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        Log.d(DELETE_LOG, "onBindViewHolder: " + i);
 
         if (viewHolder instanceof MyHolderItem) {
             int position = i;

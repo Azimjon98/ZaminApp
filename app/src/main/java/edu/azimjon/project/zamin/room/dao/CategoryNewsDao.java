@@ -44,7 +44,7 @@ public abstract class CategoryNewsDao {
     abstract public List<NewsCategoryModel> getAllEnabledCategories();
 
     @Transaction
-    public void deleteAndCreate(List<NewsCategoryModel> users) {
+    public synchronized void deleteAndCreate(List<NewsCategoryModel> users) {
         deleteAll();
         insertAll(users);
     }

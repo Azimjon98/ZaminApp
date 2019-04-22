@@ -126,13 +126,11 @@ public class FragmentSelectCategories extends Fragment {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                dao.deleteAll();
-
                 for (NewsCategoryModel i : adapter.items) {
                     i.setId(0);
-                    dao.insert(i);
                 }
 
+                dao.deleteAndCreate(new ArrayList<>(adapter.items));
 
                 return null;
             }

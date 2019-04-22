@@ -311,31 +311,17 @@ public class ModelNewsFeed {
                                             );
                                             categories.add(model);
                                         }
-
+                                        System.out.println("before insertion");
                                         new Thread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                System.out.println("in b");
+                                                System.out.println("in insertion");
                                                 CategoryNewsDatabase
                                                         .getInstance(application)
-                                                        .getDao().insertAll(new ArrayList<>(categories));
+                                                        .getDao().deleteAndCreate(new ArrayList<>(categories));
                                                 handler.sendEmptyMessage(1);
                                             }
                                         }).start();
-
-//                                        new AsyncTask<Void, Void, Void>() {
-//
-//                                            @Override
-//                                            protected Void doInBackground(Void... voids) {
-//                                                System.out.println("in b");
-//                                                CategoryNewsDatabase
-//                                                        .getInstance(application)
-//                                                        .getDao().insertAll(new ArrayList<>(categories));
-//                                                handler.sendEmptyMessage(1);
-//
-//                                                return null;
-//                                            }
-//                                        }.execute();
 
                                     } else {
                                         Log.d(API_LOG, "onResponse: " + response.message());

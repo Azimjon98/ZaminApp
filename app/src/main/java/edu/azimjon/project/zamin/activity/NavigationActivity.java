@@ -229,9 +229,9 @@ public class NavigationActivity extends AppCompatActivity {
             }
         }
 
+        System.out.println("in insertion in navigation");
         //change database
-        categoryNewsDao.deleteAll();
-        categoryNewsDao.insertAll(newCategories);
+        categoryNewsDao.deleteAndCreate(new ArrayList<>(newCategories));
     }
 
     @Override

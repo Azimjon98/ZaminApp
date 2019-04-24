@@ -70,8 +70,8 @@ public class NewsFeedAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-
         if (viewHolder instanceof MyHolderItem) {
+
             int position = i;
             if (hasHeader || hasHeaderNoInternet)
                 position--;

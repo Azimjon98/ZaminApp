@@ -21,6 +21,7 @@ import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_ITEMS;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class ModelAudioInMedia {
@@ -96,10 +97,18 @@ public class ModelAudioInMedia {
         List<MediaNewsModel> items = parserMediaNewsModel.parse(json, 3);
 
         //sending data to view
-        if (offset == 1)
-            presenterAudioInMedia.initNews(items, MESSAGE_OK);
-        else
-            presenterAudioInMedia.addNews(items, MESSAGE_OK);
+        if (items.size() == 0) {
+            if (offset == 1)
+                presenterAudioInMedia.initNews(items, MESSAGE_NO_ITEMS);
+            else
+                presenterAudioInMedia.addNews(items, MESSAGE_NO_ITEMS);
+        } else {
+            if (offset == 1)
+                presenterAudioInMedia.initNews(items, MESSAGE_OK);
+            else
+                presenterAudioInMedia.addNews(items, MESSAGE_OK);
+        }
+
 
     }
 

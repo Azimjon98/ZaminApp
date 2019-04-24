@@ -109,7 +109,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.iconBack.setOnClickListener(v -> {
-            new MyAsycTask(this.getActivity(), Navigation.findNavController(v)).execute();
+            new MyAsycTask(Navigation.findNavController(v)).execute();
         });
 
         //initialize adapters and append to lists
@@ -185,14 +185,16 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     @Override
     public void initContent(NewsContentModel model) {
-//        final String mimeType = "text/html";
-//        final String encoding = "UTF-8";
+        if (getContext() == null)
+            return;
 
         bindingHeader.contentWeb.loadUrl(model.getContent());
     }
 
     @Override
     public void initLastNews(List<NewsSimpleModel> items, int message) {
+        if (getContext() == null)
+            return;
         mediumNewsAdapter.removeHeaders();
 
         if (message == MESSAGE_NO_CONNECTION) {
@@ -211,7 +213,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             }
 
             mediumNewsAdapter.withHeader(bindingHeader.getRoot());
-
             mediumNewsAdapter.init_items(news);
         }
 
@@ -219,6 +220,8 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     @Override
     public void addLastNews(List<NewsSimpleModel> items, int message) {
+        if (getContext() == null)
+            return;
         mediumNewsAdapter.hideLoading();
         isLoading = false;
 
@@ -246,12 +249,15 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     @Override
     public void initTags(List<String> tags) {
+        if(getContext() == null)
+            return;
+
         LayoutInflater inflater = LayoutInflater.from(getContext());
+
         for (String tag : tags) {
-            Chip chip = (Chip) inflater.inflate(R.layout.item_tag, null, false);
+            Chip chip = (Chip) inflater.inflate(R.layout.item_tag, bindingHeader.tagsGroup, false);
             chip.setText(tag);
 //            chip.setChipBackgroundColorResource(R.color.chip_color6);
-
 
             chip.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
@@ -270,7 +276,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     //#################################################################
 
     //TODO: Additional methods
-
     private void initIcons() {
 
         binding.iconBookmark.setImageResource(
@@ -309,7 +314,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
 
             startActivity(Intent.createChooser(sharingIntent,
-                    MyUtil.getLocalizedString(getContext(), R.string.text_share)
+                    MyUtil.getLocalizedString(v.getContext(), R.string.text_share)
             ));
         });
     }
@@ -317,7 +322,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     //#################################################################
 
     //TODO: Argument variables
-
     public RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -355,17 +359,14 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     //go navigation to BaseView first Content is called
     static class MyAsycTask extends AsyncTask<Void, Void, Void> {
-        Activity activity;
         NavController controller;
 
-        public MyAsycTask(Activity activity, NavController controller) {
-            this.activity = activity;
+        public MyAsycTask(NavController controller) {
             this.controller = controller;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            final NavController controller = Navigation.findNavController(activity, R.id.nav_host_fragment);
             controller.popBackStack(MySettings.getInstance().getWhichIdCallsContent(), false);
 
             return null;

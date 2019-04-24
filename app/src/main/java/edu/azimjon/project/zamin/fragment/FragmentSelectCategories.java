@@ -1,5 +1,7 @@
 package edu.azimjon.project.zamin.fragment;
 
+import android.arch.lifecycle.Observer;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
@@ -40,9 +43,15 @@ public class FragmentSelectCategories extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        dao = CategoryNewsDatabase
+        CategoryNewsDatabase
                 .getInstance(getContext())
-                .getDao();
+                .getDao().getAllLive().observe(this, new Observer<List<NewsCategoryModel>>() {
+            @Override
+            public void onChanged(@Nullable List<NewsCategoryModel> categoryModels) {
+                adapter.init_items(categoryModels);
+            }
+        });
+
     }
 
     @Nullable
@@ -66,9 +75,6 @@ public class FragmentSelectCategories extends Fragment {
         adapter = new SelectCategoriesAdapter(getContext(), new ArrayList<NewsSimpleModel>());
         binding.list.setAdapter(adapter);
         binding.list.setHasFixedSize(true);
-
-        new GetAllCategoriesAsyckTask().execute();
-
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallBack(adapter));
         itemTouchHelper.attachToRecyclerView(binding.list);
@@ -115,14 +121,13 @@ public class FragmentSelectCategories extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        updateDatabase();
-        super.onStop();
-
+    public void onPause() {
+        updateDatabase(getContext());
+        super.onPause();
     }
 
     //TODO: CHECK AND UPDATE DATABASE
-    public void updateDatabase() {
+    public void updateDatabase(Context context) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -130,21 +135,14 @@ public class FragmentSelectCategories extends Fragment {
                     i.setId(0);
                 }
 
-                dao.deleteAndCreate(new ArrayList<>(adapter.items));
+                CategoryNewsDatabase
+                        .getInstance(context)
+                        .getDao()
+                        .deleteAndCreate(new ArrayList<>(adapter.items));
 
                 return null;
             }
         }.execute();
     }
 
-    //Another Thread AsycyTsks
-
-    public class GetAllCategoriesAsyckTask extends AsyncTask {
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            adapter.init_items(dao.getAll());
-
-            return null;
-        }
-    }
 }

@@ -190,7 +190,6 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             bindingHeader.clickerAllAudio.setText(MyUtil.getLocalizedString(getContext(), R.string.text_all));
             bindingHeader.clickerAllVideo.setText(MyUtil.getLocalizedString(getContext(), R.string.text_all));
 
-
             binding.swiper.setRefreshing(true);
             presenterNewsFeed.init();
         }
@@ -263,12 +262,12 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
     public void initCategories(List<NewsCategoryModel> items) {
         categoryNewsAdapter.init_items(items);
+        manager.scrollToPositionWithOffset(0,0);
     }
-
-    int index = 1;
 
     @Override
     public void initMainNews(List<NewsSimpleModel> items, int message) {
+
         binding.swiper.setRefreshing(false);
 
         if (message == MESSAGE_NO_CONNECTION) {
@@ -285,11 +284,12 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
             change_dots(items.size(), 0);
         }
-        index++;
+        manager.scrollToPositionWithOffset(0,0);
     }
 
     @Override
     public void initLastAndContinueNews(List<NewsSimpleModel> items, int message) {
+
         binding.swiper.setRefreshing(false);
 
         if (message == MESSAGE_NO_CONNECTION) {
@@ -304,6 +304,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
                 Log.d(ERROR_LOG, "" + e.getMessage());
             }
         }
+        manager.scrollToPositionWithOffset(0,0);
     }
 
     @Override
@@ -333,17 +334,18 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             bindingHeader.videoLay.setVisibility(View.VISIBLE);
             videoNewsAdapter.init_items(items);
         }
+        manager.scrollToPositionWithOffset(0,0);
 
 
     }
 
     @Override
     public void addLastNewsContinue(List<NewsSimpleModel> items, int message) {
+
         lastContinueNewsAdapter.hideLoading();
         isLoading = false;
 
         if (message == MESSAGE_NO_CONNECTION) {
-            Log.d(DELETE_LOG, "addLastNewsContinue, MESSAGE_NO_CONNECTION");
             lastContinueNewsAdapter.withFooter(bindingFooter.getRoot());
             return;
         }
@@ -384,9 +386,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
         if (event.state == NETWORK_STATE_CONNECTED) {
             binding.swiper.setRefreshing(true);
             presenterNewsFeed.init();
-
         }
-
         isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
     }
 

@@ -258,14 +258,14 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
         audioNewsAdapter.isPlaying = false;
         audioNewsAdapter.playingMusicId = "";
 
-        if (message == MESSAGE_NO_CONNECTION) {
+        Log.d(DELETE_LOG, "initAudio: " + message);
+
+        if (message == MESSAGE_NO_ITEMS) {
+            audioNewsAdapter.withHeaderNoInternet(viewHeaderNoItem);
+        } else if (message == MESSAGE_NO_CONNECTION) {
             audioNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
-            return;
-        }
-
-        if (message == MESSAGE_OK) {
+        } else if (message == MESSAGE_OK) {
             audioNewsAdapter.withHeader(viewHeader);
-
             audioNewsAdapter.init_items(items);
         }
 
@@ -284,7 +284,6 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
         if (message == MESSAGE_OK) {
             audioNewsAdapter.add_all(items);
-
         }
 
     }
@@ -374,7 +373,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
                     );
                 break;
             case PLAYER_OPENED_GET_HEIGHT:
-                binding.listAudio.setPadding(0, 0, 0,Double.valueOf(event.value).intValue());
+                binding.listAudio.setPadding(0, 0, 0, Double.valueOf(event.value).intValue());
 
                 break;
         }

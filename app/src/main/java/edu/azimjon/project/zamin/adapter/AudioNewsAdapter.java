@@ -154,14 +154,13 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
     //TODO: Holders
 
 
-    public class MyHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyHolderItem extends RecyclerView.ViewHolder {
         ItemAudioNewsBinding binding;
 
 
         public MyHolderItem(ItemAudioNewsBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-//            this.binding.clicker.setOnClickListener(this);
 
             binding.btnPlay.setOnClickListener(v -> {
                 binding.clicker.setBackgroundResource(R.color.ripple_color);
@@ -187,14 +186,6 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
             });
         }
 
-        @Override
-        public void onClick(View v) {
-            Bundle bundle = new Bundle();
-            bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
-            bundle.putParcelable(KEY_NEWS_MODEL, binding.getModel());
-            Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
-
-        }
     }
 
 

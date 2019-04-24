@@ -44,8 +44,8 @@ public class Converters {
         return model;
     }
 
-    public static NewsSimpleModel fromFavouritestoContentNews(FavouriteNewsModel from) {
-        NewsSimpleModel model = new NewsSimpleModel();
+    public static NewsContentModel fromFavouritestoContentNews(FavouriteNewsModel from) {
+        NewsContentModel model = new NewsContentModel();
 
 
         model.setCategoryId(from.getCategoryId());

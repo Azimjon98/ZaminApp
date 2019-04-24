@@ -163,8 +163,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             bindingHeader.listCategory.setAdapter(categoryNewsAdapter);
 
             bindingHeader.mainNewsPager.setClipToPadding(false);
-            bindingHeader.mainNewsPager.setPadding(48, 0, 48, 0);
-            bindingHeader.mainNewsPager.setPageMargin(36);
+            bindingHeader.mainNewsPager.setPadding(MyUtil.dpToPx(16), 0, MyUtil.dpToPx(16), 0);
+            bindingHeader.mainNewsPager.setPageMargin(MyUtil.dpToPx(16));
             bindingHeader.mainNewsPager.setCurrentItem(1);
             bindingHeader.mainNewsPager.addOnPageChangeListener(pageListener);
             mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());

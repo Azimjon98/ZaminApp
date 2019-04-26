@@ -69,7 +69,7 @@ public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof MyHolderItem) {
             int position = i;
-            if (hasHeader)
+            if (hasHeader || hasHeaderNoInternet)
                 position--;
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;

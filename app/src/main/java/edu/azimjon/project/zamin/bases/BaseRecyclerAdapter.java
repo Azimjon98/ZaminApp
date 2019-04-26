@@ -43,16 +43,15 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     public Context context;
 
     //header states
-    public boolean isLoading = false;
+    private boolean isLoading = false;
     public boolean hasHeader = false;
-    public boolean hasHeaderNoInternet = false;
-    public boolean hasFooter = false;
+    protected boolean hasHeaderNoInternet = false;
+    private boolean hasFooter = false;
 
     //views
     public View headerView;
     public View headerNoInternetView;
     public View footerView;
-
 
     public BaseRecyclerAdapter(Context context, ArrayList<T> items) {
         super();
@@ -68,14 +67,10 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void withHeaderNoInternet(View headerView) {
-        hasHeaderNoInternet = true;
         this.headerNoInternetView = headerView;
-        if (hasHeader) {
-            hasHeader = false;
-            notifyItemChanged(0);
-        } else {
-            notifyItemInserted(0);
-        }
+        hasHeader = false;
+        hasHeaderNoInternet = true;
+        notifyDataSetChanged();
     }
 
     public void withFooter(View footerView) {

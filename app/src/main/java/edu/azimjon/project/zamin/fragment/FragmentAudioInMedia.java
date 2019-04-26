@@ -89,6 +89,9 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenterAudioInMedia = new PresenterAudioInMedia(this);
+
+        if (getActivity() != null)
+            isConnected_to_Net = MyUtil.hasConnectionToNet(getActivity());
     }
 
     @Nullable
@@ -179,12 +182,12 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
     @Override
     public void onRefresh() {
+        isConnected_to_Net = true;
         if (isConnected_to_Net) {
             stopPlayerAndTimer();
             presenterAudioInMedia.init();
         } else
             binding.swiper.setRefreshing(false);
-
     }
 
     //#################################################################
@@ -258,8 +261,6 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
         audioNewsAdapter.isPlaying = false;
         audioNewsAdapter.playingMusicId = "";
 
-        Log.d(DELETE_LOG, "initAudio: " + message);
-
         if (message == MESSAGE_NO_ITEMS) {
             audioNewsAdapter.withHeaderNoInternet(viewHeaderNoItem);
         } else if (message == MESSAGE_NO_CONNECTION) {
@@ -274,6 +275,7 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
 
     @Override
     public void addAudio(List<MediaNewsModel> items, int message) {
+
         audioNewsAdapter.hideLoading();
         isLoading = false;
 
@@ -299,7 +301,8 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
         if (audioNewsAdapter != null) {
             audioNewsAdapter.isPlaying = false;
             audioNewsAdapter.playingMusicId = "";
-            audioNewsAdapter.notifyItemChanged(musicPosition);
+            if (musicPosition != -1)
+                audioNewsAdapter.notifyItemChanged(musicPosition);
         }
 
         if (mediaPlayer != null) {

@@ -73,7 +73,7 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
 
         if (viewHolder instanceof MyHolderItem) {
             int position = i;
-            if (hasHeader)
+            if (hasHeader || hasHeaderNoInternet)
                 position--;
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;

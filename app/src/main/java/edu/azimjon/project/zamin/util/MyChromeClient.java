@@ -28,6 +28,7 @@ public class MyChromeClient extends WebChromeClient {
         return BitmapFactory.decodeResource(activity.getApplicationContext().getResources(), 2130837573);
     }
 
+
     public void onHideCustomView() {
         ((FrameLayout) activity.getWindow().getDecorView()).removeView(this.mCustomView);
         this.mCustomView = null;

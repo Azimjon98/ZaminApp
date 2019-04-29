@@ -34,7 +34,7 @@ public class MainNewsPagerAdapter extends PagerAdapter {
     Context context;
     int count;
     List<NewsSimpleModel> news;
-    static int newsPosition;
+    public ItemNewsMainLargeBinding[] bindings = new ItemNewsMainLargeBinding[10];
 
     public MainNewsPagerAdapter(Context context) {
         this.context = context;
@@ -47,6 +47,9 @@ public class MainNewsPagerAdapter extends PagerAdapter {
 
         ItemNewsMainLargeBinding binding = DataBindingUtil.inflate(inflater, R.layout.item_news_main_large, container, false);
         binding.setModel(news.get(position));
+        updateItem(binding);
+        bindings[position] = binding;
+
 
         binding.clicker.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
@@ -55,18 +58,6 @@ public class MainNewsPagerAdapter extends PagerAdapter {
                     Converters.fromSimpleNewstoContentNews(binding.getModel()));
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         });
-
-        List<String> allFavouriteIds;
-        allFavouriteIds = NavigationActivity.getFavouritesIds();
-        if (allFavouriteIds.contains(binding.getModel().getNewsId())) {
-            binding.getModel().setWished(true);
-        }
-
-        //change Icon state when navigating
-        binding.favouriteIcon.setImageResource(
-                binding.getModel().isWished() ?
-                        R.drawable.bookmark_active :
-                        R.drawable.bookmark_inactive);
 
         binding.favouriteIcon.setOnClickListener(v -> {
                     boolean isWished = binding.getModel().isWished();
@@ -79,7 +70,6 @@ public class MainNewsPagerAdapter extends PagerAdapter {
                     //delete or inser news to favourites in another thread
                     new Thread(() -> {
                         if (isWished) {
-
                             FavouriteNewsDatabase.getInstance(context)
                                     .getDao()
                                     .delete(binding.getModel().getNewsId());
@@ -96,6 +86,22 @@ public class MainNewsPagerAdapter extends PagerAdapter {
 
         container.addView(binding.getRoot());
         return binding.getRoot();
+    }
+
+    public void updateItem(ItemNewsMainLargeBinding binding){
+        List<String> allFavouriteIds = NavigationActivity.getFavouritesIds();
+        if (allFavouriteIds.contains(binding.getModel().getNewsId())) {
+            binding.getModel().setWished(true);
+        }else{
+            binding.getModel().setWished(false);
+        }
+
+        //change Icon state when navigating
+        binding.favouriteIcon.setImageResource(
+                binding.getModel().isWished() ?
+                        R.drawable.bookmark_active :
+                        R.drawable.bookmark_inactive);
+
     }
 
 

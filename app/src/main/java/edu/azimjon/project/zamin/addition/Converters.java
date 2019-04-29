@@ -47,7 +47,6 @@ public class Converters {
     public static NewsContentModel fromFavouritestoContentNews(FavouriteNewsModel from) {
         NewsContentModel model = new NewsContentModel();
 
-
         model.setCategoryId(from.getCategoryId());
         model.setCategoryName(from.getCategoryName());
         model.setDate(from.getDate());

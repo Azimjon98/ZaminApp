@@ -81,7 +81,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     //scrolling variables
     boolean isScrolling = false;
     boolean isLoading = false;
-
+    boolean mShouldPause = false;
 
     int total_items, visible_items, scrollout_items;
 
@@ -138,7 +138,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         bindingHeader.contentWeb.getSettings().setAllowFileAccess(true);
         bindingHeader.contentWeb.getSettings().setAppCachePath(file.getAbsolutePath());
         bindingHeader.contentWeb.getSettings().setAppCacheEnabled(true);
-        bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         bindingHeader.contentWeb.setWebChromeClient(new MyChromeClient(getActivity()));
 
         bindingHeader.contentWeb.getSettings().setMinimumFontSize(15);
@@ -158,9 +158,16 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                 bindingHeader.progress.setVisibility(View.GONE);
             }
 
+
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                super.onLoadResource(view, url);
+                if (url.contains("youtube.com")) mShouldPause = true;
+
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
                 Bundle bundle = new Bundle();
                 bundle.putString(WEB_URL, url);
                 Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
@@ -175,6 +182,16 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     }
 
     //TODO: override methods
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if(mShouldPause){
+            bindingHeader.contentWeb.onPause();
+        }
+        mShouldPause = false;
+    }
 
 
     //#################################################################

@@ -192,6 +192,11 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
             binding.swiper.setRefreshing(true);
             presenterNewsFeed.init();
+        }else{
+            Log.d(DELETE_LOG, "in reloadData");
+
+            mainNewsPagerAdapter.updateItem(mainNewsPagerAdapter.bindings[bindingHeader.mainNewsPager.getCurrentItem()]);
+//            bindingHeader.mainNewsPager.
         }
         //####################################################################################
 

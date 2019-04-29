@@ -89,6 +89,11 @@ public class MainNewsPagerAdapter extends PagerAdapter {
     }
 
     public void updateItem(ItemNewsMainLargeBinding binding){
+        if(binding == null )
+            return;
+        if (binding.getModel() == null)
+            return;
+
         List<String> allFavouriteIds = NavigationActivity.getFavouritesIds();
         if (allFavouriteIds.contains(binding.getModel().getNewsId())) {
             binding.getModel().setWished(true);

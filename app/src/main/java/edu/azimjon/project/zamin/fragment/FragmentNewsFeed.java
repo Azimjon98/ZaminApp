@@ -46,6 +46,7 @@ import edu.azimjon.project.zamin.model.NewsCategoryModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsFeed;
+import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
 import edu.azimjon.project.zamin.util.MyUtil;
 
@@ -162,10 +163,12 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             categoryNewsAdapter = new CategoryNewsAdapter(getContext(), new ArrayList<NewsCategoryModel>());
             bindingHeader.listCategory.setAdapter(categoryNewsAdapter);
 
-            bindingHeader.mainNewsPager.setClipToPadding(false);
+//            bindingHeader.mainNewsPager.setClipToPadding(false);
             bindingHeader.mainNewsPager.setPadding(MyUtil.dpToPx(16), 0, MyUtil.dpToPx(16), 0);
             bindingHeader.mainNewsPager.setPageMargin(MyUtil.dpToPx(16));
-            bindingHeader.mainNewsPager.setCurrentItem(1);
+            bindingHeader.mainNewsPager.setCurrentItem(0);
+            bindingHeader.mainNewsPager.setOffscreenPageLimit(1);
+
             bindingHeader.mainNewsPager.addOnPageChangeListener(pageListener);
             mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
             bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);
@@ -193,10 +196,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             binding.swiper.setRefreshing(true);
             presenterNewsFeed.init();
         }else{
-            Log.d(DELETE_LOG, "in reloadData");
-
-            mainNewsPagerAdapter.updateItem(mainNewsPagerAdapter.bindings[bindingHeader.mainNewsPager.getCurrentItem()]);
-//            bindingHeader.mainNewsPager.
+            reloadContent();
         }
         //####################################################################################
 
@@ -233,9 +233,31 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
     }
 
+    private void reloadContent(){
+        if (binding == null || bindingHeader == null)
+            return;
+
+        List<NewsSimpleModel> mainItems = mainNewsPagerAdapter.news;
+        int position = bindingHeader.mainNewsPager.getCurrentItem();
+
+        updateMainNews(mainItems, position);
+
+        smallNewsAdapter.notifyDataSetChanged();
+        videoNewsAdapter.notifyDataSetChanged();
+        lastContinueNewsAdapter.notifyDataSetChanged();
+    }
 
     //TODO: override methods
 
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser){
+            reloadContent();
+        }
+    }
 
     @Override
     public void onStart() {
@@ -267,7 +289,6 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
     public void initCategories(List<NewsCategoryModel> items) {
         categoryNewsAdapter.init_items(items);
-        manager.scrollToPositionWithOffset(0,0);
     }
 
     @Override
@@ -281,15 +302,18 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
         }
 
         if (message == MESSAGE_OK) {
-            mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
-            bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);
-
-            lastContinueNewsAdapter.withHeader(bindingHeader.getRoot());
-            mainNewsPagerAdapter.init_items(items, items.size());
-
-            change_dots(items.size(), 0);
+           updateMainNews(items, 0);
         }
-        manager.scrollToPositionWithOffset(0,0);
+    }
+
+    private void updateMainNews(List<NewsSimpleModel> items, int position){
+        mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
+        bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);
+
+        lastContinueNewsAdapter.withHeader(bindingHeader.getRoot());
+        mainNewsPagerAdapter.init_items(items, items.size());
+
+        change_dots(items.size(), position);
     }
 
     @Override
@@ -309,7 +333,6 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
                 Log.d(ERROR_LOG, "" + e.getMessage());
             }
         }
-        manager.scrollToPositionWithOffset(0,0);
     }
 
     @Override
@@ -339,7 +362,6 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             bindingHeader.videoLay.setVisibility(View.VISIBLE);
             videoNewsAdapter.init_items(items);
         }
-        manager.scrollToPositionWithOffset(0,0);
 
 
     }

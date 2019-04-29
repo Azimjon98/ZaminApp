@@ -83,6 +83,8 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
             allFavouriteIds = NavigationActivity.getFavouritesIds();
             if (allFavouriteIds.contains(myHolder.binding.getModel().getNewsId())) {
                 myHolder.binding.getModel().setWished(true);
+            }else{
+                myHolder.binding.getModel().setWished(false);
             }
 
             myHolder.binding.favouriteIcon.setImageResource(

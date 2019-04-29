@@ -116,6 +116,8 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
             binding.swiper.setRefreshing(true);
             presenterGalleryInMedia.init();
+        }else{
+            galleryAdapter.notifyDataSetChanged();
         }
 
         binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -137,7 +139,17 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
     }
 
+
     //TODO: override methods
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser)
+            galleryAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onStart() {

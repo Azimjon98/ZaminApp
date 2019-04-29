@@ -113,6 +113,8 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
             binding.swiper.setRefreshing(true);
             presenterVideoInMedia.init();
+        }else{
+            videoNewsAdapter.notifyDataSetChanged();
         }
 
         binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -138,6 +140,15 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
 
     //TODO: override methods
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser)
+            videoNewsAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onStart() {

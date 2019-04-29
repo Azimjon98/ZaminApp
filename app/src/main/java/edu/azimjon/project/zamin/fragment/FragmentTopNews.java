@@ -109,6 +109,8 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
 
             binding.swiper.setRefreshing(true);
             presenterTopNews.init();
+        }else{
+            reloadContent();
         }
 
         //*****************************************************************************
@@ -116,7 +118,24 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
         binding.listTopNews.addOnScrollListener(scrollListener);
     }
 
+    private void reloadContent(){
+        if (binding == null)
+            return;
+
+        mediumNewsAdapter.notifyDataSetChanged();
+    }
+
+
     //TODO: override methods
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser)
+            reloadContent();
+    }
 
     @Override
     public void onStart() {

@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,7 @@ public class MainNewsPagerAdapter extends PagerAdapter {
 
     Context context;
     int count;
-    List<NewsSimpleModel> news;
+    public List<NewsSimpleModel> news;
     public ItemNewsMainLargeBinding[] bindings = new ItemNewsMainLargeBinding[10];
 
     public MainNewsPagerAdapter(Context context) {
@@ -45,7 +46,7 @@ public class MainNewsPagerAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
 
-        ItemNewsMainLargeBinding binding = DataBindingUtil.inflate(inflater, R.layout.item_news_main_large, container, false);
+        ItemNewsMainLargeBinding binding = DataBindingUtil.inflate(inflater, R.layout.item_news_main_large, null, false);
         binding.setModel(news.get(position));
         updateItem(binding);
         bindings[position] = binding;

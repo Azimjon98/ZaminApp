@@ -32,6 +32,7 @@ import java.util.List;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
@@ -94,13 +95,15 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         newsId = getArguments().getString(KEY_NEWS_ID);
         model = getArguments().getParcelable(KEY_NEWS_MODEL);
 
-        presenterNewsContent = new PresenterNewsContent(this);
+        if (presenterNewsContent == null)
+            presenterNewsContent = new PresenterNewsContent(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.window_news_content, container, false);
+        if (binding == null)
+            binding = DataBindingUtil.inflate(inflater, R.layout.window_news_content, container, false);
 
         return binding.getRoot();
     }
@@ -114,71 +117,79 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
         //initialize adapters and append to lists
 
-        manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        binding.listLastNews.setLayoutManager(manager);
-        mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+        if (manager == null) {
+            manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            binding.listLastNews.setLayoutManager(manager);
+            mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
 
-        bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_content, binding.listLastNews, false);
-        bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listLastNews, false);
-        bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listLastNews, false);
+            bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_content, binding.listLastNews, false);
+            bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listLastNews, false);
+            bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listLastNews, false);
 
-        bindingHeader.setModel(model);
-        mediumNewsAdapter.withHeader(bindingHeader.getRoot());
-        binding.listLastNews.setAdapter(mediumNewsAdapter);
-        //disable auto scrolling
-        binding.listLastNews.setHasFixedSize(true);
+            bindingHeader.title.setText(model.getTitle());
 
-        //*****************************************************************************
+            mediumNewsAdapter.withHeader(bindingHeader.getRoot());
+            binding.listLastNews.setAdapter(mediumNewsAdapter);
+            //disable auto scrolling
+            binding.listLastNews.setHasFixedSize(true);
 
-        //TODO: Header binding initializators
-        // Enable Javascript
-        File file = new File(getContext().getCacheDir(), "WebCache");
-        bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true);
-        bindingHeader.contentWeb.getSettings().setLoadWithOverviewMode(true);
-        bindingHeader.contentWeb.getSettings().setAllowFileAccess(true);
-        bindingHeader.contentWeb.getSettings().setAppCachePath(file.getAbsolutePath());
-        bindingHeader.contentWeb.getSettings().setAppCacheEnabled(true);
-        bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        bindingHeader.contentWeb.setWebChromeClient(new MyChromeClient(getActivity()));
+            //*****************************************************************************
 
-        bindingHeader.contentWeb.getSettings().setMinimumFontSize(15);
+            //TODO: Header binding initializators
+            // Enable Javascript
+            File file = new File(getContext().getCacheDir(), "WebCache");
+            bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true);
+            bindingHeader.contentWeb.getSettings().setLoadWithOverviewMode(true);
+            bindingHeader.contentWeb.getSettings().setAllowFileAccess(true);
+            bindingHeader.contentWeb.getSettings().setAppCachePath(file.getAbsolutePath());
+            bindingHeader.contentWeb.getSettings().setAppCacheEnabled(true);
+            bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            bindingHeader.contentWeb.setWebChromeClient(new MyChromeClient(getActivity()));
 
-        bindingHeader.contentWeb.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                bindingHeader.progress.setVisibility(View.VISIBLE);
+            bindingHeader.contentWeb.getSettings().setMinimumFontSize(15);
 
-            }
+            bindingHeader.contentWeb.setWebViewClient(new WebViewClient() {
+                @Override
+                public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                    super.onPageStarted(view, url, favicon);
+                    bindingHeader.progress.setVisibility(View.VISIBLE);
 
-            @Override
-            public void onPageFinished(WebView view, String url) {
+                }
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
 //                injectCSS();
-                super.onPageFinished(view, url);
-                bindingHeader.progress.setVisibility(View.GONE);
-            }
+                    super.onPageFinished(view, url);
+                    bindingHeader.progress.setVisibility(View.GONE);
+                }
 
 
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                super.onLoadResource(view, url);
-                if (url.contains("youtube.com")) mShouldPause = true;
+                @Override
+                public void onLoadResource(WebView view, String url) {
+                    super.onLoadResource(view, url);
+                    if (url.contains("youtube.com")) mShouldPause = true;
 
-            }
+                }
 
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Bundle bundle = new Bundle();
-                bundle.putString(WEB_URL, url);
-                Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
-                return true;
-            }
-        });
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(WEB_URL, url);
+                    Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
+                    return true;
+                }
+            });
+
+            presenterNewsContent.init(newsId);
+
+        } else {
+            if (mediumNewsAdapter != null)
+                mediumNewsAdapter.notifyDataSetChanged();
+        }
 
         binding.listLastNews.addOnScrollListener(scrollListener);
 
         initIcons();
-        presenterNewsContent.init(newsId);
     }
 
     //TODO: override methods
@@ -187,7 +198,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     public void onPause() {
         super.onPause();
 
-        if(mShouldPause){
+        if (mShouldPause) {
             bindingHeader.contentWeb.onPause();
         }
         mShouldPause = false;
@@ -204,6 +215,8 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     public void initContent(NewsContentModel model) {
         if (getContext() == null)
             return;
+
+        bindingHeader.setModel(model);
 
         bindingHeader.contentWeb.loadUrl(model.getContent());
     }
@@ -266,8 +279,13 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     @Override
     public void initTags(List<String> tags) {
-        if(getContext() == null)
+        if (getContext() == null)
             return;
+        if (tags.size() != 0) {
+            bindingHeader.tagsGroup.setVisibility(View.VISIBLE);
+        } else {
+            bindingHeader.tagsGroup.setVisibility(View.GONE);
+        }
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
 

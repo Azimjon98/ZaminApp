@@ -65,6 +65,66 @@ public class ImageBindingAdapters {
 
     }
 
+    @BindingAdapter("imageUrlSmallQuality")
+    public static void loadImageSmallQuality(ImageView view, String url) {
+        if (url == null)
+            return;
+        if ("no_image".equals(url) || url.trim().isEmpty())
+            return;
+
+
+        MyApplicationComponent component = null;
+        try {
+            component = MyApplication.getInstance().getMyApplicationComponent();
+
+        } catch (ClassNotFoundException e) {
+            Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        try {
+
+            component.getGlideManager()
+                    .load(url + "width=300&quality=40")
+                    .into(view);
+
+        } catch (Exception e) {
+            Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    @BindingAdapter("imageUrlMediumQuality")
+    public static void loadImageMediumQuality(ImageView view, String url) {
+        if (url == null)
+            return;
+        if ("no_image".equals(url) || url.trim().isEmpty())
+            return;
+
+
+        MyApplicationComponent component = null;
+        try {
+            component = MyApplication.getInstance().getMyApplicationComponent();
+
+        } catch (ClassNotFoundException e) {
+            Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        try {
+
+            component.getGlideManager()
+                    .load(url + "width=300&quality=70")
+                    .into(view);
+
+        } catch (Exception e) {
+            Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
     @BindingAdapter("giveCornerRadius")
     public static void giveCornerRadius(ImageView view, String url) {
 

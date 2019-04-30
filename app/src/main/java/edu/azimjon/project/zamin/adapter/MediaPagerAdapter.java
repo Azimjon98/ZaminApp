@@ -27,7 +27,7 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
     //TODO: - Constants here:
     String[] titles = new String[3];
 
-    FragmentAudioInMedia tab1;
+//    FragmentAudioInMedia tab1;
     FragmentVideoInMedia tab2;
     FragmentGalleryInMedia tab3;
 
@@ -40,34 +40,29 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
         this.context = context;
         this.tabs_number = tabs;
 
-        titles[0] = MyUtil.getLocalizedString(context, R.string.tab_audio);
-        titles[1] = MyUtil.getLocalizedString(context, R.string.tab_video);
-        titles[2] = MyUtil.getLocalizedString(context, R.string.tab_gallery);
+//        titles[0] = MyUtil.getLocalizedString(context, R.string.tab_audio);
+        titles[0] = MyUtil.getLocalizedString(context, R.string.tab_video);
+        titles[1] = MyUtil.getLocalizedString(context, R.string.tab_gallery);
     }
 
     @Override
     public Fragment getItem(int i) {
         switch (i) {
+//            case 0:
+//                if (tab1 == null)
+//                    tab1 = new FragmentAudioInMedia();
+//                return tab1;
             case 0:
-                if (tab1 == null)
-                    tab1 = new FragmentAudioInMedia();
-                return tab1;
-            case 1:
                 if (tab2 == null)
                     tab2 = new FragmentVideoInMedia();
                 return tab2;
-            case 2:
+            case 1:
                 if (tab3 == null)
                     tab3 = new FragmentGalleryInMedia();
                 return tab3;
             default:
                 return null;
         }
-    }
-
-    public void closePlayer() {
-        if (tab1 != null)
-            tab1.onPause();
     }
 
     @Override

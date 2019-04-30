@@ -191,8 +191,7 @@ public class ModelNewsContent {
 
 
         //sending data to view
-        if (tags.size() != 0)
-            presenterNewsContent.initTags(tags);
+        presenterNewsContent.initTags(tags);
 
     }
 }

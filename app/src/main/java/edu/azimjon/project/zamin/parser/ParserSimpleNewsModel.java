@@ -52,7 +52,6 @@ public class ParserSimpleNewsModel {
                 model.setCategoryId(article.getAsJsonPrimitive("categoryID").getAsString());
                 model.setOriginalUrl(article.getAsJsonPrimitive("url").getAsString());
                 model.setImageUrl(article.getAsJsonPrimitive("urlToImage").getAsString());
-                model.setViewedCount(article.getAsJsonPrimitive("viewed").getAsString());
 
             } catch (Exception e) {
                 Log.d(ERROR_LOG, "Error SimpleNews Parser: " + e.getMessage());

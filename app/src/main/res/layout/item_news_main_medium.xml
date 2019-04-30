@@ -41,7 +41,7 @@
                 <ImageView
                     android:id="@+id/news_img"
                     giveCornerRadius="@{`give`}"
-                    imageUrl="@{model.imageUrl}"
+                    imageUrlSmallQuality="@{model.imageUrl}"
                     android:layout_width="104dp"
                     android:layout_height="78dp"
                     android:scaleType="centerCrop" />

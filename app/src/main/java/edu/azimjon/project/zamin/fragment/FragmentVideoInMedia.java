@@ -146,8 +146,10 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if (isVisibleToUser)
+        if (isVisibleToUser){
+            if (videoNewsAdapter != null)
             videoNewsAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

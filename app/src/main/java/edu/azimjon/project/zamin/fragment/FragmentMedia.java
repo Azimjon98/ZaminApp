@@ -86,7 +86,7 @@ public class FragmentMedia extends Fragment {
 
         //initialize adapters and append to lists or pagers
         if (pagerAdapter == null) {
-            pagerAdapter = new MediaPagerAdapter(getContext(), getChildFragmentManager(), 3);
+            pagerAdapter = new MediaPagerAdapter(getContext(), getChildFragmentManager(), 2);
             binding.mediaPager.setAdapter(pagerAdapter);
 //        binding.mediaPager.addOnPageChangeListener(this);
             binding.tabMedia.setupWithViewPager(binding.mediaPager);

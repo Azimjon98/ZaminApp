@@ -147,8 +147,10 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if (isVisibleToUser)
+        if (isVisibleToUser){
+            if(galleryAdapter != null)
             galleryAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

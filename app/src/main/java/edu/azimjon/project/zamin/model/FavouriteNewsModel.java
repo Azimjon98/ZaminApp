@@ -28,8 +28,6 @@ public class FavouriteNewsModel implements Parcelable {
 
     public String date;
 
-    public String viewedCount;
-
     public boolean isWished;
 
     String savedDate;
@@ -47,7 +45,6 @@ public class FavouriteNewsModel implements Parcelable {
         this.originalUrl = originalUrl;
         this.categoryId = categoryId;
         this.date = date;
-        this.viewedCount = viewedCount;
         this.isWished = isWished;
         this.savedDate = savedDate;
     }
@@ -61,7 +58,6 @@ public class FavouriteNewsModel implements Parcelable {
         categoryId = in.readString();
         categoryName = in.readString();
         date = in.readString();
-        viewedCount = in.readString();
         isWished = in.readByte() != 0;
         savedDate = in.readString();
     }
@@ -106,10 +102,6 @@ public class FavouriteNewsModel implements Parcelable {
         this.date = date;
     }
 
-    public void setViewedCount(String viewedCount) {
-        this.viewedCount = viewedCount;
-    }
-
     public void setWished(boolean wished) {
         isWished = wished;
     }
@@ -146,10 +138,6 @@ public class FavouriteNewsModel implements Parcelable {
         return date;
     }
 
-    public String getViewedCount() {
-        return viewedCount;
-    }
-
     public boolean isWished() {
         return isWished;
     }
@@ -181,7 +169,6 @@ public class FavouriteNewsModel implements Parcelable {
         dest.writeString(categoryId);
         dest.writeString(categoryName);
         dest.writeString(date);
-        dest.writeString(viewedCount);
         dest.writeByte((byte) (isWished ? 1 : 0));
         dest.writeString(savedDate);
     }

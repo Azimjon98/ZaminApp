@@ -22,7 +22,6 @@ public class Converters {
         model.setNewsId(from.getNewsId());
         model.setOriginalUrl(from.getOriginalUrl());
         model.setTitle(from.getTitle());
-        model.setViewedCount(from.getViewedCount());
         model.setWished(from.isWished());
 
         return model;
@@ -38,7 +37,6 @@ public class Converters {
         model.setNewsId(from.getNewsId());
         model.setOriginalUrl(from.getOriginalUrl());
         model.setTitle(from.getTitle());
-        model.setViewedCount(from.getViewedCount());
         model.setWished(from.isWished());
 
         return model;
@@ -54,7 +52,6 @@ public class Converters {
         model.setNewsId(from.getNewsId());
         model.setOriginalUrl(from.getOriginalUrl());
         model.setTitle(from.getTitle());
-        model.setViewedCount(from.getViewedCount());
         model.setWished(from.isWished());
 
         return model;
@@ -77,7 +74,6 @@ public class Converters {
         model.setNewsId(from.getNewsId());
         model.setOriginalUrl(from.getOriginalUrl());
         model.setTitle(from.getTitle());
-        model.setViewedCount(from.getViewedCount());
         model.setWished(from.isWished());
 
         return model;
@@ -96,7 +92,6 @@ public class Converters {
         model.setNewsId(from.getNewsId());
         model.setOriginalUrl(from.getOriginalUrl());
         model.setTitle(from.getTitle());
-        model.setViewedCount(from.getViewedCount());
         model.setWished(from.isWished());
 
         return model;
@@ -115,7 +110,6 @@ public class Converters {
         model.setNewsId(from.getNewsId());
         model.setOriginalUrl(from.getOriginalUrl());
         model.setTitle(from.getTitle());
-        model.setViewedCount(from.getViewedCount());
         model.setWished(from.isWished());
 
         return model;

@@ -34,7 +34,7 @@ public class MainNewsPagerAdapter extends PagerAdapter {
 
     Context context;
     int count;
-    public List<NewsSimpleModel> news;
+    public List<NewsSimpleModel> news = new ArrayList<>();
     public ItemNewsMainLargeBinding[] bindings = new ItemNewsMainLargeBinding[10];
 
     public MainNewsPagerAdapter(Context context) {

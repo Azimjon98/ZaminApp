@@ -31,8 +31,9 @@
 
             <ImageView
                 android:id="@+id/toolbar_image"
+                android:scaleType="fitCenter"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/logo" />

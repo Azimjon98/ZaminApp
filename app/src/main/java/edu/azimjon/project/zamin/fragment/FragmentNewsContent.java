@@ -19,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -139,16 +141,42 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             //TODO: Header binding initializators
             // Enable Javascript
             File file = new File(getContext().getCacheDir(), "WebCache");
-            bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true);
             bindingHeader.contentWeb.getSettings().setLoadWithOverviewMode(true);
             bindingHeader.contentWeb.getSettings().setAllowFileAccess(true);
             bindingHeader.contentWeb.getSettings().setAppCachePath(file.getAbsolutePath());
             bindingHeader.contentWeb.getSettings().setAppCacheEnabled(true);
             bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+
+            bindingHeader.contentWeb.getSettings().setSupportZoom(true);
+            bindingHeader.contentWeb.getSettings().setBuiltInZoomControls(true);
+            bindingHeader.contentWeb.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+            bindingHeader.contentWeb.getSettings().setSupportMultipleWindows(true);
+            bindingHeader.contentWeb.getSettings().setDomStorageEnabled(true);
+            bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true);
+            bindingHeader.contentWeb.getSettings().setUserAgentString("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36");
+
+//            bindingHeader.contentWeb.getSettings().setAllowFileAccessFromFileURLs(true);
+//            bindingHeader.contentWeb.getSettings().setAllowUniversalAccessFromFileURLs(true);
+//            bindingHeader.contentWeb.clearCache(true);
+//            bindingHeader.contentWeb.clearHistory();
+//            bindingHeader.contentWeb.getSettings().setAllowContentAccess(true);
+//            bindingHeader.contentWeb.getSettings().setDomStorageEnabled(true);
+//            bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true); // enable javascript
+//            bindingHeader.contentWeb.getSettings().setBuiltInZoomControls(true);
+//            bindingHeader.contentWeb.getSettings().setSupportZoom(true);
+//            bindingHeader.contentWeb.getSettings().setLoadWithOverviewMode(true);
+//            bindingHeader.contentWeb.getSettings().setUseWideViewPort(true);
+//
+//            bindingHeader.contentWeb.getSettings().setBuiltInZoomControls(true);
+//            bindingHeader.contentWeb.getSettings().setDisplayZoomControls(false);
+//
+//            bindingHeader.contentWeb.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+//            bindingHeader.contentWeb.setScrollbarFadingEnabled(false);
+//            bindingHeader.contentWeb.getSettings().setUserAgentString("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36");
+
+
+
             bindingHeader.contentWeb.setWebChromeClient(new MyChromeClient(getActivity()));
-
-            bindingHeader.contentWeb.getSettings().setMinimumFontSize(15);
-
             bindingHeader.contentWeb.setWebViewClient(new WebViewClient() {
                 @Override
                 public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -159,7 +187,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
                 @Override
                 public void onPageFinished(WebView view, String url) {
-//                injectCSS();
                     super.onPageFinished(view, url);
                     bindingHeader.progress.setVisibility(View.GONE);
                 }
@@ -178,6 +205,13 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                     bundle.putString(WEB_URL, url);
                     Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
                     return true;
+                }
+
+                @Override
+                public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                    super.onReceivedError(view, request, error);
+
+                    Log.d(DELETE_LOG, "onReceivedError");
                 }
             });
 

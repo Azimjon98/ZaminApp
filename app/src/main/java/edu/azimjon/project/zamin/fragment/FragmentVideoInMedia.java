@@ -31,6 +31,7 @@ import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowAudioInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowVideoInsideMediaBinding;
+import edu.azimjon.project.zamin.events.EventFavouriteChanged;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
@@ -40,6 +41,7 @@ import edu.azimjon.project.zamin.mvp.view.IFragmentVideoInMedia;
 import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.EVENT_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
@@ -114,7 +116,7 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
             binding.swiper.setRefreshing(true);
             presenterVideoInMedia.init();
         }else{
-            videoNewsAdapter.notifyDataSetChanged();
+            reloadContent();
         }
 
         binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -138,19 +140,15 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
         //############################################################
     }
 
+    private void reloadContent(){
+        if (videoNewsAdapter != null)
+            videoNewsAdapter.notifyDataSetChanged();
+    }
+
 
     //TODO: override methods
 
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        if (isVisibleToUser){
-            if (videoNewsAdapter != null)
-            videoNewsAdapter.notifyDataSetChanged();
-        }
-    }
 
     @Override
     public void onStart() {
@@ -236,6 +234,11 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
         isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void on_network_changed(EventFavouriteChanged event) {
+        Log.d(EVENT_LOG, "Favourite Changed (VideoNews): ");
+        reloadContent();
+    }
 
     //TODO: Argument variables
 

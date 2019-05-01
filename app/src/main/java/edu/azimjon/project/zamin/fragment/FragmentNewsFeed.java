@@ -38,6 +38,7 @@ import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.HeaderWindowNewsFeedBinding;
 import edu.azimjon.project.zamin.databinding.WindowNewsFeedBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
+import edu.azimjon.project.zamin.events.EventFavouriteChanged;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.events.MyOnMoreNewsEvent;
 import edu.azimjon.project.zamin.events.PlayerStateEvent;
@@ -195,7 +196,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
             binding.swiper.setRefreshing(true);
             presenterNewsFeed.init();
-        }else{
+        } else {
             reloadContent();
         }
         //####################################################################################
@@ -233,13 +234,12 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
     }
 
-    private void reloadContent(){
-        if (binding == null || bindingHeader == null)
+    private void reloadContent() {
+        if (binding == null || bindingHeader == null || lastContinueNewsAdapter == null)
             return;
 
         List<NewsSimpleModel> mainItems = mainNewsPagerAdapter.news;
         int position = bindingHeader.mainNewsPager.getCurrentItem();
-
         updateMainNews(mainItems, position);
 
         smallNewsAdapter.notifyDataSetChanged();
@@ -248,16 +248,6 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
     }
 
     //TODO: override methods
-
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        if (isVisibleToUser){
-            reloadContent();
-        }
-    }
 
     @Override
     public void onStart() {
@@ -302,16 +292,17 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
         }
 
         if (message == MESSAGE_OK) {
-           updateMainNews(items, 0);
+            lastContinueNewsAdapter.withHeader(bindingHeader.getRoot());
+            updateMainNews(items, 0);
         }
     }
 
-    private void updateMainNews(List<NewsSimpleModel> items, int position){
+    private void updateMainNews(List<NewsSimpleModel> items, int position) {
         mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
         bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);
 
-        lastContinueNewsAdapter.withHeader(bindingHeader.getRoot());
         mainNewsPagerAdapter.init_items(items, items.size());
+        bindingHeader.mainNewsPager.setCurrentItem(position);
 
         change_dots(items.size(), position);
     }
@@ -415,6 +406,12 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             presenterNewsFeed.init();
         }
         isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void on_network_changed(EventFavouriteChanged event) {
+        Log.d(EVENT_LOG, "Favourite Changed (NewsFeed): ");
+        reloadContent();
     }
 
     //TODO: Argument variables

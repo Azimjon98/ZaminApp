@@ -85,7 +85,7 @@ public class ImageBindingAdapters {
         try {
 
             component.getGlideManager()
-                    .load(url + "width=300&quality=40")
+                    .load(url + "&width=300&quality=40")
                     .into(view);
 
         } catch (Exception e) {
@@ -115,7 +115,7 @@ public class ImageBindingAdapters {
         try {
 
             component.getGlideManager()
-                    .load(url + "width=300&quality=70")
+                    .load(url + "&width=300&quality=70")
                     .into(view);
 
         } catch (Exception e) {

@@ -24,9 +24,11 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import androidx.navigation.Navigation;
+
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.ContentPagerAdapter;
 import edu.azimjon.project.zamin.addition.MySettings;
+import edu.azimjon.project.zamin.events.EventFavouriteChanged;
 import edu.azimjon.project.zamin.events.MyOnMoreNewsEvent;
 import edu.azimjon.project.zamin.events.PlayerStateEvent;
 import edu.azimjon.project.zamin.util.MyUtil;
@@ -188,6 +190,7 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        EventBus.getDefault().post(new EventFavouriteChanged());
         savedId = navigationView.getSelectedItemId();
         switch (item.getItemId()) {
             case R.id.menu_news_feed:

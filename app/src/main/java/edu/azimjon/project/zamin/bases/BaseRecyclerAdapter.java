@@ -60,6 +60,9 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void withHeader(View headerView) {
+        if (hasHeader)
+            return;
+
         hasHeaderNoInternet = false;
         this.headerView = headerView;
         hasHeader = true;
@@ -74,6 +77,9 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void withFooter(View footerView) {
+        if (hasFooter)
+            return;
+
         this.footerView = footerView;
         hasFooter = true;
         notifyItemInserted(getItemCount());
@@ -133,6 +139,9 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
 
     //TODO: indicator item show/hide when loading data
     public void showLoading() {
+        if (isLoading)
+            return;
+
         isLoading = true;
         try {
             notifyItemInserted(getItemCount());
@@ -144,6 +153,9 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void hideLoading() {
+        if (!isLoading)
+            return;
+
         isLoading = false;
         notifyItemRemoved(getItemCount());
     }

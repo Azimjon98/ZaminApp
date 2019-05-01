@@ -29,6 +29,7 @@ import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.HeaderWindowNewsFeedBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
+import edu.azimjon.project.zamin.events.EventFavouriteChanged;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
@@ -36,6 +37,7 @@ import edu.azimjon.project.zamin.mvp.view.IFragmentTopNews;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.EVENT_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
@@ -119,7 +121,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
     }
 
     private void reloadContent(){
-        if (binding == null)
+        if (binding == null || mediumNewsAdapter == null)
             return;
 
         mediumNewsAdapter.notifyDataSetChanged();
@@ -127,15 +129,6 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
 
 
     //TODO: override methods
-
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        if (isVisibleToUser)
-            reloadContent();
-    }
 
     @Override
     public void onStart() {
@@ -221,6 +214,12 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
         }
 
         isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void on_network_changed(EventFavouriteChanged event) {
+        Log.d(EVENT_LOG, "Favourite Changed (TopNews): ");
+        reloadContent();
     }
 
 

@@ -34,6 +34,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.Converters;
@@ -313,17 +314,25 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     //TODO: Additional methods
     private void initIcons() {
 
+        List<String> allFavouriteIds;
+        allFavouriteIds = NavigationActivity.getFavouritesIds();
+        if (allFavouriteIds.contains(model.getNewsId())) {
+            model.setWished(true);
+        }else{
+            model.setWished(false);
+        }
+
         binding.iconBookmark.setImageResource(
-                bindingHeader.getModel().isWished() ?
+                model.isWished() ?
                         R.drawable.bookmark_active :
                         R.drawable.bookmark_inactive);
 
         binding.iconBookmark.setOnClickListener(v -> {
-            boolean isWished = bindingHeader.getModel().isWished();
-            bindingHeader.getModel().setWished(!isWished);
+            boolean isWished = model.isWished();
+            model.setWished(!isWished);
 
             binding.iconBookmark.setImageResource(
-                    bindingHeader.getModel().isWished ?
+                    model.isWished ?
                             R.drawable.bookmark_active :
                             R.drawable.bookmark_inactive
             );
@@ -332,12 +341,12 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                 if (isWished) {
                     FavouriteNewsDatabase.getInstance(getContext())
                             .getDao()
-                            .delete(bindingHeader.getModel().getNewsId());
+                            .delete(model.getNewsId());
                 } else {
                     FavouriteNewsDatabase.getInstance(getContext())
                             .getDao()
                             .insert(Converters
-                                    .fromContentNewstoFavouritesNews(bindingHeader.getModel()));
+                                    .fromContentNewstoFavouritesNews(model));
                 }
             }).start();
         });

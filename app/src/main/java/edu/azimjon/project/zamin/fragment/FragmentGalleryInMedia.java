@@ -31,6 +31,7 @@ import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowGalleryInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowVideoInsideMediaBinding;
+import edu.azimjon.project.zamin.events.EventFavouriteChanged;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.model.MediaNewsModel;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
@@ -39,6 +40,7 @@ import edu.azimjon.project.zamin.mvp.view.IFragmentGalleryInMedia;
 import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.EVENT_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
@@ -117,7 +119,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
             binding.swiper.setRefreshing(true);
             presenterGalleryInMedia.init();
         }else{
-            galleryAdapter.notifyDataSetChanged();
+            reloadContent();
         }
 
         binding.swiper.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -137,6 +139,11 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
         //###################################
 
 
+    }
+
+    private void reloadContent(){
+        if (galleryAdapter != null)
+            galleryAdapter.notifyDataSetChanged();
     }
 
 
@@ -237,6 +244,12 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
         }
 
         isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void on_network_changed(EventFavouriteChanged event) {
+        Log.d(EVENT_LOG, "Favourite Changed (GalleryNews): ");
+        reloadContent();
     }
 
 

@@ -34,6 +34,7 @@ import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentTopNews;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
@@ -118,6 +119,17 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
         //*****************************************************************************
         binding.swiper.setOnRefreshListener(this);
         binding.listTopNews.addOnScrollListener(scrollListener);
+
+        bindingNoConnection.btnRefresh.setOnClickListener(v -> {
+            binding.swiper.setRefreshing(true);
+            presenterTopNews.init();
+        });
+
+
+
+        //TODO: Change locale
+        bindingNoConnection.textNoConnection.setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_connection));
+        bindingNoConnection.btnRefresh.setText(MyUtil.getLocalizedString(getContext(), R.string.text_refresh));
     }
 
     private void reloadContent(){

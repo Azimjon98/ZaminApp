@@ -8,7 +8,7 @@
     <string name="text_choose_language">Tilni tanlang</string>
     <string name="text_back">Ortga</string>
     <string name="text_submit">Tanlash</string>
-    <string name="message_no_connection">Internetga ulanishning iloji yo\'q</string>
+    <string name="message_no_connection">Internet bilan bog\'lanish mavjud emas</string>
     <string name="title_audio_news">Audio xabarlar</string>
     <string name="messege_audio">O\'zbekistonda va jahonda bo\'layotgan voqealarning audio xabarlari</string>
     <string name="title_favourites">Sizning xabarlaringiz</string>
@@ -39,5 +39,7 @@
     <string name="text_no_favourites">Saqlangan xabarlar topilmadi</string>
     <string name="text_no_audio">Audio xabarlar topilmadi</string>
     <string name="text_registration">Ro\'yxatdan o\'tish</string>
+    <string name="text_no_items">Yangiliklar topilmadi</string>
+    <string name="text_refresh">Takrorlash</string>
 
 </resources>

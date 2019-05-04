@@ -13,11 +13,36 @@
         android:visibility="visible">
 
         <ImageView
+            android:layout_centerInParent="true"
             android:id="@+id/no_connection"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/no_connection" />
+            android:src="@drawable/nonetwork" />
+
+        <TextView
+            android:id="@+id/text_no_connection"
+            android:textSize="15sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/no_connection"
+            android:text="@string/message_no_connection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn_refresh"
+            android:layout_marginTop="86dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/no_connection"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:textAllCaps="false"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="@string/text_refresh"
+            android:backgroundTint="@color/icon_active"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </RelativeLayout>
 

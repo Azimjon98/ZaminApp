@@ -131,12 +131,20 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
         binding.swiper.setOnRefreshListener(this);
         binding.listVideo.addOnScrollListener(scrollListener);
 
+        bindingNoConnection.btnRefresh.setOnClickListener(v -> {
+            binding.swiper.setRefreshing(true);
+            presenterVideoInMedia.init();
+        });
+
+
 
         //*****************************************************************************
 
-        //TODO: init locales
+        //TODO: Change locale
         ((TextView) viewHeader.findViewById(R.id.text_title)).setText(MyUtil.getLocalizedString(getContext(), R.string.title_video_news));
         ((TextView) viewHeader.findViewById(R.id.text_1)).setText(MyUtil.getLocalizedString(getContext(), R.string.message_video));
+        bindingNoConnection.textNoConnection.setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_connection));
+        bindingNoConnection.btnRefresh.setText(MyUtil.getLocalizedString(getContext(), R.string.text_refresh));
         //############################################################
     }
 

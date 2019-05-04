@@ -133,9 +133,18 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
         binding.listVideo.addOnScrollListener(scrollListener);
         binding.swiper.setOnRefreshListener(this);
 
-        //TODO: init locales
+        bindingNoConnection.btnRefresh.setOnClickListener(v -> {
+            binding.swiper.setRefreshing(true);
+            presenterGalleryInMedia.init();
+        });
+
+
+
+        //TODO: Change locale
         ((TextView) viewHeader.findViewById(R.id.text_title)).setText(MyUtil.getLocalizedString(getContext(), R.string.title_foto));
         ((TextView) viewHeader.findViewById(R.id.text_1)).setText(MyUtil.getLocalizedString(getContext(), R.string.message_foto));
+        bindingNoConnection.textNoConnection.setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_connection));
+        bindingNoConnection.btnRefresh.setText(MyUtil.getLocalizedString(getContext(), R.string.text_refresh));
         //###################################
 
 
@@ -148,17 +157,6 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
 
     //TODO: override methods
-
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        if (isVisibleToUser){
-            if(galleryAdapter != null)
-            galleryAdapter.notifyDataSetChanged();
-        }
-    }
 
     @Override
     public void onStart() {

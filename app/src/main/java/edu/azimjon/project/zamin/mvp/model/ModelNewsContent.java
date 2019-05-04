@@ -54,8 +54,6 @@ public class ModelNewsContent {
 
     public void getAllItems(String newsId) {
         getContent(newsId);
-        getLastNews();
-        getTags(newsId);
 
     }
 
@@ -73,16 +71,19 @@ public class ModelNewsContent {
                         if (response.isSuccessful()) {
                             JsonObject json = response.body();
                             parsingNewsContent(json);
-
+                            getLastNews();
+                            getTags(newsId);
 
                         } else {
                             Log.d(API_LOG, "getMainNews onFailure: " + response.message());
+                            presenterNewsContent.initContent(null, MESSAGE_NO_CONNECTION);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
                         Log.d(API_LOG, "getMainNews onFailure: " + t.getMessage());
+                        presenterNewsContent.initContent(null, MESSAGE_NO_CONNECTION);
                     }
                 });
     }
@@ -156,7 +157,7 @@ public class ModelNewsContent {
         NewsContentModel model = new ParserNewsContentModel().parse(json);
 
         //sending data to view
-        presenterNewsContent.initContent(model);
+        presenterNewsContent.initContent(model, MESSAGE_OK);
 
     }
 

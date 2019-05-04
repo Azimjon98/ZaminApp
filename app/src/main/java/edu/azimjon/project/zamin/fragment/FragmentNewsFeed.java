@@ -193,6 +193,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             bindingHeader.textVideoNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_video_news));
             bindingHeader.clickerAllAudio.setText(MyUtil.getLocalizedString(getContext(), R.string.text_all));
             bindingHeader.clickerAllVideo.setText(MyUtil.getLocalizedString(getContext(), R.string.text_all));
+            bindingNoConnection.textNoConnection.setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_connection));
+            bindingNoConnection.btnRefresh.setText(MyUtil.getLocalizedString(getContext(), R.string.text_refresh));
 
             binding.swiper.setRefreshing(true);
             presenterNewsFeed.init();
@@ -231,6 +233,11 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
         bindingHeader.clickerAllVideo.setOnClickListener(v -> EventBus.getDefault().
                 post(new MyOnMoreNewsEvent(1)));
+
+        bindingNoConnection.btnRefresh.setOnClickListener(v -> {
+            binding.swiper.setRefreshing(true);
+            presenterNewsFeed.init();
+        });
 
     }
 

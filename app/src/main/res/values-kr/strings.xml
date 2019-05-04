@@ -39,4 +39,6 @@
     <string name="text_no_favourites">Сақланган хабарлар топилмади</string>
     <string name="text_no_audio">Аудио хабарлар топилмади</string>
     <string name="text_registration">Рўйхатдан ўтиш</string>
+    <string name="text_refresh">Такрорлаш</string>
+    <string name="text_no_items">Янгиликлар топилмади</string>
 </resources>

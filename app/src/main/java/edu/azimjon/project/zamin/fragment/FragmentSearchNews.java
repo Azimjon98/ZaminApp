@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 
@@ -45,6 +46,7 @@ import retrofit2.Retrofit;
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_ITEMS;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class FragmentSearchNews extends Fragment implements IFragmentSearchNews {
@@ -55,6 +57,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     Retrofit retrofit;
     Call<JsonObject> searchNews = null;
     ParserSimpleNewsModel parserSimpleNewsModel;
+    View headerView;
 
     //Variables
     LinearLayoutManager manager;
@@ -103,6 +106,11 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
             binding.listSearchResult.setHasFixedSize(true);
 
             bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
+            headerView = LayoutInflater.from(getContext())
+                    .inflate(
+                            R.layout.header_no_items,
+                            binding.listSearchResult,
+                            false);
         }
         //initiate search Edit text Watcher
         binding.edSearch.addTextChangedListener(myTextWatcher);
@@ -112,6 +120,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
 
         //TODO: changing locale
         binding.edSearch.setHint(MyUtil.getLocalizedString(getContext(), R.string.text_news));
+        ((TextView)headerView.findViewById(R.id.text_no_item)).setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_items));
     }
 
 
@@ -177,7 +186,10 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     private void parsingLastNewsContinue(JsonObject json) {
         parserSimpleNewsModel = new ParserSimpleNewsModel();
 
-        Log.d(DELETE_LOG, "offset: " + offset);
+        if (json.getAsJsonArray("articles").size() == 0){
+            initNews(null, MESSAGE_NO_ITEMS);
+            return;
+        }
         //sending data to view
         if (offset == 1)
             initNews(parserSimpleNewsModel.parse(json), MESSAGE_OK);
@@ -190,9 +202,17 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
 
     @Override
     public void initNews(List<NewsSimpleModel> items, int message) {
-        binding.progress.setVisibility(View.GONE);
-        adapter.removeHeaders();
-        adapter.init_items(items);
+
+        if (message == MESSAGE_NO_ITEMS){
+            adapter.withHeader(headerView);
+        }
+
+        if (message == MESSAGE_OK){
+            adapter.removeHeaders();
+            binding.progress.setVisibility(View.GONE);
+            adapter.init_items(items);
+        }
+
     }
 
     @Override

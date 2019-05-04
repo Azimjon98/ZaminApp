@@ -28,8 +28,8 @@ public class PresenterNewsContent {
 
     //TODO: callBack methods from Model to View
 
-    public void initContent(NewsContentModel model) {
-        mainView.initContent(model);
+    public void initContent(NewsContentModel model, int message) {
+        mainView.initContent(model, message);
     }
 
     public void initLastNews(List<NewsSimpleModel> items, int message) {

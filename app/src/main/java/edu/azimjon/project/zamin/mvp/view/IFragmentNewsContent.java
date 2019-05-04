@@ -7,7 +7,7 @@ import edu.azimjon.project.zamin.model.NewsSimpleModel;
 
 public interface IFragmentNewsContent {
 
-    void initContent(NewsContentModel model);
+    void initContent(NewsContentModel model, int message);
 
     void initLastNews(List<NewsSimpleModel> items, int message);
     void addLastNews(List<NewsSimpleModel> items, int message);

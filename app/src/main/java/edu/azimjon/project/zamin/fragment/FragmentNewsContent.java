@@ -30,6 +30,7 @@ import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -141,6 +142,21 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
             //*****************************************************************************
 
+
+            //TODO: Header binding initializators
+            // Enable Javascript
+            File file = new File(getContext().getCacheDir(), "WebCache");
+            bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true);
+            bindingHeader.contentWeb.getSettings().setLoadWithOverviewMode(true);
+            bindingHeader.contentWeb.getSettings().setAllowFileAccess(true);
+            bindingHeader.contentWeb.getSettings().setAppCachePath(file.getAbsolutePath());
+            bindingHeader.contentWeb.getSettings().setAppCacheEnabled(true);
+            bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            bindingHeader.contentWeb.setWebChromeClient(new MyChromeClient(getActivity()));
+
+            bindingHeader.contentWeb.getSettings().setMinimumFontSize(15);
+
+
             bindingHeader.contentWeb.setWebViewClient(new WebViewClient() {
                 @Override
                 public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -199,49 +215,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                 }
             });
 
-            //TODO: Header binding initializators
-            // Enable Javascript
-            File file = new File(getContext().getCacheDir(), "WebCache");
-            bindingHeader.contentWeb.getSettings().setLoadWithOverviewMode(true);
-            bindingHeader.contentWeb.getSettings().setAllowFileAccess(true);
-            bindingHeader.contentWeb.getSettings().setAppCachePath(file.getAbsolutePath());
-            bindingHeader.contentWeb.getSettings().setAppCacheEnabled(true);
-            bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-
-            bindingHeader.contentWeb.getSettings().setSupportZoom(true);
-            bindingHeader.contentWeb.getSettings().setBuiltInZoomControls(true);
-            bindingHeader.contentWeb.getSettings().setSupportMultipleWindows(true);
-            bindingHeader.contentWeb.getSettings().setDomStorageEnabled(true);
-            bindingHeader.contentWeb.clearCache(true);
-            bindingHeader.contentWeb.clearHistory();
-            bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true);
-            bindingHeader.contentWeb.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-            bindingHeader.contentWeb.getSettings().setUserAgentString("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36");
-
-//            bindingHeader.contentWeb.getSettings().setAllowFileAccessFromFileURLs(true);
-//            bindingHeader.contentWeb.getSettings().setAllowUniversalAccessFromFileURLs(true);
-//            bindingHeader.contentWeb.clearCache(true);
-//            bindingHeader.contentWeb.clearHistory();
-//            bindingHeader.contentWeb.getSettings().setAllowContentAccess(true);
-//            bindingHeader.contentWeb.getSettings().setDomStorageEnabled(true);
-//            bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true); // enable javascript
-//            bindingHeader.contentWeb.getSettings().setBuiltInZoomControls(true);
-//            bindingHeader.contentWeb.getSettings().setSupportZoom(true);
-//            bindingHeader.contentWeb.getSettings().setLoadWithOverviewMode(true);
-//            bindingHeader.contentWeb.getSettings().setUseWideViewPort(true);
-//
-//            bindingHeader.contentWeb.getSettings().setBuiltInZoomControls(true);
-//            bindingHeader.contentWeb.getSettings().setDisplayZoomControls(false);
-//
-//            bindingHeader.contentWeb.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-//            bindingHeader.contentWeb.setScrollbarFadingEnabled(false);
-//            bindingHeader.contentWeb.getSettings().setUserAgentString("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36");
-
-
-
-//            bindingHeader.contentWeb.setWebChromeClient(new MyChromeClient(getActivity()));
-
-
             presenterNewsContent.init(newsId);
 
         } else {
@@ -250,6 +223,15 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         }
 
         binding.listLastNews.addOnScrollListener(scrollListener);
+
+        bindingNoConnection.btnRefresh.setOnClickListener(v -> {
+            presenterNewsContent.init(newsId);
+        });
+
+        //TODO: Change locale
+        bindingNoConnection.textNoConnection.setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_connection));
+        bindingNoConnection.btnRefresh.setText(MyUtil.getLocalizedString(getContext(), R.string.text_refresh));
+        //###################################
 
         initIcons();
     }
@@ -274,27 +256,35 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
 
     @Override
-    public void initContent(NewsContentModel model) {
+    public void initContent(NewsContentModel model, int message) {
         if (getContext() == null)
             return;
 
-        bindingHeader.setModel(model);
+        System.out.println("message: " + message);
 
-        bindingHeader.contentWeb.loadUrl(model.getContent());
+        if (message == MESSAGE_NO_CONNECTION){
+            mediumNewsAdapter.removeHeaders();
+            mediumNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
+            return;
+        }
+
+        if (message == MESSAGE_OK) {
+            mediumNewsAdapter.removeHeaders();
+            mediumNewsAdapter.withHeader(bindingHeader.getRoot());
+            bindingHeader.setModel(model);
+            bindingHeader.contentWeb.loadUrl(model.getContent());
+        }
+
+
     }
 
     @Override
     public void initLastNews(List<NewsSimpleModel> items, int message) {
         if (getContext() == null)
             return;
-        mediumNewsAdapter.removeHeaders();
-
-        if (message == MESSAGE_NO_CONNECTION) {
-            mediumNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
-            return;
-        }
 
         if (message == MESSAGE_OK) {
+            mediumNewsAdapter.removeHeaders();
             //check if news contains news with this id
             List<NewsSimpleModel> news = new ArrayList<>(items);
             for (NewsSimpleModel i : news) {

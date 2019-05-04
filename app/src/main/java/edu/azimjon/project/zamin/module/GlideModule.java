@@ -20,7 +20,7 @@ public class GlideModule {
     public RequestManager glideRequestManager(@ApplicationContext Context context, CircularProgressDrawable circularProgressDrawable) {
         return Glide.with(context)
                 .setDefaultRequestOptions(new RequestOptions()
-                        .placeholder(circularProgressDrawable)
+//                        .placeholder(circularProgressDrawable)
                         .centerCrop());
     }
 

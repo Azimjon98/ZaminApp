@@ -52,6 +52,8 @@ import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 public class FragmentSearchNews extends Fragment implements IFragmentSearchNews {
     WindowSearchBinding binding;
     FooterNoConnectionBinding bindingFooter;
+    WindowNoConnectionBinding bindingNoConnection;
+
 
     //retrofit call
     Retrofit retrofit;
@@ -105,6 +107,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
             binding.listSearchResult.setAdapter(adapter);
             binding.listSearchResult.setHasFixedSize(true);
 
+            bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listSearchResult, false);
             bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
             headerView = LayoutInflater.from(getContext())
                     .inflate(
@@ -172,7 +175,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
                 binding.progress.setVisibility(View.GONE);
 
                 if (offset == 1) {
-//                    adapter.withHeaderNoInternet(bindingNoConnection.getRoot());
+                    adapter.withHeaderNoInternet(bindingNoConnection.getRoot());
                 } else
                     adapter.withFooter(bindingFooter.getRoot());
             }
@@ -186,7 +189,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     private void parsingLastNewsContinue(JsonObject json) {
         parserSimpleNewsModel = new ParserSimpleNewsModel();
 
-        if (json.getAsJsonArray("articles").size() == 0){
+        if (offset == 1 && json.getAsJsonArray("articles").size() == 0){
             initNews(null, MESSAGE_NO_ITEMS);
             return;
         }

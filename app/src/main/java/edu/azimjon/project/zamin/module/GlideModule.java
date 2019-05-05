@@ -21,7 +21,7 @@ public class GlideModule {
         return Glide.with(context)
                 .setDefaultRequestOptions(new RequestOptions()
 //                        .placeholder(circularProgressDrawable)
-                        .centerCrop());
+                        );
     }
 
     @Provides

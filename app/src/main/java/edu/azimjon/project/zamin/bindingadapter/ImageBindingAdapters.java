@@ -129,7 +129,7 @@ public class ImageBindingAdapters {
     public static void giveCornerRadius(ImageView view, String url) {
 
         //make image view with corners
-        view.setBackgroundResource(R.drawable.empty_medium);
+        view.setBackgroundResource(R.drawable.make_imageview_with_corners);
         view.setClipToOutline(true);
 
 

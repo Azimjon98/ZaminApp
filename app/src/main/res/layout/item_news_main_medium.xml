@@ -43,6 +43,7 @@
                     giveCornerRadius="@{`give`}"
                     imageUrlSmallQuality="@{model.imageUrl}"
                     android:layout_width="104dp"
+                    android:src="@drawable/empty_medium"
                     android:layout_height="78dp"
                     android:scaleType="centerCrop" />
 

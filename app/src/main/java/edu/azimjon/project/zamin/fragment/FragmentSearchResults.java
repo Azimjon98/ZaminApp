@@ -48,6 +48,8 @@ import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_ITEMS;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.SEARCH_CATEGORY;
 import static edu.azimjon.project.zamin.addition.Constants.SEARCH_TAG;
 
@@ -60,6 +62,7 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
     Retrofit retrofit;
     Call<JsonObject> searchNews = null;
     ParserSimpleNewsModel parserSimpleNewsModel;
+    View headerView;
 
     //Variables
     LinearLayoutManager manager;
@@ -122,6 +125,11 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
 
             bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listSearchResult, false);
             bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
+            headerView = LayoutInflater.from(getContext())
+                    .inflate(
+                            R.layout.header_no_items,
+                            binding.listSearchResult,
+                            false);
 
             //starting
             search_text(true);
@@ -186,9 +194,9 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
                 Log.d(API_LOG, "searchNews onFailure" + t.getMessage());
                 binding.progress.setVisibility(View.GONE);
 
-                if (offset == 1)
+                if (offset == 1) {
                     adapter.withHeaderNoInternet(bindingNoConnection.getRoot());
-                else
+                } else
                     adapter.withFooter(bindingFooter.getRoot());
             }
         });
@@ -201,27 +209,40 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
     private void parsingLastNewsContinue(JsonObject json) {
         parserSimpleNewsModel = new ParserSimpleNewsModel();
 
-        //sending data to view
+        if (offset == 1 && json.getAsJsonArray("articles").size() == 0){
+            initNews(null, MESSAGE_NO_ITEMS);
+            return;
+        }
         if (offset == 1)
-            initNews(parserSimpleNewsModel.parse(json));
+            initNews(parserSimpleNewsModel.parse(json), MESSAGE_OK);
         else
-            addNews(parserSimpleNewsModel.parse(json));
+            addNews(parserSimpleNewsModel.parse(json), MESSAGE_OK);
     }
 
     //TODO: Interface override methods
 
     @Override
-    public void initNews(List<NewsSimpleModel> items) {
-        binding.progress.setVisibility(View.GONE);
-        adapter.removeHeaders();
-        adapter.init_items(items);
+    public void initNews(List<NewsSimpleModel> items, int message) {
+
+        if (message == MESSAGE_NO_ITEMS){
+            adapter.withHeader(headerView);
+        }
+
+        if (message == MESSAGE_OK){
+            adapter.removeHeaders();
+            binding.progress.setVisibility(View.GONE);
+            adapter.init_items(items);
+        }
+
     }
 
+
     @Override
-    public void addNews(List<NewsSimpleModel> items) {
+    public void addNews(List<NewsSimpleModel> items, int message) {
         adapter.hideLoading();
         isLoading = false;
         adapter.add_all(items);
+
     }
 
     //####################################################################################

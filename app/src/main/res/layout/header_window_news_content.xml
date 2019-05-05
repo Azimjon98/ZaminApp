@@ -116,10 +116,11 @@
                 imageUrl="@{model.imageUrl}"
                 android:layout_width="match_parent"
                 android:layout_marginTop="16dp"
-                android:scaleType="centerCrop"
-                android:layout_height="200dp" />
+                android:layout_height="wrap_content" />
 
             <WebView
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:id="@+id/content_web"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -16,11 +16,12 @@ import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.databinding.ItemSelectCategoryBinding;
 import edu.azimjon.project.zamin.model.NewsCategoryModel;
+import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
 
 public class SelectCategoriesAdapter extends BaseRecyclerAdapter<NewsCategoryModel> {
 
-    public SelectCategoriesAdapter(Context context, ArrayList items) {
+    public SelectCategoriesAdapter(Context context, ArrayList<NewsCategoryModel> items) {
         super(context, items);
     }
 

@@ -91,15 +91,15 @@ public class NavigationActivity extends AppCompatActivity {
         return categoryModels;
     }
 
+
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
 
         //register receiver
         IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(myConnectivityReceiver, intentFilter);
     }
-
 
     //TODO: NETWORKING STATES
 
@@ -239,6 +239,7 @@ public class NavigationActivity extends AppCompatActivity {
         Log.d(CALLBACK_LOG, "Navigation onStop");
 
         super.onStop();
+//        if ()
         unregisterReceiver(myConnectivityReceiver);
     }
 

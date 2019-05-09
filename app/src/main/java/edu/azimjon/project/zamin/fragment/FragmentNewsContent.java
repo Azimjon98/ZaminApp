@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -152,7 +153,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             bindingHeader.contentWeb.getSettings().setAppCachePath(file.getAbsolutePath());
             bindingHeader.contentWeb.getSettings().setAppCacheEnabled(true);
             bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-            bindingHeader.contentWeb.setWebChromeClient(new MyChromeClient(getActivity()));
+//            bindingHeader.contentWeb.setWebChromeClient(new MyChromeClient(getActivity()));
 
             bindingHeader.contentWeb.getSettings().setMinimumFontSize(15);
 
@@ -181,57 +182,43 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(WEB_URL, url);
-                    Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
-                    return true;
+                    System.out.println("url: " + url);
+                    if (url.contains("http://bit.ly/tgzamin")){
+                        Intent tgIntent = new Intent(Intent.ACTION_VIEW);
+                        tgIntent.setData(Uri.parse(url));
+                        if (getActivity() != null)
+                            getActivity().startActivity(tgIntent);
+                        return true;
+
+                    }else {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(WEB_URL, url);
+                        Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
+                        return true;
+                    }
                 }
 
-                @Override
-                public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                    super.onReceivedError(view, request, error);
 
-                    Log.d(DELETE_LOG, "onReceivedError");
-                }
-
-                @Override
-                public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-                    super.onReceivedHttpError(view, request, errorResponse);
-                    Log.d(DELETE_LOG, "onReceivedHttpError: " + request.getUrl() + " \n" + errorResponse.getMimeType() + " " + errorResponse.getStatusCode());
-                }
-
-                @Override
-                public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                    super.onReceivedSslError(view, handler, error);
-                    Log.d(DELETE_LOG, "onReceivedSslError");
-                }
-
-                @Override
-                public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                    super.onReceivedError(view, errorCode, description, failingUrl);
-
-                    Log.d(DELETE_LOG, "onReceivedError");
-
-                }
             });
 
-            presenterNewsContent.init(newsId);
+            binding.listLastNews.addOnScrollListener(scrollListener);
 
+            bindingNoConnection.btnRefresh.setOnClickListener(v -> {
+                presenterNewsContent.init(newsId);
+            });
+
+            //TODO: Change locale
+            bindingNoConnection.textNoConnection.setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_connection));
+            bindingNoConnection.btnRefresh.setText(MyUtil.getLocalizedString(getContext(), R.string.text_refresh));
+            //###################################
+
+            presenterNewsContent.init(newsId);
         } else {
-            if (mediumNewsAdapter != null)
+            if (mediumNewsAdapter != null);
                 mediumNewsAdapter.notifyDataSetChanged();
         }
 
-        binding.listLastNews.addOnScrollListener(scrollListener);
 
-        bindingNoConnection.btnRefresh.setOnClickListener(v -> {
-            presenterNewsContent.init(newsId);
-        });
-
-        //TODO: Change locale
-        bindingNoConnection.textNoConnection.setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_connection));
-        bindingNoConnection.btnRefresh.setText(MyUtil.getLocalizedString(getContext(), R.string.text_refresh));
-        //###################################
 
         initIcons();
     }

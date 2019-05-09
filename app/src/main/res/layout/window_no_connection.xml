@@ -32,7 +32,7 @@
 
         <Button
             android:id="@+id/btn_refresh"
-            android:layout_marginTop="86dp"
+            android:layout_marginTop="100dp"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/no_connection"
             style="@style/Widget.AppCompat.Button.Colored"

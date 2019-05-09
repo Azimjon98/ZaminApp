@@ -12,6 +12,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import dagger.Module;
 import dagger.Provides;
+import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.interfaces.ApplicationContext;
 
 @Module(includes = {ContextModule.class})
@@ -21,6 +22,7 @@ public class GlideModule {
         return Glide.with(context)
                 .setDefaultRequestOptions(new RequestOptions()
 //                        .placeholder(circularProgressDrawable)
+                        .placeholder(R.drawable.empty_medium)
                         );
     }
 

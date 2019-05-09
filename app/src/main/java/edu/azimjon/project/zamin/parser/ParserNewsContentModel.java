@@ -50,6 +50,14 @@ public class ParserNewsContentModel {
             Log.d(ERROR_LOG, "Error SimpleNews Parser: " + e.getMessage());
         }
 
+        for (NewsCategoryModel c : categoryModels) {
+            if (model.getCategoryId().equals(c.getCategoryId())) {
+
+                model.setCategoryName(c.getName());
+                break;
+            }
+        }
+
         return model;
     }
 }

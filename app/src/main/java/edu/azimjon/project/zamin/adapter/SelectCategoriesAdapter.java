@@ -1,27 +1,22 @@
 package edu.azimjon.project.zamin.adapter;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.databinding.ItemSelectCategoryBinding;
-import edu.azimjon.project.zamin.model.NewsCategoryModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
-import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
+import edu.azimjon.project.zamin.model.CategoryNewsModel;
 
-public class SelectCategoriesAdapter extends BaseRecyclerAdapter<NewsCategoryModel> {
+public class SelectCategoriesAdapter extends BaseRecyclerAdapter<CategoryNewsModel> {
 
-    public SelectCategoriesAdapter(Context context, ArrayList<NewsCategoryModel> items) {
+    public SelectCategoriesAdapter(Context context, ArrayList<CategoryNewsModel> items) {
         super(context, items);
     }
 
@@ -42,7 +37,7 @@ public class SelectCategoriesAdapter extends BaseRecyclerAdapter<NewsCategoryMod
 
         if (viewHolder instanceof MyHolderItem) {
             int position = i;
-            if (hasHeader || hasHeaderNoInternet)
+            if (hasHeader || hasHeaderNoInternet || hasHeaderNoItem)
                 position--;
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;

@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="edu.azimjon.project.zamin.model.NewsCategoryModel" />
+            type="edu.azimjon.project.zamin.model.CategoryNewsModel" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -34,14 +34,14 @@
                 android:fontFamily="sans-serif"
                 android:text="@{model.name}"
                 android:textColor="@color/black"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <Switch
                 android:id="@+id/enabled"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_toLeftOf="@id/drag_icon"
                 android:checked="@{model.enabled}"
+                android:layout_toStartOf="@id/drag_icon"
                 app:lottie_fileName="check_anim.json" />
 
 

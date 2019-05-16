@@ -7,14 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.LoginFilter;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 
@@ -22,8 +19,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.navigation.Navigation;
+
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
@@ -32,7 +31,7 @@ import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowSearchResultsBinding;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.view.IFragmentSearchNewsResult;
 import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
@@ -44,10 +43,10 @@ import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_ITEMS;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.SEARCH_CATEGORY;
@@ -57,18 +56,16 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
     WindowSearchResultsBinding binding;
     WindowNoConnectionBinding bindingNoConnection;
     FooterNoConnectionBinding bindingFooter;
+    View headerNoItem;
 
     //retrofit call
     Retrofit retrofit;
     Call<JsonObject> searchNews = null;
-    ParserSimpleNewsModel parserSimpleNewsModel;
-    View headerView;
 
     //Variables
     LinearLayoutManager manager;
     MediumNewsAdapter adapter;
     int offset = 1;
-    final String limit = "10";
 
     //Search Variables
     int searchWhere;
@@ -91,7 +88,7 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
         }
 
         //TODO: Input arguments
-        searchWhere = getArguments().getInt(KEY_SEARCH_WHERE, -1);
+        searchWhere = Objects.requireNonNull(getArguments()).getInt(KEY_SEARCH_WHERE, -1);
         searchingID = getArguments().getString(KEY_SEARCH_ID);
 
     }
@@ -111,10 +108,6 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
         MySettings.getInstance().setWhichIdCallsContent(R.id.fragmentSearchResults);
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(v).popBackStack());
 
-        binding.toolbar.setTitle(
-                getArguments().getString(KEY_SEARCH_TOOLBAR_NAME)
-        );
-
 
         if (manager == null) {
             manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -122,33 +115,41 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
             binding.listSearchResult.setLayoutManager(manager);
             binding.listSearchResult.setAdapter(adapter);
             binding.listSearchResult.setHasFixedSize(true);
+            binding.listSearchResult.setItemAnimator(null);
 
             bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listSearchResult, false);
             bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
-            headerView = LayoutInflater.from(getContext())
+            headerNoItem = LayoutInflater.from(getContext())
                     .inflate(
                             R.layout.header_no_items,
                             binding.listSearchResult,
                             false);
 
+            binding.toolbar.setTitle(
+                    Objects.requireNonNull(getArguments()).getString(KEY_SEARCH_TOOLBAR_NAME)
+            );
+
             //starting
             search_text(true);
+        } else {
+            reloadContent();
         }
 
         //initiate list scrolling state change listener
         binding.listSearchResult.addOnScrollListener(scrollListener);
 
+    }
 
-        //set locale
-//        binding.toolbar.setSubtitle(MyUtil.getLocalizedString(getContext(), R.string.text_results));
+    private void reloadContent() {
+        adapter.notifyDataSetChanged();
     }
 
     //TODO: Networking:
 
     //search news with title
     void search_text(boolean fromBegin) {
-
         if (fromBegin) {
+            adapter.clearItems();
             offset = 1;
             binding.progress.setVisibility(View.VISIBLE);
         }
@@ -161,20 +162,21 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
             searchNews = retrofit
                     .create(MyRestService.class)
                     .getNewsWithCategory(String.valueOf(offset),
-                            limit,
+                            "10",
                             searchingID,
                             MySettings.getInstance().getLang());
+
         } else if (searchWhere == SEARCH_TAG) {
             searchNews = retrofit
                     .create(MyRestService.class)
                     .getNewsWithTags(String.valueOf(offset),
-                            limit,
+                            "10",
                             searchingID,
                             MySettings.getInstance().getLang());
         }
 
 
-        searchNews.enqueue(new Callback<JsonObject>() {
+        Objects.requireNonNull(searchNews).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NotNull Call<JsonObject> call, @NotNull Response<JsonObject> response) {
                 if (response.isSuccessful()) {
@@ -207,41 +209,50 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
     //TODO: Parsing
     //parsing last news continue(pager news)
     private void parsingLastNewsContinue(JsonObject json) {
-        parserSimpleNewsModel = new ParserSimpleNewsModel();
-
-        if (offset == 1 && json.getAsJsonArray("articles").size() == 0){
+        if (offset == 1 && json.getAsJsonArray("articles").size() == 0) {
             initNews(null, MESSAGE_NO_ITEMS);
             return;
         }
+
+        //sending data to view
+
         if (offset == 1)
-            initNews(parserSimpleNewsModel.parse(json), MESSAGE_OK);
+            initNews(ParserSimpleNewsModel.parse(json, -1), MESSAGE_OK);
         else
-            addNews(parserSimpleNewsModel.parse(json), MESSAGE_OK);
+            addNews(ParserSimpleNewsModel.parse(json, -1), MESSAGE_OK);
     }
 
     //TODO: Interface override methods
 
     @Override
-    public void initNews(List<NewsSimpleModel> items, int message) {
+    public void initNews(List<SimpleNewsModel> items, int message) {
+        if (getContext() == null)
+            return;
 
-        if (message == MESSAGE_NO_ITEMS){
-            adapter.withHeader(headerView);
-        }
-
-        if (message == MESSAGE_OK){
+        if (message == MESSAGE_NO_ITEMS) {
+            adapter.withHeaderNoItem(headerNoItem);
+        } else if (message == MESSAGE_NO_CONNECTION) {
+            adapter.withHeaderNoInternet(bindingNoConnection.getRoot());
+        } else if (message == MESSAGE_OK) {
             adapter.removeHeaders();
             binding.progress.setVisibility(View.GONE);
-            adapter.init_items(items);
+            adapter.initItems(items);
         }
 
     }
 
 
     @Override
-    public void addNews(List<NewsSimpleModel> items, int message) {
+    public void addNews(List<SimpleNewsModel> items, int message) {
+        if (getContext() == null)
+            return;
+
         adapter.hideLoading();
         isLoading = false;
-        adapter.add_all(items);
+
+        if (message == MESSAGE_OK) {
+            adapter.addItems(items);
+        }
 
     }
 
@@ -255,8 +266,6 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-
-            Log.d(Constants.MY_LOG, "onScrollStateChanged");
 
             if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                 isScrolling = true;
@@ -278,7 +287,6 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
                 isScrolling = false;
                 isLoading = true;
 
-                adapter.removeFooter();
                 adapter.showLoading();
                 search_text(false);
             }
@@ -290,10 +298,8 @@ public class FragmentSearchResults extends Fragment implements IFragmentSearchNe
 
     @Override
     public void onStop() {
-        Log.d(CALLBACK_LOG, "SearchResult onStop");
-
+        MyUtil.closeSoftKeyboard(Objects.requireNonNull(getActivity()));
         super.onStop();
-        MyUtil.closeSoftKeyboard(getActivity());
     }
 
 

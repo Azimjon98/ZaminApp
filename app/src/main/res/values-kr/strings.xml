@@ -41,4 +41,5 @@
     <string name="text_registration">Рўйхатдан ўтиш</string>
     <string name="text_refresh">Такрорлаш</string>
     <string name="text_no_items">Янгиликлар топилмади</string>
+    <string name="toast_login_disabled">Рўйхатдан ўтишнинг иложи йўқ</string>
 </resources>

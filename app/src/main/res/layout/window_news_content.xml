@@ -75,6 +75,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/list_last_news"
                 android:layout_width="match_parent"
+                android:descendantFocusability="beforeDescendants"
                 android:layout_height="match_parent">
 
             </android.support.v7.widget.RecyclerView>

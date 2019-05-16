@@ -1,23 +1,14 @@
 package edu.azimjon.project.zamin.activity;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.MediaPagerAdapter;
-import edu.azimjon.project.zamin.databinding.WindowMediaBinding;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterMedia;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
@@ -45,7 +36,7 @@ public class TestActivity extends AppCompatActivity implements ViewPager.OnPageC
 //        }
 
 //        binding..setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-//        mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+//        mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<SimpleNewsModel>());
 //        binding.listTopNews.setAdapter(mediumNewsAdapter);
     }
 

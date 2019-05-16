@@ -24,22 +24,18 @@ import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.GalleryAdapter;
-import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowGalleryInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
-import edu.azimjon.project.zamin.databinding.WindowVideoInsideMediaBinding;
 import edu.azimjon.project.zamin.events.EventFavouriteChanged;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
-import edu.azimjon.project.zamin.model.MediaNewsModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterGalleryInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentGalleryInMedia;
 import edu.azimjon.project.zamin.util.MyUtil;
 
-import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.EVENT_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
@@ -51,6 +47,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
     //TODO: Constants here
     LinearLayoutManager manager;
     boolean isConnected_to_Net = true;
+    String lastLocale = MySettings.getInstance().getLocale();
 
 
     //TODO: variables here
@@ -101,7 +98,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
             manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             binding.listVideo.setLayoutManager(manager);
-            galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<MediaNewsModel>());
+            galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<SimpleNewsModel>());
             viewHeader = LayoutInflater.from(getContext())
                     .inflate(
                             R.layout.header_window_gallery_inside_media,
@@ -150,9 +147,20 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
     }
 
+
+
     private void reloadContent(){
-        if (galleryAdapter != null)
+        if (binding == null || galleryAdapter == null || !isContentLoaded)
+            return;
+
+        if (!lastLocale.equals(MySettings.getInstance().getLocale())){
+            binding.swiper.setRefreshing(true);
+            galleryAdapter.clearItems();
+            presenterGalleryInMedia.init();
+        }else
             galleryAdapter.notifyDataSetChanged();
+
+        lastLocale = MySettings.getInstance().getLocale();
     }
 
 
@@ -188,19 +196,17 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
     //TODO: all methods from interface
 
     @Override
-    public void initGallery(List<MediaNewsModel> items, int message) {
+    public void initGallery(List<SimpleNewsModel> items, int message) {
         binding.swiper.setRefreshing(false);
 
         if (message == MESSAGE_NO_CONNECTION) {
             galleryAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
-
-            return;
         }
 
-        if (message == MESSAGE_OK) {
+        else if (message == MESSAGE_OK) {
             galleryAdapter.withHeader(viewHeader);
-
-            galleryAdapter.init_items(items);
+            galleryAdapter.initItems(items);
+            isContentLoaded = true;
 
         }
 
@@ -208,7 +214,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
 
 
     @Override
-    public void addGallery(List<MediaNewsModel> items, int message) {
+    public void addGallery(List<SimpleNewsModel> items, int message) {
         galleryAdapter.hideLoading();
         isLoading = false;
 
@@ -218,7 +224,7 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
         }
 
         if (message == MESSAGE_OK) {
-            galleryAdapter.add_all(items);
+            galleryAdapter.addItems(items);
 
         }
 
@@ -280,7 +286,6 @@ public class FragmentGalleryInMedia extends Fragment implements IFragmentGallery
                 isScrolling = false;
                 isLoading = true;
 
-                galleryAdapter.removeFooter();
                 galleryAdapter.showLoading();
                 presenterGalleryInMedia.getContinue();
             }

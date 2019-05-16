@@ -38,7 +38,6 @@ public class RetrofitModule {
     @Provides
     String string(@ApplicationContext Context context) {
         return Constants.BASE_URL;
-
     }
 
     @Provides

@@ -11,6 +11,7 @@ import android.os.Parcelable;
 public class FavouriteNewsModel implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
+    private
     int id;
 
     @ColumnInfo(name = "newsId")
@@ -28,25 +29,11 @@ public class FavouriteNewsModel implements Parcelable {
 
     public String date;
 
-    public boolean isWished;
+    public boolean isWished = false;
 
-    String savedDate;
+    private String lastLocale;
 
     public FavouriteNewsModel() {
-        isWished = false;
-    }
-
-    @Ignore
-    public FavouriteNewsModel(String newsId, String title, String imageUrl, String originalUrl, String categoryId, String date, String viewedCount, boolean isWished, String savedDate) {
-
-        this.newsId = newsId;
-        this.title = title;
-        this.imageUrl = imageUrl;
-        this.originalUrl = originalUrl;
-        this.categoryId = categoryId;
-        this.date = date;
-        this.isWished = isWished;
-        this.savedDate = savedDate;
     }
 
     protected FavouriteNewsModel(Parcel in) {
@@ -59,7 +46,7 @@ public class FavouriteNewsModel implements Parcelable {
         categoryName = in.readString();
         date = in.readString();
         isWished = in.readByte() != 0;
-        savedDate = in.readString();
+        lastLocale = in.readString();
     }
 
     public static final Creator<FavouriteNewsModel> CREATOR = new Creator<FavouriteNewsModel>() {
@@ -73,6 +60,14 @@ public class FavouriteNewsModel implements Parcelable {
             return new FavouriteNewsModel[size];
         }
     };
+
+    public void setLastLocale(String lastLocale) {
+        this.lastLocale = lastLocale;
+    }
+
+    public String getLastLocale() {
+        return lastLocale;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -104,10 +99,6 @@ public class FavouriteNewsModel implements Parcelable {
 
     public void setWished(boolean wished) {
         isWished = wished;
-    }
-
-    public void setSavedDate(String savedDate) {
-        this.savedDate = savedDate;
     }
 
     public int getId() {
@@ -142,10 +133,6 @@ public class FavouriteNewsModel implements Parcelable {
         return isWished;
     }
 
-    public String getSavedDate() {
-        return savedDate;
-    }
-
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
@@ -170,6 +157,6 @@ public class FavouriteNewsModel implements Parcelable {
         dest.writeString(categoryName);
         dest.writeString(date);
         dest.writeByte((byte) (isWished ? 1 : 0));
-        dest.writeString(savedDate);
+        dest.writeString(lastLocale);
     }
 }

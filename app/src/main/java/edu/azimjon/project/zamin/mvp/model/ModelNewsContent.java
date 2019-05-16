@@ -1,6 +1,5 @@
 package edu.azimjon.project.zamin.mvp.model;
 
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
@@ -12,8 +11,8 @@ import java.util.List;
 
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
-import edu.azimjon.project.zamin.model.NewsContentModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.ContentNewsModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsContent;
 import edu.azimjon.project.zamin.parser.ParserNewsContentModel;
 import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
@@ -29,38 +28,35 @@ import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class ModelNewsContent {
 
-    ParserSimpleNewsModel parserSimpleNewsModel;
+    private Retrofit retrofit;
+    private PresenterNewsContent presenterNewsContent;
 
-    Retrofit retrofit;
-    PresenterNewsContent presenterNewsContent;
-
-    String limit = "4";
-    int offset;
+    private int offset;
+    private String newsId;
 
     public ModelNewsContent(PresenterNewsContent presenterNewsContent) {
-        offset = 1;
-
         this.presenterNewsContent = presenterNewsContent;
 
         try {
-            retrofit = MyApplication.getInstance().getMyApplicationComponent().getRetrofitApp();
+            retrofit = MyApplication.getInstance()
+                    .getMyApplicationComponent()
+                    .getRetrofitApp();
         } catch (ClassNotFoundException e) {
             System.out.println("myError : " + e);
             e.printStackTrace();
         }
 
-        parserSimpleNewsModel = new ParserSimpleNewsModel();
     }
 
     public void getAllItems(String newsId) {
-        getContent(newsId);
-
+        this.newsId = newsId;
+        getContent();
     }
 
     //TODO: Networking(getting response from server)
 
     //getting main news(pager news)
-    private void getContent(String newsId) {
+    private void getContent() {
 
         retrofit.create(MyRestService.class)
                 .getNewsContentWithId(String.valueOf(newsId),
@@ -71,8 +67,6 @@ public class ModelNewsContent {
                         if (response.isSuccessful()) {
                             JsonObject json = response.body();
                             parsingNewsContent(json);
-                            getLastNews();
-                            getTags(newsId);
 
                         } else {
                             Log.d(API_LOG, "getMainNews onFailure: " + response.message());
@@ -89,42 +83,7 @@ public class ModelNewsContent {
     }
 
     //getting main news(pager news)
-    public void getLastNews() {
-
-        retrofit.create(MyRestService.class)
-                .getLastNewsData(String.valueOf(offset),
-                        limit,
-                        MySettings.getInstance().getLang())
-                .enqueue(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        if (response.isSuccessful()) {
-                            JsonObject json = response.body();
-                            if (offset == 1)
-                                parsingInitLastNews(json);
-                            else
-                                parsingAddLastNews(json);
-
-                            offset++;
-                        } else {
-                            Log.d(API_LOG, "getLastNews onFailure: " + response.message());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
-                        Log.d(API_LOG, "getLastNews onFailure: " + t.getMessage());
-
-                        if (offset == 1)
-                            presenterNewsContent.initLastNews(null, MESSAGE_NO_CONNECTION);
-                        else
-                            presenterNewsContent.addLastNews(null, MESSAGE_NO_CONNECTION);
-                    }
-                });
-    }
-
-    //getting main news(pager news)
-    public void getTags(String id) {
+    private void getTags(String id) {
 
         retrofit.create(MyRestService.class)
                 .getNewsContentTags(
@@ -147,6 +106,43 @@ public class ModelNewsContent {
                         Log.d(API_LOG, "getTags onFailure: " + t.getMessage());
                     }
                 });
+
+
+    }
+
+    //getting main news(pager news)
+    public void getLastNews(boolean fromStart) {
+        if (fromStart)
+            offset = 1;
+
+
+        retrofit.create(MyRestService.class)
+                .getLastNewsData(String.valueOf(offset),
+                        "10",
+                        MySettings.getInstance().getLang())
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        if (response.isSuccessful()) {
+                            JsonObject json = response.body();
+                            parsingLastNews(json);
+
+                            offset++;
+                        } else {
+                            Log.d(API_LOG, "getLastNews onFailure: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        Log.d(API_LOG, "getLastNews onFailure: " + t.getMessage());
+
+                        if (offset == 1)
+                            presenterNewsContent.initLastNews(null, MESSAGE_NO_CONNECTION);
+                        else
+                            presenterNewsContent.addLastNews(null, MESSAGE_NO_CONNECTION);
+                    }
+                });
     }
 
 
@@ -154,28 +150,12 @@ public class ModelNewsContent {
 
     //parsing main news(pager news)
     private void parsingNewsContent(JsonObject json) {
-        NewsContentModel model = new ParserNewsContentModel().parse(json);
+        ContentNewsModel model = ParserNewsContentModel.parse(json);
 
         //sending data to view
         presenterNewsContent.initContent(model, MESSAGE_OK);
 
-    }
-
-    //parsing main news(pager news)
-
-    private void parsingInitLastNews(JsonObject json) {
-        List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
-
-        //sending data to view
-        presenterNewsContent.initLastNews(items, MESSAGE_OK);
-
-    }
-
-    private void parsingAddLastNews(JsonObject json) {
-        List<NewsSimpleModel> items = parserSimpleNewsModel.parse(json);
-
-        //sending data to view
-        presenterNewsContent.addLastNews(items, MESSAGE_OK);
+        getTags(newsId);
 
     }
 
@@ -194,5 +174,24 @@ public class ModelNewsContent {
         //sending data to view
         presenterNewsContent.initTags(tags);
 
+        getLastNews(true);
     }
+
+    //parsing main news(pager news)
+
+    private void parsingLastNews(JsonObject json) {
+        List<SimpleNewsModel> items = ParserSimpleNewsModel.parse(json, -1);
+
+        //sending data to view
+        if (offset == 1)
+            presenterNewsContent.initLastNews(items, MESSAGE_OK);
+        else
+            presenterNewsContent.addLastNews(items, MESSAGE_OK);
+
+
+
+    }
+
+
+
 }

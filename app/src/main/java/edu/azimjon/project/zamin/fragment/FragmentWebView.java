@@ -16,6 +16,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import androidx.navigation.Navigation;
+
+import java.util.Objects;
+
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.databinding.WindowWebViewBinding;
 import edu.azimjon.project.zamin.util.MyChromeClient;
@@ -31,7 +34,7 @@ public class FragmentWebView extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        url = getArguments().getString(WEB_URL);
+        url = Objects.requireNonNull(getArguments()).getString(WEB_URL);
     }
 
     @Nullable
@@ -57,14 +60,12 @@ public class FragmentWebView extends Fragment {
         });
 
         binding.webview.getSettings().setJavaScriptEnabled(true);
-        binding.webview.setWebChromeClient(new WebChromeClient());
-
-        binding.webview.getSettings().setDisplayZoomControls(true);
-
-        binding.webview.setInitialScale(1);
         binding.webview.getSettings().setLoadWithOverviewMode(true);
+        binding.webview.getSettings().setDisplayZoomControls(true);
+        binding.webview.setInitialScale(1);
         binding.webview.getSettings().setUseWideViewPort(true);
-        binding.webview.setWebChromeClient(new MyChromeClient(getActivity()));
+//        binding.webview.setWebChromeClient(new MyChromeClient(getActivity()));
+//        binding.webview.setWebChromeClient(new WebChromeClient());
 
 
         binding.webview.setWebViewClient(new WebViewClient() {
@@ -83,6 +84,7 @@ public class FragmentWebView extends Fragment {
 
             }
         });
+
         binding.webview.loadUrl(url);
     }
 

@@ -1,10 +1,5 @@
 package edu.azimjon.project.zamin.parser;
 
-import android.arch.lifecycle.Observer;
-import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
@@ -14,33 +9,22 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.activity.NavigationActivity;
-import edu.azimjon.project.zamin.addition.Constants;
-import edu.azimjon.project.zamin.model.NewsCategoryModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
-import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
+import edu.azimjon.project.zamin.model.CategoryNewsModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 
 import static edu.azimjon.project.zamin.addition.Constants.ERROR_LOG;
 
 //Simple news model parser
 public class ParserSimpleNewsModel {
-    //list of ids which are favourite
-    List<NewsCategoryModel> categoryModels;
 
-    public ParserSimpleNewsModel() {
+    public static List<SimpleNewsModel> parse(JsonObject json, int type) {
+        List<SimpleNewsModel> items = new ArrayList<>();
+        List<CategoryNewsModel> categoryModels = NavigationActivity.categoryModels;
 
-    }
 
-    public List<NewsSimpleModel> parse(JsonObject json) {
-        categoryModels = NavigationActivity.getAllCategories();
-
-        List<NewsSimpleModel> items = new ArrayList<>();
-
-        JsonArray articles = json.getAsJsonArray("articles");
-
-        for (JsonElement i : articles) {
-            NewsSimpleModel model = new NewsSimpleModel();
+        for (JsonElement i : json.getAsJsonArray("articles")) {
+            SimpleNewsModel model = new SimpleNewsModel();
 
             JsonObject article = i.getAsJsonObject();
 
@@ -58,16 +42,25 @@ public class ParserSimpleNewsModel {
             }
 
 
-            for (NewsCategoryModel c : categoryModels) {
-                if (model.getCategoryId().equals(c.getCategoryId())) {
+            if (type == 3) {
+                model.setUrlAudioFile(article.getAsJsonPrimitive("urlToAudio").getAsString());
+            } else if (type == 2) {
+                //some code for video
+            } else if (type == 1) {
+                model.titleImages = new String[3];
+                model.titleImages[0] = model.getImageUrl();
+                model.titleImages[1] = article.getAsJsonPrimitive("urlToImage2").getAsString();
+                model.titleImages[2] = article.getAsJsonPrimitive("urlToImage3").getAsString();
+            }
 
+            for (CategoryNewsModel c : categoryModels) {
+                if (model.getCategoryId().equals(c.getCategoryId())) {
                     model.setCategoryName(c.getName());
                     break;
                 }
             }
 
             items.add(model);
-
         }
 
         return items;

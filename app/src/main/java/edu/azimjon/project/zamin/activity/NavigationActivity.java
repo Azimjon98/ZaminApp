@@ -26,7 +26,7 @@ import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
-import edu.azimjon.project.zamin.model.NewsCategoryModel;
+import edu.azimjon.project.zamin.model.CategoryNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
 import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
@@ -38,6 +38,7 @@ import retrofit2.Response;
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.EXTRA_CATEGORIES;
+import static edu.azimjon.project.zamin.addition.Constants.EXTRA_ENABLED_CATEGORIES;
 import static edu.azimjon.project.zamin.addition.Constants.EXTRA_FAVOURITES;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_NO_CONNECTION;
@@ -45,8 +46,9 @@ import static edu.azimjon.project.zamin.addition.Constants.STATE_LOG;
 
 public class NavigationActivity extends AppCompatActivity {
 
-    private static List<String> allFavouriteIds;
-    private static List<NewsCategoryModel> categoryModels;
+    public static List<String> allFavouriteIds;
+    public static List<CategoryNewsModel> categoryModels;
+    public static List<CategoryNewsModel> enabledCategoryModels;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class NavigationActivity extends AppCompatActivity {
 
         allFavouriteIds = getIntent().getStringArrayListExtra(EXTRA_FAVOURITES);
         categoryModels = getIntent().getParcelableArrayListExtra(EXTRA_CATEGORIES);
+        enabledCategoryModels = getIntent().getParcelableArrayListExtra(EXTRA_ENABLED_CATEGORIES);
 
         //FIXME: fix this for using in thread
         FavouriteNewsDatabase
@@ -74,35 +77,34 @@ public class NavigationActivity extends AppCompatActivity {
                 .getInstance(NavigationActivity.this)
                 .getDao()
                 .getAllLive()
-                .observe(this, new Observer<List<NewsCategoryModel>>() {
+                .observe(this, new Observer<List<CategoryNewsModel>>() {
                     @Override
-                    public void onChanged(@Nullable List<NewsCategoryModel> categories) {
+                    public void onChanged(@Nullable List<CategoryNewsModel> categories) {
                         categoryModels = categories;
+                        System.out.println("Navigation: categoriesonChanged");
+                    }
+                });
+
+        //FIXME: commit or uncommit below if there any use/unuse of categories data
+        CategoryNewsDatabase
+                .getInstance(NavigationActivity.this)
+                .getDao()
+                .getAllEnabledCategoriesLive()
+                .observe(this, new Observer<List<CategoryNewsModel>>() {
+                    @Override
+                    public void onChanged(@Nullable List<CategoryNewsModel> categories) {
+                        enabledCategoryModels = categories;
+                        System.out.println("Navigation: enabledCategoriesonChanged");
+
                     }
                 });
 
     }
 
-    public static List<String> getFavouritesIds() {
-        return allFavouriteIds;
-    }
-
-    public static List<NewsCategoryModel> getAllCategories() {
-        return categoryModels;
-    }
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        //register receiver
-        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-        registerReceiver(myConnectivityReceiver, intentFilter);
-    }
 
     //TODO: NETWORKING STATES
-
     BroadcastReceiver myConnectivityReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -119,7 +121,7 @@ public class NavigationActivity extends AppCompatActivity {
                     Log.d(STATE_LOG, "NETWORK_STATE_CONNECTED");
 
                     EventBus.getDefault().post(new NetworkStateChangedEvent(NETWORK_STATE_CONNECTED));
-                    check_categories_database();
+//                    check_categories_database();
                 } else {
                     Log.d(STATE_LOG, "NETWORK_STATE_NO_CONNECTION");
 
@@ -149,11 +151,11 @@ public class NavigationActivity extends AppCompatActivity {
                             if (response.isSuccessful()) {
 
                                 //Creating a categories array from server
-                                List<NewsCategoryModel> categories = new ArrayList<>();
+                                List<CategoryNewsModel> categories = new ArrayList<>();
                                 for (JsonElement element : response.body()) {
                                     JsonObject category = element.getAsJsonObject();
 
-                                    NewsCategoryModel model = new NewsCategoryModel(
+                                    CategoryNewsModel model = new CategoryNewsModel(
                                             category.getAsJsonPrimitive("name").getAsString(),
                                             category.getAsJsonPrimitive("id").getAsString(),
                                             ""
@@ -184,9 +186,9 @@ public class NavigationActivity extends AppCompatActivity {
 
     //TODO: Checking database for changings in another Thread
     public class CheckingDataBaseTask extends AsyncTask<Void, Void, Void> {
-        private List<NewsCategoryModel> categoryModels;
+        private List<CategoryNewsModel> categoryModels;
 
-        public CheckingDataBaseTask(List<NewsCategoryModel> models) {
+        public CheckingDataBaseTask(List<CategoryNewsModel> models) {
             this.categoryModels = models;
         }
 
@@ -198,14 +200,14 @@ public class NavigationActivity extends AppCompatActivity {
 
     }
 
-    private void check_database(List<NewsCategoryModel> categoryModels) {
+    private void check_database(List<CategoryNewsModel> categoryModels) {
         //variable for see if there were any changes in categories
         boolean isChanged = false;
 
         CategoryNewsDao categoryNewsDao = CategoryNewsDatabase.getInstance(this).getDao();
 
-        List<NewsCategoryModel> oldCategories = categoryNewsDao.getAll();
-        List<NewsCategoryModel> newCategories = categoryModels;
+        List<CategoryNewsModel> oldCategories = categoryNewsDao.getAll();
+        List<CategoryNewsModel> newCategories = categoryModels;
 
         //checking if there any categories added or removed
         if (oldCategories.size() != newCategories.size()) {
@@ -215,14 +217,14 @@ public class NavigationActivity extends AppCompatActivity {
     }
 
 
-    private void update_database(CategoryNewsDao categoryNewsDao, List<NewsCategoryModel> oldCategories, List<NewsCategoryModel> newCategories) {
+    private void update_database(CategoryNewsDao categoryNewsDao, List<CategoryNewsModel> oldCategories, List<CategoryNewsModel> newCategories) {
         //variable for see if there were any changes in categories
         boolean isChanged = false;
 
         //updating isEnabled state of new Categories
-        for (NewsCategoryModel new_ : newCategories) {
+        for (CategoryNewsModel new_ : newCategories) {
 
-            for (NewsCategoryModel old : oldCategories) {
+            for (CategoryNewsModel old : oldCategories) {
                 if (new_.getCategoryId().equals(old.getCategoryId())) {
                     new_.setEnabled(old.isEnabled());
                 }
@@ -234,12 +236,20 @@ public class NavigationActivity extends AppCompatActivity {
         categoryNewsDao.deleteAndCreate(new ArrayList<>(newCategories));
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //register receiver
+        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(myConnectivityReceiver, intentFilter);
+    }
+
     @Override
     protected void onStop() {
-        Log.d(CALLBACK_LOG, "Navigation onStop");
-
         super.onStop();
-//        if ()
+
         unregisterReceiver(myConnectivityReceiver);
     }
 

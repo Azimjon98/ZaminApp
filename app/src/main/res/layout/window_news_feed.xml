@@ -17,6 +17,8 @@
             android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
+                android:descendantFocusability="beforeDescendants"
+                tools:listitem="@layout/item_news_main_medium"
                 android:id="@+id/list_last_news_continue"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">

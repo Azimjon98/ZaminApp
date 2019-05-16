@@ -7,6 +7,7 @@
     <color name="icon_inactive">#8B8B8B</color>
     <color name="icon_active">#C71923</color>
     <color name="ripple_color">#DADADA</color>
+    <color name="black_transition">#33000000</color>
 
 
     //additional colors from other projects

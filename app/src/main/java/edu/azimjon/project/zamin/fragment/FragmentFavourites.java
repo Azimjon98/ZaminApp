@@ -14,7 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.google.gson.JsonObject;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +27,22 @@ import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.FavouriteNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
+import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.databinding.WindowFavouritesBinding;
+import edu.azimjon.project.zamin.events.EventFavouriteChanged;
+import edu.azimjon.project.zamin.model.CategoryNewsModel;
 import edu.azimjon.project.zamin.model.FavouriteNewsModel;
-import edu.azimjon.project.zamin.mvp.presenter.PresenterFavouriteNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentFavouriteNews;
+import edu.azimjon.project.zamin.retrofit.MyRestService;
 import edu.azimjon.project.zamin.room.dao.FavouriteNewsDao;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 import edu.azimjon.project.zamin.util.MyUtil;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 
 public class FragmentFavourites extends Fragment implements IFragmentFavouriteNews {
 
@@ -49,8 +60,7 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
     FavouriteNewsAdapter favouriteNewsAdapter;
 
     //TODO room components
-    FavouriteNewsDao dao;
-    LiveData<List<FavouriteNewsModel>> allData;
+    List<FavouriteNewsModel> allData;
 
 
     //#####################################################################
@@ -80,6 +90,7 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
         if (manager == null) {
             manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             binding.listFavourite.setLayoutManager(manager);
+//            binding.listFavourite.setItemAnimator(null);
             favouriteNewsAdapter = new FavouriteNewsAdapter(getContext(), new ArrayList<FavouriteNewsModel>());
             viewHeader = LayoutInflater.from(getContext())
                     .inflate(
@@ -96,8 +107,9 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
             binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
             binding.listFavourite.setHasFixedSize(true);
 
+        } else {
+            reloadContent();
         }
-
         //*****************************************************************************
 
         //room init
@@ -111,7 +123,88 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
     }
 
+    private void reloadContent() {
+        if (binding == null || favouriteNewsAdapter == null)
+            return;
+
+
+        for (FavouriteNewsModel model : allData){
+//            SVProgressHUD.show()
+//            contentUpdating = true
+            updateItem(model);
+        }
+
+//        for favourite in favourites!{
+//        if favourite.lastLocale != UserDefaults.getLocale(){
+//            SVProgressHUD.show()
+//            contentUpdating = true
+//            updateItem(model: favourite)
+//            return
+//        }
+//        }
+    }
+
+    private void updateItem(FavouriteNewsModel model){
+        try {
+            String newsId = model.newsId;
+            MyApplication.getInstance()
+                    .getMyApplicationComponent()
+                    .getRetrofitApp()
+                    .create(MyRestService.class)
+                    .getNewsContentWithId(String.valueOf(model.newsId),
+                            MySettings.getInstance().getLang())
+                    .enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                            if (response.isSuccessful()) {
+                                JsonObject json = response.body();
+                                String title = json.getAsJsonPrimitive("title").getAsString();
+                                Thread th = new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            FavouriteNewsDatabase.getInstance(MyApplication.getInstance())
+                                                    .getDao()
+                                                    .updateTitle(newsId, title);
+                                        } catch (ClassNotFoundException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                                th.start();
+
+                            } else {
+                                Log.d(API_LOG, "getMainNews onFailure: " + response.message());
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<JsonObject> call, Throwable t) {
+                            Log.d(API_LOG, "getMainNews onFailure: " + t.getMessage());
+                        }
+                    });
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     //TODO: override methods
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        EventBus.getDefault().unregister(this);
+    }
 
 
     //#################################################################
@@ -122,7 +215,7 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
     @Override
     public void initFavourites(List<FavouriteNewsModel> items) {
-        favouriteNewsAdapter.init_items(items);
+        favouriteNewsAdapter.initItems(items);
     }
 
 
@@ -132,22 +225,34 @@ public class FragmentFavourites extends Fragment implements IFragmentFavouriteNe
 
     //initialize live data and observable here
     void initRoom() {
-        dao = FavouriteNewsDatabase.getInstance(getContext()).getDao();
-        allData = dao.getAll();
-        allData.observe(this, new Observer<List<FavouriteNewsModel>>() {
-            @Override
-            public void onChanged(@Nullable List<FavouriteNewsModel> tourModels) {
-                Log.d(Constants.MY_LOG, "in favourite onChanged");
-                if (tourModels.size() == 0)
-                    favouriteNewsAdapter.withHeaderNoInternet(viewHeaderNoItem);
-                else
-                    favouriteNewsAdapter.withHeader(viewHeader);
+        FavouriteNewsDatabase.getInstance(getContext())
+                .getDao()
+                .getAll()
+                .observe(this, new Observer<List<FavouriteNewsModel>>() {
+                    @Override
+                    public void onChanged(@Nullable List<FavouriteNewsModel> tourModels) {
+                        Log.d(Constants.MY_LOG, "in favourite onChanged");
+                        if (tourModels != null && tourModels.size() == 0) {
+                            favouriteNewsAdapter.withHeaderNoItem(viewHeaderNoItem);
 
-                initFavourites(tourModels);
-            }
-        });
+                        } else {
+                            System.out.println("onChangedFavouriteOff: ");
+                            favouriteNewsAdapter.withHeader(viewHeader);
+                        }
+
+                        allData = tourModels;
+                        initFavourites(tourModels);
+                    }
+                });
     }
 
     //#################################################################
+
+    //TODO: From EVENTBUS
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void on_network_changed(EventFavouriteChanged event) {
+        reloadContent();
+    }
 
 }

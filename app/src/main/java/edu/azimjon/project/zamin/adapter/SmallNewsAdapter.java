@@ -19,7 +19,7 @@ import edu.azimjon.project.zamin.addition.Converters;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemNewsMainSmallBinding;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
@@ -27,11 +27,12 @@ import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_ITEM;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
-public class SmallNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
+public class SmallNewsAdapter extends BaseRecyclerAdapter<SimpleNewsModel> {
 
-    public SmallNewsAdapter(Context context, ArrayList<NewsSimpleModel> items) {
+    public SmallNewsAdapter(Context context, ArrayList<SimpleNewsModel> items) {
         super(context, items);
         this.context = context;
         this.items = items;
@@ -43,10 +44,13 @@ public class SmallNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
         LayoutInflater inflater = LayoutInflater.from(context);
 
         //header with bottom padding
+        //header with bottom padding
         if (i == TYPE_HEADER)
             return new MyBaseHolder(headerView);
         else if (i == TYPE_HEADER_NO_INTERNET)
             return new MyBaseHolder(headerNoInternetView);
+        else if (i == TYPE_HEADER_NO_ITEM)
+            return new MyBaseHolder(headerNoItemView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
         else if (i == TYPE_LOADING)
@@ -68,14 +72,14 @@ public class SmallNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof MyHolderItem) {
             int position = i;
-            if (hasHeader || hasHeaderNoInternet)
+            if (hasHeader || hasHeaderNoInternet || hasHeaderNoItem)
                 position--;
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;
             myHolder.binding.setModel(items.get(position));
 
             List<String> allFavouriteIds;
-            allFavouriteIds = NavigationActivity.getFavouritesIds();
+            allFavouriteIds = NavigationActivity.allFavouriteIds;
             if (allFavouriteIds.contains(myHolder.binding.getModel().getNewsId())) {
                 myHolder.binding.getModel().setWished(true);
             }else{
@@ -136,7 +140,7 @@ public class SmallNewsAdapter extends BaseRecyclerAdapter<NewsSimpleModel> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
             bundle.putParcelable(KEY_NEWS_MODEL,
-                    Converters.fromSimpleNewstoContentNews(binding.getModel()));
+                    binding.getModel());
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }

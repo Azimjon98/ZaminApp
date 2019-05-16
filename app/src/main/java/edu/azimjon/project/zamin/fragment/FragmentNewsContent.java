@@ -1,12 +1,9 @@
 package edu.azimjon.project.zamin.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,22 +13,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AbsListView;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,18 +39,16 @@ import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.HeaderWindowNewsContentBinding;
 import edu.azimjon.project.zamin.databinding.WindowNewsContentBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
-import edu.azimjon.project.zamin.model.NewsContentModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.ContentNewsModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsContent;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsContent;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 import edu.azimjon.project.zamin.util.MyChromeClient;
 import edu.azimjon.project.zamin.util.MyUtil;
 
-import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
-import static edu.azimjon.project.zamin.addition.Constants.KEY_OPEN_GALLERY_ITEM;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
@@ -73,7 +60,7 @@ import static edu.azimjon.project.zamin.addition.Constants.WEB_URL;
 public class FragmentNewsContent extends Fragment implements IFragmentNewsContent {
     //TODO: Constants here
     String newsId;
-    NewsContentModel model;
+    ContentNewsModel contentModel;
 
     //TODO: variables here
     LinearLayoutManager manager;
@@ -88,6 +75,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     MediumNewsAdapter mediumNewsAdapter;
 
     //scrolling variables
+    boolean isScrollingEnabled = false;
     boolean isScrolling = false;
     boolean isLoading = false;
     boolean mShouldPause = false;
@@ -100,8 +88,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        newsId = getArguments().getString(KEY_NEWS_ID);
-        model = getArguments().getParcelable(KEY_NEWS_MODEL);
+        newsId = getArguments() != null ? getArguments().getString(KEY_NEWS_ID) : "";
 
         if (presenterNewsContent == null)
             presenterNewsContent = new PresenterNewsContent(this);
@@ -120,24 +107,29 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.iconBack.setOnClickListener(v -> {
-            new MyAsycTask(Navigation.findNavController(v)).execute();
+            Navigation.findNavController(v)
+                    .popBackStack(MySettings.getInstance().getWhichIdCallsContent(), false);
         });
 
         //initialize adapters and append to lists
 
         if (manager == null) {
-            manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false){
+                @Override
+                public boolean canScrollVertically() {
+                    return isScrollingEnabled;
+                }
+            };
             binding.listLastNews.setLayoutManager(manager);
-            mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+            binding.listLastNews.setItemAnimator(null);
+            mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<SimpleNewsModel>());
+            binding.listLastNews.setAdapter(mediumNewsAdapter);
 
             bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_content, binding.listLastNews, false);
             bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listLastNews, false);
             bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listLastNews, false);
 
-            bindingHeader.title.setText(model.getTitle());
-
-            mediumNewsAdapter.withHeader(bindingHeader.getRoot());
-            binding.listLastNews.setAdapter(mediumNewsAdapter);
+//            mediumNewsAdapter.withHeader(bindingHeader.getRoot());
             //disable auto scrolling
             binding.listLastNews.setHasFixedSize(true);
 
@@ -153,7 +145,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             bindingHeader.contentWeb.getSettings().setAppCachePath(file.getAbsolutePath());
             bindingHeader.contentWeb.getSettings().setAppCacheEnabled(true);
             bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-//            bindingHeader.contentWeb.setWebChromeClient(new MyChromeClient(getActivity()));
+            bindingHeader.contentWeb.setWebChromeClient(new WebChromeClient());
 
             bindingHeader.contentWeb.getSettings().setMinimumFontSize(15);
 
@@ -169,6 +161,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                 @Override
                 public void onPageFinished(WebView view, String url) {
                     super.onPageFinished(view, url);
+                    isScrollingEnabled = true;
                     bindingHeader.progress.setVisibility(View.GONE);
                 }
 
@@ -177,23 +170,28 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                 public void onLoadResource(WebView view, String url) {
                     super.onLoadResource(view, url);
                     if (url.contains("youtube.com")) mShouldPause = true;
-
                 }
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    System.out.println("url: " + url);
-                    if (url.contains("http://bit.ly/tgzamin")){
+//                    System.out.println("url: " + url);
+                    if (url.contains("http://bit.ly/tgzamin") || url.contains("https://t.me")) {
                         Intent tgIntent = new Intent(Intent.ACTION_VIEW);
                         tgIntent.setData(Uri.parse(url));
                         if (getActivity() != null)
                             getActivity().startActivity(tgIntent);
                         return true;
 
-                    }else {
+                    } else if (url.contains("https://zamin.uz/index.php?do=go")) {
                         Bundle bundle = new Bundle();
                         bundle.putString(WEB_URL, url);
                         Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
+                        return true;
+                    } else {
+                        Intent tgIntent = new Intent(Intent.ACTION_VIEW);
+                        tgIntent.setData(Uri.parse(url));
+                        if (getActivity() != null)
+                            getActivity().startActivity(tgIntent);
                         return true;
                     }
                 }
@@ -214,11 +212,23 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
             presenterNewsContent.init(newsId);
         } else {
-            if (mediumNewsAdapter != null);
-                mediumNewsAdapter.notifyDataSetChanged();
+            reloadContent();
         }
 
 
+    }
+
+    private void reloadContent() {
+        if (binding == null || mediumNewsAdapter == null)
+            return;
+
+        int iFirst = manager.findFirstVisibleItemPosition();
+        int iLast = manager.findFirstVisibleItemPosition();
+
+        if (iFirst == 0)
+            iFirst = 1;
+
+        mediumNewsAdapter.notifyItemRangeChanged(iFirst, iLast - iFirst);
 
         initIcons();
     }
@@ -229,10 +239,10 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     public void onPause() {
         super.onPause();
 
-        if (mShouldPause) {
-            bindingHeader.contentWeb.onPause();
-        }
-        mShouldPause = false;
+//        if (mShouldPause) {
+//            bindingHeader.contentWeb.onPause();
+//        }
+//        mShouldPause = false;
     }
 
 
@@ -243,54 +253,49 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
 
     @Override
-    public void initContent(NewsContentModel model, int message) {
+    public void initContent(ContentNewsModel model, int message) {
         if (getContext() == null)
             return;
 
-        System.out.println("message: " + message);
 
-        if (message == MESSAGE_NO_CONNECTION){
-            mediumNewsAdapter.removeHeaders();
+        if (message == MESSAGE_NO_CONNECTION) {
             mediumNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
-            return;
-        }
-
-        if (message == MESSAGE_OK) {
-            mediumNewsAdapter.removeHeaders();
+        } else if (message == MESSAGE_OK) {
             mediumNewsAdapter.withHeader(bindingHeader.getRoot());
             bindingHeader.setModel(model);
-            bindingHeader.contentWeb.loadUrl(model.getContent());
+            contentModel = model;
+            initIcons();
+            bindingHeader.contentWeb.loadUrl(model.getContentUrl());
         }
 
 
     }
 
     @Override
-    public void initLastNews(List<NewsSimpleModel> items, int message) {
+    public void initLastNews(List<SimpleNewsModel> items, int message) {
         if (getContext() == null)
             return;
 
         if (message == MESSAGE_OK) {
-            mediumNewsAdapter.removeHeaders();
             //check if news contains news with this id
-            List<NewsSimpleModel> news = new ArrayList<>(items);
-            for (NewsSimpleModel i : news) {
+            List<SimpleNewsModel> news = new ArrayList<>(items);
+            for (SimpleNewsModel i : news) {
                 if (i.getNewsId().equals(newsId)) {
                     news.remove(i);
                     break;
                 }
             }
 
-            mediumNewsAdapter.withHeader(bindingHeader.getRoot());
-            mediumNewsAdapter.init_items(news);
+            mediumNewsAdapter.initItems(news);
         }
 
     }
 
     @Override
-    public void addLastNews(List<NewsSimpleModel> items, int message) {
+    public void addLastNews(List<SimpleNewsModel> items, int message) {
         if (getContext() == null)
             return;
+
         mediumNewsAdapter.hideLoading();
         isLoading = false;
 
@@ -301,16 +306,15 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
         if (message == MESSAGE_OK) {
             //check if news contains news with this id
-            List<NewsSimpleModel> news = new ArrayList<>(items);
-            for (NewsSimpleModel i : news) {
+            List<SimpleNewsModel> news = new ArrayList<>(items);
+            for (SimpleNewsModel i : news) {
                 if (i.getNewsId().equals(newsId)) {
                     news.remove(i);
                     break;
                 }
             }
 
-
-            mediumNewsAdapter.add_all(news);
+            mediumNewsAdapter.addItems(news);
 
         }
     }
@@ -352,25 +356,23 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     //TODO: Additional methods
     private void initIcons() {
 
-        List<String> allFavouriteIds;
-        allFavouriteIds = NavigationActivity.getFavouritesIds();
-        if (allFavouriteIds.contains(model.getNewsId())) {
-            model.setWished(true);
-        }else{
-            model.setWished(false);
+        if (NavigationActivity.allFavouriteIds.contains(contentModel.getNewsId())) {
+            contentModel.setWished(true);
+        } else {
+            contentModel.setWished(false);
         }
 
         binding.iconBookmark.setImageResource(
-                model.isWished() ?
+                contentModel.isWished() ?
                         R.drawable.bookmark_active :
                         R.drawable.bookmark_inactive);
 
         binding.iconBookmark.setOnClickListener(v -> {
-            boolean isWished = model.isWished();
-            model.setWished(!isWished);
+            boolean isWished = contentModel.isWished();
+            contentModel.setWished(!isWished);
 
             binding.iconBookmark.setImageResource(
-                    model.isWished ?
+                    contentModel.isWished ?
                             R.drawable.bookmark_active :
                             R.drawable.bookmark_inactive
             );
@@ -379,12 +381,12 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                 if (isWished) {
                     FavouriteNewsDatabase.getInstance(getContext())
                             .getDao()
-                            .delete(model.getNewsId());
+                            .delete(contentModel.getNewsId());
                 } else {
                     FavouriteNewsDatabase.getInstance(getContext())
                             .getDao()
                             .insert(Converters
-                                    .fromContentNewstoFavouritesNews(model));
+                                    .fromContentNewstoFavouritesNews(contentModel));
                 }
             }).start();
         });
@@ -409,7 +411,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
 
-            Log.d(Constants.MY_LOG, "onScrollStateChanged");
 
             if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                 isScrolling = true;
@@ -431,7 +432,6 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                 isScrolling = false;
                 isLoading = true;
 
-                mediumNewsAdapter.removeFooter();
                 mediumNewsAdapter.showLoading();
                 presenterNewsContent.getContinue();
             }
@@ -439,20 +439,5 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
     };
 
-    //go navigation to BaseView first Content is called
-    static class MyAsycTask extends AsyncTask<Void, Void, Void> {
-        NavController controller;
-
-        public MyAsycTask(NavController controller) {
-            this.controller = controller;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            controller.popBackStack(MySettings.getInstance().getWhichIdCallsContent(), false);
-
-            return null;
-        }
-    }
 
 }

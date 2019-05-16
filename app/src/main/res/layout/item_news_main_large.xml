@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="edu.azimjon.project.zamin.model.NewsSimpleModel" />
+            type="edu.azimjon.project.zamin.model.SimpleNewsModel" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,7 +32,7 @@
             <ImageView
                 android:id="@+id/news_img"
                 giveCornerRadius="@{`give`}"
-                imageUrl="@{model.imageUrl}"
+                imageUrlMediumQuality="@{model.imageUrl}"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:src="@drawable/empty_large"

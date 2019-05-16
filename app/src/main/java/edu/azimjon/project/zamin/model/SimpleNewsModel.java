@@ -6,39 +6,42 @@ import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-@Entity(tableName = "news_content")
-public class NewsContentModel implements Parcelable {
+@Entity(tableName = "news_simple")
+public class SimpleNewsModel implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
+    private
     int id;
 
     @ColumnInfo(name = "newsId")
-    public String newsId;
+    private
+    String newsId;
 
-    public String title;
+    private String title;
 
-    public String imageUrl;
+    private String imageUrl;
 
-    public String originalUrl;
+    private String originalUrl;
 
-    public String categoryId;
+    private String categoryId;
 
-    public String categoryName;
+    private String categoryName;
 
-    public String date;
+    private String date;
 
-    public String viewedCount;
+    private boolean isWished = false;
 
-    public boolean isWished;
+    private String urlAudioFile = null;
 
-    String content;
+    public String[] titleImages = null;
 
 
-    public NewsContentModel() {
-        isWished = false;
+    public SimpleNewsModel() {
+
     }
 
-    protected NewsContentModel(Parcel in) {
+
+    protected SimpleNewsModel(Parcel in) {
         id = in.readInt();
         newsId = in.readString();
         title = in.readString();
@@ -47,22 +50,24 @@ public class NewsContentModel implements Parcelable {
         categoryId = in.readString();
         categoryName = in.readString();
         date = in.readString();
-        viewedCount = in.readString();
         isWished = in.readByte() != 0;
-        content = in.readString();
+        urlAudioFile = in.readString();
+        titleImages = in.createStringArray();
     }
 
-    public static final Creator<NewsContentModel> CREATOR = new Creator<NewsContentModel>() {
+    public static final Creator<SimpleNewsModel> CREATOR = new Creator<SimpleNewsModel>() {
         @Override
-        public NewsContentModel createFromParcel(Parcel in) {
-            return new NewsContentModel(in);
+        public SimpleNewsModel createFromParcel(Parcel in) {
+            return new SimpleNewsModel(in);
         }
 
         @Override
-        public NewsContentModel[] newArray(int size) {
-            return new NewsContentModel[size];
+        public SimpleNewsModel[] newArray(int size) {
+            return new SimpleNewsModel[size];
         }
     };
+
+
 
     public void setId(int id) {
         this.id = id;
@@ -92,16 +97,8 @@ public class NewsContentModel implements Parcelable {
         this.date = date;
     }
 
-    public void setViewedCount(String viewedCount) {
-        this.viewedCount = viewedCount;
-    }
-
     public void setWished(boolean wished) {
         isWished = wished;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public int getId() {
@@ -132,24 +129,32 @@ public class NewsContentModel implements Parcelable {
         return date;
     }
 
-    public String getViewedCount() {
-        return viewedCount;
-    }
-
     public boolean isWished() {
         return isWished;
     }
 
-    public String getContent() {
-        return content;
+    public String getCategoryName() {
+        return categoryName;
     }
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public void setUrlAudioFile(String urlAudioFile) {
+        this.urlAudioFile = urlAudioFile;
+    }
+
+    public void setTitleImages(String[] titleImages) {
+        this.titleImages = titleImages;
+    }
+
+    public String getUrlAudioFile() {
+        return urlAudioFile;
+    }
+
+    public String[] getTitleImages() {
+        return titleImages;
     }
 
     @Override
@@ -167,8 +172,8 @@ public class NewsContentModel implements Parcelable {
         dest.writeString(categoryId);
         dest.writeString(categoryName);
         dest.writeString(date);
-        dest.writeString(viewedCount);
         dest.writeByte((byte) (isWished ? 1 : 0));
-        dest.writeString(content);
+        dest.writeString(urlAudioFile);
+        dest.writeStringArray(titleImages);
     }
 }

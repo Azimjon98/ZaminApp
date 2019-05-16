@@ -9,7 +9,7 @@
 
         <variable
             name="model"
-            type="edu.azimjon.project.zamin.model.NewsContentModel" />
+            type="edu.azimjon.project.zamin.model.ContentNewsModel" />
 
     </data>
 
@@ -125,7 +125,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp">
-
             </WebView>
 
             <android.support.design.chip.ChipGroup
@@ -134,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:visibility="gone"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:lineSpacingMultiplier="2"
                 app:chipSpacingHorizontal="8dp"
@@ -169,18 +168,6 @@
                     android:textSize="17sp"
                     android:textStyle="bold" />
 
-                <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="24dp"-->
-                <!--android:layout_alignParentEnd="true"-->
-                <!--android:background="@drawable/custom_ripple"-->
-                <!--android:clickable="true"-->
-                <!--android:focusable="true"-->
-                <!--android:fontFamily="sans-serif-medium"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="Barchasi"-->
-                <!--android:textColor="#d32f2f"-->
-                <!--android:textSize="17sp" />-->
 
                 <View
                     android:layout_width="match_parent"

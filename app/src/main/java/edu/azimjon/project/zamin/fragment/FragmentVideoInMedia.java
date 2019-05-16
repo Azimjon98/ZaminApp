@@ -23,24 +23,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.azimjon.project.zamin.R;
-import edu.azimjon.project.zamin.adapter.AudioNewsAdapter;
 import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
-import edu.azimjon.project.zamin.databinding.WindowAudioInsideMediaBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowVideoInsideMediaBinding;
 import edu.azimjon.project.zamin.events.EventFavouriteChanged;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
-import edu.azimjon.project.zamin.model.MediaNewsModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
-import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterVideoInMedia;
 import edu.azimjon.project.zamin.mvp.view.IFragmentVideoInMedia;
 import edu.azimjon.project.zamin.util.MyUtil;
 
-import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.EVENT_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
@@ -51,6 +46,7 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
     //TODO: Constants here
     LinearLayoutManager manager;
     boolean isConnected_to_Net = true;
+    String lastLocale = MySettings.getInstance().getLocale();
 
     //TODO: variables here
     WindowVideoInsideMediaBinding binding;
@@ -97,7 +93,7 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
         if (manager == null) {
             manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             binding.listVideo.setLayoutManager(manager);
-            videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<MediaNewsModel>());
+            videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<SimpleNewsModel>());
             viewHeader = LayoutInflater.from(getContext())
                     .inflate(
                             R.layout.header_window_video_inside_media,
@@ -149,8 +145,18 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
     }
 
     private void reloadContent(){
-        if (videoNewsAdapter != null)
+        System.out.println("reloadContent");
+        if (binding == null || videoNewsAdapter == null || !isContentLoaded)
+            return;
+
+        if (!lastLocale.equals(MySettings.getInstance().getLocale())){
+            binding.swiper.setRefreshing(true);
+            videoNewsAdapter.clearItems();
+            presenterVideoInMedia.init();
+        }else
             videoNewsAdapter.notifyDataSetChanged();
+
+        lastLocale = MySettings.getInstance().getLocale();
     }
 
 
@@ -188,36 +194,33 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
 
     @Override
-    public void initVideo(List<MediaNewsModel> items, int message) {
-        videoNewsAdapter.removeHeaders();
-
+    public void initVideo(List<SimpleNewsModel> items, int message) {
         binding.swiper.setRefreshing(false);
+
         if (message == MESSAGE_NO_CONNECTION) {
             videoNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
-
             return;
         }
 
-        if (message == MESSAGE_OK) {
+        else if (message == MESSAGE_OK) {
             videoNewsAdapter.withHeader(viewHeader);
-
-            videoNewsAdapter.init_items(items);
+            videoNewsAdapter.initItems(items);
+            isContentLoaded = true;
         }
 
     }
 
     @Override
-    public void addVideo(List<MediaNewsModel> items, int message) {
+    public void addVideo(List<SimpleNewsModel> items, int message) {
         videoNewsAdapter.hideLoading();
         isLoading = false;
 
         if (message == MESSAGE_NO_CONNECTION) {
             videoNewsAdapter.withFooter(bindingFooter.getRoot());
-            return;
         }
 
-        if (message == MESSAGE_OK) {
-            videoNewsAdapter.add_all(items);
+        else if (message == MESSAGE_OK) {
+            videoNewsAdapter.addItems(items);
 
         }
     }
@@ -234,17 +237,16 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_network_changed(NetworkStateChangedEvent event) {
-        if (event.state == NETWORK_STATE_CONNECTED && !isConnected_to_Net) {
-            binding.swiper.setRefreshing(false);
-            presenterVideoInMedia.init();
-        }
+//        if (event.state == NETWORK_STATE_CONNECTED && !isConnected_to_Net) {
+//            binding.swiper.setRefreshing(false);
+//            presenterVideoInMedia.init();
+//        }
 
         isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_network_changed(EventFavouriteChanged event) {
-        Log.d(EVENT_LOG, "Favourite Changed (VideoNews): ");
         reloadContent();
     }
 
@@ -277,7 +279,6 @@ public class FragmentVideoInMedia extends Fragment implements IFragmentVideoInMe
                 isScrolling = false;
                 isLoading = true;
 
-                videoNewsAdapter.removeFooter();
                 videoNewsAdapter.showLoading();
                 presenterVideoInMedia.getContinue();
             }

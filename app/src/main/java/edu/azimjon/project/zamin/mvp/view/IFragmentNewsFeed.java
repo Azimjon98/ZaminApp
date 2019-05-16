@@ -2,19 +2,20 @@ package edu.azimjon.project.zamin.mvp.view;
 
 import java.util.List;
 
-import edu.azimjon.project.zamin.model.MediaNewsModel;
-import edu.azimjon.project.zamin.model.NewsCategoryModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.CategoryNewsModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 
 public interface IFragmentNewsFeed {
 
-    void initMainNews(List<NewsSimpleModel> items, int messege);
+    void initCategories(List<CategoryNewsModel> items, int messege);
 
-    void initLastAndContinueNews(List<NewsSimpleModel> items, int messege);
+    void initMainNews(List<SimpleNewsModel> items, int messege);
 
-    void initAudioNews(List<MediaNewsModel> items, int messege);
+    void initLastAndContinueNews(List<SimpleNewsModel> items, int messege);
 
-    void initVideoNews(List<MediaNewsModel> items, int messege);
+    void initAudioNews(List<SimpleNewsModel> items, int messege);
 
-    void addLastNewsContinue(List<NewsSimpleModel> items, int messege);
+    void initVideoNews(List<SimpleNewsModel> items, int messege);
+
+    void addLastNewsContinue(List<SimpleNewsModel> items, int messege);
 }

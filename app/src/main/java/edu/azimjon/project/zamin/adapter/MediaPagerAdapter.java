@@ -25,11 +25,11 @@ import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 public class MediaPagerAdapter extends FragmentPagerAdapter {
 
     //TODO: - Constants here:
-    String[] titles = new String[3];
+    private String[] titles = new String[3];
 
-//    FragmentAudioInMedia tab1;
-    FragmentVideoInMedia tab2;
-    FragmentGalleryInMedia tab3;
+    //    FragmentAudioInMedia tab1;
+    private FragmentVideoInMedia tab2;
+    private FragmentGalleryInMedia tab3;
 
     Context context;
     private int tabs_number;
@@ -41,6 +41,11 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
         this.tabs_number = tabs;
 
 //        titles[0] = MyUtil.getLocalizedString(context, R.string.tab_audio);
+        titles[0] = MyUtil.getLocalizedString(context, R.string.tab_video);
+        titles[1] = MyUtil.getLocalizedString(context, R.string.tab_gallery);
+    }
+
+    public void update() {
         titles[0] = MyUtil.getLocalizedString(context, R.string.tab_video);
         titles[1] = MyUtil.getLocalizedString(context, R.string.tab_gallery);
     }
@@ -70,11 +75,15 @@ public class MediaPagerAdapter extends FragmentPagerAdapter {
         return tabs_number;
     }
 
-
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
         return titles[position];
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
     }
 
     @Override

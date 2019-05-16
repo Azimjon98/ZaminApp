@@ -3,11 +3,9 @@ package edu.azimjon.project.zamin.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,22 +17,18 @@ import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.addition.Converters;
-import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.bases.MyBaseHolder;
-import edu.azimjon.project.zamin.databinding.ItemAudioNewsBinding;
-import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
 import edu.azimjon.project.zamin.databinding.ItemVideoNewsBinding;
-import edu.azimjon.project.zamin.model.MediaNewsModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.*;
 
-public class VideoNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
+public class VideoNewsAdapter extends BaseRecyclerAdapter<SimpleNewsModel> {
 
-    public VideoNewsAdapter(Context context, ArrayList<MediaNewsModel> items) {
+    public VideoNewsAdapter(Context context, ArrayList<SimpleNewsModel> items) {
         super(context, items);
         this.context = context;
         this.items = items;
@@ -48,10 +42,13 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
 
 
         //header with bottom padding
+        //header with bottom padding
         if (i == TYPE_HEADER)
             return new MyBaseHolder(headerView);
         else if (i == TYPE_HEADER_NO_INTERNET)
             return new MyBaseHolder(headerNoInternetView);
+        else if (i == TYPE_HEADER_NO_ITEM)
+            return new MyBaseHolder(headerNoItemView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
         else if (i == TYPE_LOADING)
@@ -73,14 +70,14 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
 
         if (viewHolder instanceof MyHolderItem) {
             int position = i;
-            if (hasHeader || hasHeaderNoInternet)
+            if (hasHeader || hasHeaderNoInternet || hasHeaderNoItem)
                 position--;
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;
             myHolder.binding.setModel(items.get(position));
 
             List<String> allFavouriteIds;
-            allFavouriteIds = NavigationActivity.getFavouritesIds();
+            allFavouriteIds = NavigationActivity.allFavouriteIds;
             if (allFavouriteIds.contains(myHolder.binding.getModel().getNewsId())) {
                 myHolder.binding.getModel().setWished(true);
             }else{
@@ -135,7 +132,7 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
                                 FavouriteNewsDatabase.getInstance(context)
                                         .getDao()
                                         .insert(Converters
-                                                .fromMediaNewstoFavouriteNews(binding.getModel()));
+                                                .fromSimpleNewstoFavouriteNews(binding.getModel()));
                             }
                         }).start();
                     }
@@ -148,8 +145,7 @@ public class VideoNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
-            bundle.putParcelable(KEY_NEWS_MODEL,
-                    Converters.fromMediaNewstoContentNews(binding.getModel()));
+            bundle.putParcelable(KEY_NEWS_MODEL, binding.getModel());
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }

@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,32 +22,27 @@ import java.util.List;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
-import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
-import edu.azimjon.project.zamin.databinding.HeaderWindowNewsFeedBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
 import edu.azimjon.project.zamin.events.EventFavouriteChanged;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentTopNews;
 import edu.azimjon.project.zamin.util.MyUtil;
 
-import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.EVENT_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 
-public class FragmentTopNews extends Fragment implements IFragmentTopNews, SwipeRefreshLayout.OnRefreshListener, MediumNewsAdapter.ScrollingState {
+public class FragmentTopNews extends Fragment implements IFragmentTopNews, SwipeRefreshLayout.OnRefreshListener {
 
     //TODO: Constants here
     LinearLayoutManager manager;
     boolean isConnected_to_Net = true;
-
+    String lastLocale = MySettings.getInstance().getLocale();
 
     //TODO: variables here
     WindowTopNewsBinding binding;
@@ -71,7 +65,9 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        System.out.println("TopNewsOnCreate");
         super.onCreate(savedInstanceState);
+
         if (presenterTopNews == null)
             presenterTopNews = new PresenterTopNews(this);
     }
@@ -94,8 +90,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
             manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
             binding.listTopNews.setLayoutManager(manager);
-            mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
-            mediumNewsAdapter.setScrollingState(this);
+            mediumNewsAdapter = new MediumNewsAdapter(getContext(), new ArrayList<SimpleNewsModel>());
             binding.listTopNews.setAdapter(mediumNewsAdapter);
             binding.getRoot().setPadding(0, 0, 0, MySettings.getInstance().getNavigationHeight());
             binding.listTopNews.setHasFixedSize(true);
@@ -133,10 +128,17 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
     }
 
     private void reloadContent(){
-        if (binding == null || mediumNewsAdapter == null)
+        if (binding == null || mediumNewsAdapter == null || !isContentLoaded)
             return;
 
-        mediumNewsAdapter.notifyDataSetChanged();
+        if (!lastLocale.equals(MySettings.getInstance().getLocale())){
+            binding.swiper.setRefreshing(true);
+            mediumNewsAdapter.clearItems();
+            presenterTopNews.init();
+        }else
+            mediumNewsAdapter.notifyDataSetChanged();
+
+        lastLocale = MySettings.getInstance().getLocale();
     }
 
 
@@ -172,27 +174,24 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
     //TODO: all methods from interface
 
     @Override
-    public void initNews(List<NewsSimpleModel> items, int message) {
+    public void initNews(List<SimpleNewsModel> items, int message) {
         binding.swiper.setRefreshing(false);
 
         if (message == MESSAGE_NO_CONNECTION) {
             mediumNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
-
-            return;
         }
 
-        if (message == MESSAGE_OK) {
+        else if (message == MESSAGE_OK) {
             mediumNewsAdapter.removeHeaders();
-
-            mediumNewsAdapter.init_items(items);
-
+            mediumNewsAdapter.initItems(items);
+            isContentLoaded = true;
         }
 
     }
 
 
     @Override
-    public void addNews(List<NewsSimpleModel> items, int message) {
+    public void addNews(List<SimpleNewsModel> items, int message) {
         mediumNewsAdapter.hideLoading();
         isLoading = false;
 
@@ -202,7 +201,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
         }
 
         if (message == MESSAGE_OK) {
-            mediumNewsAdapter.add_all(items);
+            mediumNewsAdapter.addItems(items);
 
         }
 
@@ -220,29 +219,25 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_network_changed(NetworkStateChangedEvent event) {
-        if (event.state == NETWORK_STATE_CONNECTED && !isConnected_to_Net) {
-            binding.swiper.setRefreshing(true);
-            presenterTopNews.init();
-        }
+//        if (event.state == NETWORK_STATE_CONNECTED && !isConnected_to_Net) {
+//            binding.swiper.setRefreshing(true);
+//            presenterTopNews.init();
+//        }
 
         isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_network_changed(EventFavouriteChanged event) {
-        Log.d(EVENT_LOG, "Favourite Changed (TopNews): ");
-        reloadContent();
+            reloadContent();
     }
 
-
-    //TODO: Argument variables
+//TODO: Argument variables
 
     public RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-
-            Log.d(Constants.MY_LOG, "onScrollStateChanged");
 
             if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                 isScrolling = true;
@@ -256,16 +251,11 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
             total_items = manager.getItemCount();
             visible_items = manager.getChildCount();
             scrollout_items = manager.findFirstVisibleItemPosition();
-            Log.d(Constants.MY_LOG, "total_items: " + total_items + " " +
-                    "visible_items: " + visible_items + " " +
-                    "scrollout_items: " + scrollout_items);
 
-//            if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
             if (isScrolling && (visible_items + scrollout_items == total_items) && !isLoading) {
                 isScrolling = false;
                 isLoading = true;
 
-                mediumNewsAdapter.removeFooter();
                 mediumNewsAdapter.showLoading();
                 presenterTopNews.getContinue();
             }
@@ -274,14 +264,5 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
     };
 
 
-    @Override
-    public void scrollingStarts() {
-        Log.d(DELETE_LOG, "scrollingStarts");
-//        isLoading = true;
-//        mediumNewsAdapter.notify
 
-//        mediumNewsAdapter.removeFooter();
-//        mediumNewsAdapter.showLoading();
-//        presenterTopNews.getContinue();
-    }
 }

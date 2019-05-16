@@ -23,8 +23,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.navigation.Navigation;
+
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
@@ -33,7 +35,7 @@ import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.WindowSearchBinding;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.view.IFragmentSearchNews;
 import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
@@ -44,8 +46,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_ITEMS;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
@@ -53,20 +55,18 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     WindowSearchBinding binding;
     FooterNoConnectionBinding bindingFooter;
     WindowNoConnectionBinding bindingNoConnection;
-
+    View headerNoItem;
 
     //retrofit call
     Retrofit retrofit;
     Call<JsonObject> searchNews = null;
-    ParserSimpleNewsModel parserSimpleNewsModel;
-    View headerView;
+
 
     //Variables
     LinearLayoutManager manager;
     MediumNewsAdapter adapter;
     int offset = 1;
-    final String limit = "10";
-    private String searchingText;
+    private String searchingText = "";
 
     //scrolling variables
     boolean isScrolling = false;
@@ -106,15 +106,19 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
             binding.listSearchResult.setLayoutManager(manager);
             binding.listSearchResult.setAdapter(adapter);
             binding.listSearchResult.setHasFixedSize(true);
+            binding.listSearchResult.setItemAnimator(null);
 
             bindingNoConnection = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.window_no_connection, binding.listSearchResult, false);
             bindingFooter = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.footer_no_connection, binding.listSearchResult, false);
-            headerView = LayoutInflater.from(getContext())
+            headerNoItem = LayoutInflater.from(getContext())
                     .inflate(
                             R.layout.header_no_items,
                             binding.listSearchResult,
                             false);
+        } else {
+            reloadContent();
         }
+
         //initiate search Edit text Watcher
         binding.edSearch.addTextChangedListener(myTextWatcher);
 
@@ -123,7 +127,11 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
 
         //TODO: changing locale
         binding.edSearch.setHint(MyUtil.getLocalizedString(getContext(), R.string.text_news));
-        ((TextView)headerView.findViewById(R.id.text_no_item)).setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_items));
+        ((TextView) headerNoItem.findViewById(R.id.text_no_item)).setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_items));
+    }
+
+    private void reloadContent() {
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -136,7 +144,7 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
         }
 
         if (fromBegin) {
-            adapter.clear_items();
+            adapter.clearItems();
             offset = 1;
             binding.progress.setVisibility(View.VISIBLE);
         }
@@ -148,11 +156,11 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
         searchNews = retrofit
                 .create(MyRestService.class)
                 .searchNewsWithTitle(String.valueOf(offset),
-                        limit,
+                        "10",
                         searchingText.trim(),
                         MySettings.getInstance().getLang());
 
-
+        adapter.removeHeaders();
         searchNews.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NotNull Call<JsonObject> call, @NotNull Response<JsonObject> response) {
@@ -161,7 +169,6 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
                     parsingLastNewsContinue(json);
 
                     offset++;
-
                 } else {
                     Log.d(API_LOG, "searchNews : error: " + response.message());
                 }
@@ -187,42 +194,49 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
     //TODO: Parsing
     //parsing last news continue(pager news)
     private void parsingLastNewsContinue(JsonObject json) {
-        parserSimpleNewsModel = new ParserSimpleNewsModel();
-
-        if (offset == 1 && json.getAsJsonArray("articles").size() == 0){
+        if (offset == 1 && json.getAsJsonArray("articles").size() == 0) {
             initNews(null, MESSAGE_NO_ITEMS);
             return;
         }
+
         //sending data to view
         if (offset == 1)
-            initNews(parserSimpleNewsModel.parse(json), MESSAGE_OK);
+            initNews(ParserSimpleNewsModel.parse(json, -1), MESSAGE_OK);
         else
-            addNews(parserSimpleNewsModel.parse(json), MESSAGE_OK);
+            addNews(ParserSimpleNewsModel.parse(json, -1), MESSAGE_OK);
 
     }
 
     //TODO: Interface override methods
 
     @Override
-    public void initNews(List<NewsSimpleModel> items, int message) {
+    public void initNews(List<SimpleNewsModel> items, int message) {
+        if (getContext() == null)
+            return;
 
-        if (message == MESSAGE_NO_ITEMS){
-            adapter.withHeader(headerView);
-        }
-
-        if (message == MESSAGE_OK){
+        if (message == MESSAGE_NO_ITEMS) {
+            adapter.withHeaderNoItem(headerNoItem);
+        } else if (message == MESSAGE_NO_CONNECTION) {
+            adapter.withHeaderNoInternet(bindingNoConnection.getRoot());
+        } else if (message == MESSAGE_OK) {
             adapter.removeHeaders();
             binding.progress.setVisibility(View.GONE);
-            adapter.init_items(items);
+            adapter.initItems(items);
         }
 
     }
 
     @Override
-    public void addNews(List<NewsSimpleModel> items, int message) {
+    public void addNews(List<SimpleNewsModel> items, int message) {
+        if (getContext() == null)
+            return;
+
         adapter.hideLoading();
         isLoading = false;
-        adapter.add_all(items);
+
+        if (message == MESSAGE_OK) {
+            adapter.addItems(items);
+        }
 
     }
 
@@ -240,9 +254,10 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (!TextUtils.isEmpty(s.toString().trim())) {
-                searchingText = s.toString();
-                Log.d(DELETE_LOG, "onTextChanged");
-                search_text(true);
+                if (!searchingText.equals(s.toString())) {
+                    searchingText = s.toString();
+                    search_text(true);
+                }
             }
         }
 
@@ -256,8 +271,6 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-
-            Log.d(Constants.MY_LOG, "onScrollStateChanged");
 
             if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                 isScrolling = true;
@@ -286,13 +299,14 @@ public class FragmentSearchNews extends Fragment implements IFragmentSearchNews 
 
     };
 
+
     //TODO: Override methods
 
     @Override
     public void onStop() {
+//        binding.edSearch.setText("");
+        MyUtil.closeSoftKeyboard(Objects.requireNonNull(getActivity()));
         super.onStop();
-        binding.edSearch.setText("");
-        MyUtil.closeSoftKeyboard(getActivity());
     }
 
 

@@ -3,51 +3,42 @@ package edu.azimjon.project.zamin.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
-import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemAudioNewsBinding;
-import edu.azimjon.project.zamin.model.MediaNewsModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 
-import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
-import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_ITEM;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
-public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
+public class AudioNewsAdapter extends BaseRecyclerAdapter<SimpleNewsModel> {
 
     public boolean isPlaying = false;
     public String playingMusicId;
 
     public static interface IMyPlayer {
-        void playPressed(MediaNewsModel m);
+        void playPressed(SimpleNewsModel m);
 
-        void pausePressed(MediaNewsModel m);
+        void pausePressed(SimpleNewsModel m);
 
-        void updateItems(MediaNewsModel m, int positionTo);
+        void updateItems(SimpleNewsModel m, int positionTo);
 
     }
 
     IMyPlayer myPlayer;
 
-    public AudioNewsAdapter(Context context, ArrayList<MediaNewsModel> items, IMyPlayer player) {
+    public AudioNewsAdapter(Context context, ArrayList<SimpleNewsModel> items, IMyPlayer player) {
         super(context, items);
 
         this.context = context;
@@ -65,6 +56,8 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
             return new MyBaseHolder(headerView);
         else if (i == TYPE_HEADER_NO_INTERNET)
             return new MyBaseHolder(headerNoInternetView);
+        else if (i == TYPE_HEADER_NO_ITEM)
+            return new MyBaseHolder(headerNoItemView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
         else if (i == TYPE_LOADING)
@@ -86,7 +79,7 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof MyHolderItem) {
             int position = i;
-            if (hasHeader || hasHeaderNoInternet)
+            if (hasHeader || hasHeaderNoInternet || hasHeaderNoItem)
                 position--;
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;
@@ -121,7 +114,7 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
             if (items.get(i).getNewsId().equals(id)) {
                 if (i != items.size() - 1) {
                     isPlaying = true;
-                    MediaNewsModel model = items.get(i + 1);
+                    SimpleNewsModel model = items.get(i + 1);
                     playingMusicId = model.getNewsId();
                     myPlayer.updateItems(model, i + 2);
                     notifyItemChanged(Integer.valueOf(i + 1));
@@ -138,7 +131,7 @@ public class AudioNewsAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
             if (items.get(i).getNewsId().equals(id)) {
                 if (i != 0) {
                     isPlaying = true;
-                    MediaNewsModel model = items.get(i - 1);
+                    SimpleNewsModel model = items.get(i - 1);
                     playingMusicId = model.getNewsId();
                     myPlayer.updateItems(model, i);
                     notifyItemChanged(Integer.valueOf(i + 1));

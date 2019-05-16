@@ -4,6 +4,7 @@ public class Constants {
 
     //TODO
     public static final String EXTRA_CATEGORIES = "categories";
+    public static final String EXTRA_ENABLED_CATEGORIES = "enabled_categories";
     public static final String EXTRA_FAVOURITES = "favourites";
 
 
@@ -23,18 +24,13 @@ public class Constants {
     public static final int MESSAGE_NO_CONNECTION = 201;
     public static final int MESSAGE_NO_ITEMS = 202;
     public static final int MESSAGE_ERROR_MESSEGE = 203;
+
     public static final int NETWORK_STATE_CONNECTED = 101;
     public static final int NETWORK_STATE_NO_CONNECTION = 102;
 
 
-
-
-
-
     //dependency urls
     public static final String BASE_URL = "http://m.zamin.uz/api/v1/";
-    public static final String BASE_KEY = "355f1172-2bf8-4e3e-93f6-83d331f956eb";
-
 
 
     //TODO: STATIC CONSTANTS
@@ -43,16 +39,10 @@ public class Constants {
     public static String ERROR_MESSEGE = "error_messege";
     public static String IS_LOGINED = "is_logined";
     public static String MY_TOKEN = "token";
-    public static String MY_TOKEN_TRAIN = "token_train";
-    public static String MY_PASSWORD = "password";
-    public static String MY_NAME = "name";
-    public static String MY_EMAIL = "email";
     public static String MY_LOCALE = "locale";
-    public static String MY_NUMBER = "number";
-    public static String LANG_CHANGED = "lang_changed";
-    public static String CONTENT_STACK = "content_stack";
     public static String WEB_URL = "web_url";
     public static String OPEN_CONTENT_FROM_ID = "from_which_content_opened";
+    public static String IS_NOTIFICATION_ENABLED = "is_notif_enabled";
 
     //TODO: KEYS
     public static String KEY_NEWS_ID = "news_id";
@@ -66,26 +56,15 @@ public class Constants {
     //TODO: Recycler view Constants
     public final static int TYPE_HEADER = 1;
     public final static int TYPE_HEADER_NO_INTERNET = 2;
-    public final static int TYPE_FOOTER = 3;
+    public final static int TYPE_HEADER_NO_ITEM = 3;
     public final static int TYPE_ITEM = 4;
-    public final static int TYPE_LOADING = 5;
+    public final static int TYPE_FOOTER = 5;
+    public final static int TYPE_LOADING = 6;
 
     //TODO: Search Constants
     public final static int SEARCH_CATEGORY = 301;
     public final static int SEARCH_TAG = 302;
 
-    //TODO:
-    //database constants
-
-
-    //keys for uploaded items
-
-
-
-    //##################################################
-
-
-    //webview constants
 
 
 }

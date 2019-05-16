@@ -5,13 +5,11 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-import edu.azimjon.project.zamin.model.FavouriteNewsModel;
-import edu.azimjon.project.zamin.model.NewsCategoryModel;
+import edu.azimjon.project.zamin.model.CategoryNewsModel;
 import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
-import edu.azimjon.project.zamin.room.dao.FavouriteNewsDao;
 
 
-@Database(entities = NewsCategoryModel.class, version = 1, exportSchema = false)
+@Database(entities = CategoryNewsModel.class, version = 1)
 public abstract class CategoryNewsDatabase extends RoomDatabase {
     private static CategoryNewsDatabase instance;
 

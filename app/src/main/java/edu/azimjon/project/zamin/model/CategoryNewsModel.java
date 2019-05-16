@@ -7,32 +7,33 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 @Entity(tableName = "news_category")
-public class NewsCategoryModel implements Parcelable {
+public class CategoryNewsModel implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
+    private
     int id;
 
-    String name;
+    private String name;
 
-    String categoryId;
+    private String categoryId;
 
-    String imageUrl;
+    private String imageUrl;
 
-    boolean isEnabled;
+    private boolean isEnabled;
 
-    public NewsCategoryModel() {
+    public CategoryNewsModel() {
         isEnabled = true;
     }
 
     @Ignore
-    public NewsCategoryModel(String name, String categoryId, String imageUrl) {
+    public CategoryNewsModel(String name, String categoryId, String imageUrl) {
         this();
         this.name = name;
         this.categoryId = categoryId;
         this.imageUrl = imageUrl;
     }
 
-    protected NewsCategoryModel(Parcel in) {
+    protected CategoryNewsModel(Parcel in) {
         id = in.readInt();
         name = in.readString();
         categoryId = in.readString();
@@ -40,17 +41,19 @@ public class NewsCategoryModel implements Parcelable {
         isEnabled = in.readByte() != 0;
     }
 
-    public static final Creator<NewsCategoryModel> CREATOR = new Creator<NewsCategoryModel>() {
+    public static final Creator<CategoryNewsModel> CREATOR = new Creator<CategoryNewsModel>() {
         @Override
-        public NewsCategoryModel createFromParcel(Parcel in) {
-            return new NewsCategoryModel(in);
+        public CategoryNewsModel createFromParcel(Parcel in) {
+            return new CategoryNewsModel(in);
         }
 
         @Override
-        public NewsCategoryModel[] newArray(int size) {
-            return new NewsCategoryModel[size];
+        public CategoryNewsModel[] newArray(int size) {
+            return new CategoryNewsModel[size];
         }
     };
+
+
 
     public String getCategoryId() {
         return categoryId;

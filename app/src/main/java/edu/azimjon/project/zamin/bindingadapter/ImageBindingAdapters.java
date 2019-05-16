@@ -1,8 +1,16 @@
 package edu.azimjon.project.zamin.bindingadapter;
 
 import android.databinding.BindingAdapter;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.addition.Constants;
@@ -15,20 +23,18 @@ public class ImageBindingAdapters {
 
     @BindingAdapter("imageUrl")
     public static void loadImage(ImageView view, int id) {
-        MyApplicationComponent component = null;
+
+
         try {
-            component = MyApplication.getInstance().getMyApplicationComponent();
+            MyApplication.getInstance()
+                    .getMyApplicationComponent()
+                    .getGlideManager()
+                    .load(id)
+                    .into(view);
 
         } catch (ClassNotFoundException e) {
             Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
             e.printStackTrace();
-        }
-
-        try {
-            component.getGlideManager()
-                    .load(id)
-                    .into(view);
-
         } catch (Exception e) {
             Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
             e.printStackTrace();
@@ -39,23 +45,10 @@ public class ImageBindingAdapters {
     public static void loadImage(ImageView view, String url) {
         if (url == null)
             return;
-        if ("no_image".equals(url) || url.trim().isEmpty())
-            return;
-
-
-        MyApplicationComponent component = null;
-        try {
-            component = MyApplication.getInstance().getMyApplicationComponent();
-
-        } catch (ClassNotFoundException e) {
-            Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
-            e.printStackTrace();
-        }
 
         try {
-
-            component.getGlideManager()
-                    .load(url.equals("no_item") ? R.drawable.custom_ripple : url)
+            Glide.with(view)
+                    .load(url)
                     .into(view);
 
         } catch (Exception e) {
@@ -69,26 +62,19 @@ public class ImageBindingAdapters {
     public static void loadImageSmallQuality(ImageView view, String url) {
         if (url == null)
             return;
-        if ("no_image".equals(url) || url.trim().isEmpty())
-            return;
 
 
-        MyApplicationComponent component = null;
         try {
-            component = MyApplication.getInstance().getMyApplicationComponent();
+            MyApplication.getInstance()
+                    .getMyApplicationComponent()
+                    .getGlideManager()
+                    .load(url + "&width=300&quality=40")
+                    .into(view);
 
         } catch (ClassNotFoundException e) {
             Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
             e.printStackTrace();
-        }
-
-        try {
-
-            component.getGlideManager()
-                    .load(url + "&width=300&quality=40")
-                    .into(view);
-
-        } catch (Exception e) {
+        }catch (Exception e) {
             Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
             e.printStackTrace();
         }
@@ -99,30 +85,22 @@ public class ImageBindingAdapters {
     public static void loadImageMediumQuality(ImageView view, String url) {
         if (url == null)
             return;
-        if ("no_image".equals(url) || url.trim().isEmpty())
-            return;
 
 
-        MyApplicationComponent component = null;
         try {
-            component = MyApplication.getInstance().getMyApplicationComponent();
+            MyApplication.getInstance()
+                    .getMyApplicationComponent()
+                    .getGlideManager()
+                    .load(url + "&width=300&quality=70")
+                    .into(view);
 
         } catch (ClassNotFoundException e) {
             Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
             e.printStackTrace();
-        }
-
-        try {
-
-            component.getGlideManager()
-                    .load(url + "&width=300&quality=70")
-                    .into(view);
-
         } catch (Exception e) {
             Log.d(Constants.ERROR_LOG, "error in loadimage: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 
     @BindingAdapter("giveCornerRadius")

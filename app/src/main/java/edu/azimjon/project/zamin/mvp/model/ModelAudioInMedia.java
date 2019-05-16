@@ -5,13 +5,12 @@ import android.util.Log;
 import com.google.gson.JsonObject;
 
 import java.util.List;
+import java.util.SimpleTimeZone;
 
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
-import edu.azimjon.project.zamin.model.MediaNewsModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterAudioInMedia;
-import edu.azimjon.project.zamin.parser.ParserMediaNewsModel;
 import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
 import retrofit2.Call;
@@ -25,8 +24,6 @@ import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_ITEMS;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 
 public class ModelAudioInMedia {
-
-    ParserMediaNewsModel parserMediaNewsModel;
 
     Retrofit retrofit;
     PresenterAudioInMedia presenterAudioInMedia;
@@ -57,7 +54,6 @@ public class ModelAudioInMedia {
 
     //getting audio news()
     public void getAudioNews() {
-        parserMediaNewsModel = new ParserMediaNewsModel();
 
         retrofit.create(MyRestService.class)
                 .getNewsWithType(String.valueOf(offset),
@@ -94,7 +90,7 @@ public class ModelAudioInMedia {
 
     //parsing top news(pager news)
     private void parsingAudioNews(JsonObject json) {
-        List<MediaNewsModel> items = parserMediaNewsModel.parse(json, 3);
+        List<SimpleNewsModel> items = ParserSimpleNewsModel.parse(json, 3);
 
         //sending data to view
         if (items.size() == 0) {

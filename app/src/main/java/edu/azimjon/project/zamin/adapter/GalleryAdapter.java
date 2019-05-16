@@ -20,8 +20,7 @@ import edu.azimjon.project.zamin.addition.Converters;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemGalleryNewsBinding;
-import edu.azimjon.project.zamin.model.MediaNewsModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
@@ -30,11 +29,12 @@ import static edu.azimjon.project.zamin.addition.Constants.KEY_OPEN_GALLERY_ITEM
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_ITEM;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
-public class GalleryAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
+public class GalleryAdapter extends BaseRecyclerAdapter<SimpleNewsModel> {
 
-    public GalleryAdapter(Context context, ArrayList<MediaNewsModel> items) {
+    public GalleryAdapter(Context context, ArrayList<SimpleNewsModel> items) {
         super(context, items);
         this.context = context;
         this.items = items;
@@ -47,10 +47,13 @@ public class GalleryAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
         LayoutInflater inflater = LayoutInflater.from(context);
 
         //header with bottom padding
+        //header with bottom padding
         if (i == TYPE_HEADER)
             return new MyBaseHolder(headerView);
         else if (i == TYPE_HEADER_NO_INTERNET)
             return new MyBaseHolder(headerNoInternetView);
+        else if (i == TYPE_HEADER_NO_ITEM)
+            return new MyBaseHolder(headerNoItemView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
         else if (i == TYPE_LOADING)
@@ -72,14 +75,14 @@ public class GalleryAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof MyHolderItem) {
             int position = i;
-            if (hasHeader || hasHeaderNoInternet)
+            if (hasHeader || hasHeaderNoInternet || hasHeaderNoItem)
                 position--;
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;
             myHolder.binding.setModel(items.get(position));
 
             List<String> allFavouriteIds;
-            allFavouriteIds = NavigationActivity.getFavouritesIds();
+            allFavouriteIds = NavigationActivity.allFavouriteIds;
             if (allFavouriteIds.contains(myHolder.binding.getModel().getNewsId())) {
                 myHolder.binding.getModel().setWished(true);
             }else{
@@ -133,7 +136,7 @@ public class GalleryAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
                                 FavouriteNewsDatabase.getInstance(context)
                                         .getDao()
                                         .insert(Converters
-                                                .fromMediaNewstoFavouriteNews(binding.getModel()));
+                                                .fromSimpleNewstoFavouriteNews(binding.getModel()));
                             }
                         }).start();
                     }
@@ -146,8 +149,7 @@ public class GalleryAdapter extends BaseRecyclerAdapter<MediaNewsModel> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
             bundle.putInt(KEY_OPEN_GALLERY_ITEM, 1);
-            bundle.putParcelable(KEY_NEWS_MODEL,
-                    Converters.fromMediaNewstoContentNews(binding.getModel()));
+            bundle.putParcelable(KEY_NEWS_MODEL, binding.getModel());
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         }
     }

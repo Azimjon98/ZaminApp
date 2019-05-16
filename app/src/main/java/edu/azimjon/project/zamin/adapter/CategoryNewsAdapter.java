@@ -17,9 +17,8 @@ import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.bases.MyBaseHolder;
 import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
-import edu.azimjon.project.zamin.model.NewsCategoryModel;
+import edu.azimjon.project.zamin.model.CategoryNewsModel;
 
-import static edu.azimjon.project.zamin.addition.Constants.KEY_CATEGORY_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;
@@ -27,11 +26,12 @@ import static edu.azimjon.project.zamin.addition.Constants.SEARCH_CATEGORY;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_ITEM;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
-public class CategoryNewsAdapter extends BaseRecyclerAdapter<NewsCategoryModel> {
+public class CategoryNewsAdapter extends BaseRecyclerAdapter<CategoryNewsModel> {
 
-    public CategoryNewsAdapter(Context context, ArrayList<NewsCategoryModel> items) {
+    public CategoryNewsAdapter(Context context, ArrayList<CategoryNewsModel> items) {
         super(context, items);
 
         this.context = context;
@@ -44,10 +44,13 @@ public class CategoryNewsAdapter extends BaseRecyclerAdapter<NewsCategoryModel> 
         LayoutInflater inflater = LayoutInflater.from(context);
 
         //header with bottom padding
+        //header with bottom padding
         if (i == TYPE_HEADER)
             return new MyBaseHolder(headerView);
         else if (i == TYPE_HEADER_NO_INTERNET)
             return new MyBaseHolder(headerNoInternetView);
+        else if (i == TYPE_HEADER_NO_ITEM)
+            return new MyBaseHolder(headerNoItemView);
         else if (i == TYPE_FOOTER)
             return new MyBaseHolder(footerView);
         else if (i == TYPE_LOADING)
@@ -68,7 +71,7 @@ public class CategoryNewsAdapter extends BaseRecyclerAdapter<NewsCategoryModel> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof MyHolderItem) {
             int position = i;
-            if (hasHeader || hasHeaderNoInternet)
+            if (hasHeader || hasHeaderNoInternet || hasHeaderNoItem)
                 position--;
 
             MyHolderItem myHolder = (MyHolderItem) viewHolder;

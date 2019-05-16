@@ -2,8 +2,8 @@ package edu.azimjon.project.zamin.mvp.presenter;
 
 import java.util.List;
 
-import edu.azimjon.project.zamin.model.NewsContentModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.ContentNewsModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.model.ModelNewsContent;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsContent;
 
@@ -22,21 +22,21 @@ public class PresenterNewsContent {
     }
 
     public void getContinue() {
-        modelNewsContent.getLastNews();
+        modelNewsContent.getLastNews(false);
     }
 
 
     //TODO: callBack methods from Model to View
 
-    public void initContent(NewsContentModel model, int message) {
+    public void initContent(ContentNewsModel model, int message) {
         mainView.initContent(model, message);
     }
 
-    public void initLastNews(List<NewsSimpleModel> items, int message) {
+    public void initLastNews(List<SimpleNewsModel> items, int message) {
         mainView.initLastNews(items, message);
     }
 
-    public void addLastNews(List<NewsSimpleModel> items, int message) {
+    public void addLastNews(List<SimpleNewsModel> items, int message) {
         mainView.addLastNews(items, message);
     }
 

@@ -2,9 +2,8 @@ package edu.azimjon.project.zamin.mvp.presenter;
 
 import java.util.List;
 
-import edu.azimjon.project.zamin.model.MediaNewsModel;
-import edu.azimjon.project.zamin.model.NewsCategoryModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.CategoryNewsModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.model.ModelNewsFeed;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsFeed;
 
@@ -31,23 +30,27 @@ public class PresenterNewsFeed {
 
     //cannot use because of liveData in view
 
-    public void initMainNews(List<NewsSimpleModel> items, int message) {
+    public void initCategories(List<CategoryNewsModel> items, int message) {
+        mainView.initCategories(items, message);
+    }
+
+    public void initMainNews(List<SimpleNewsModel> items, int message) {
         mainView.initMainNews(items, message);
     }
 
-    public void initLastNews(List<NewsSimpleModel> items, int message) {
+    public void initLastNews(List<SimpleNewsModel> items, int message) {
         mainView.initLastAndContinueNews(items, message);
     }
 
-    public void initAudioNews(List<MediaNewsModel> items, int message) {
+    public void initAudioNews(List<SimpleNewsModel> items, int message) {
         mainView.initAudioNews(items, message);
     }
 
-    public void initVideoNews(List<MediaNewsModel> items, int message) {
+    public void initVideoNews(List<SimpleNewsModel> items, int message) {
         mainView.initVideoNews(items, message);
     }
 
-    public void addLastNewsContinue(List<NewsSimpleModel> items, int message) {
+    public void addLastNewsContinue(List<SimpleNewsModel> items, int message) {
         mainView.addLastNewsContinue(items, message);
     }
 

@@ -6,8 +6,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +17,11 @@ import androidx.navigation.Navigation;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.addition.Converters;
-import edu.azimjon.project.zamin.databinding.ItemNewsCategoryBinding;
 import edu.azimjon.project.zamin.databinding.ItemNewsMainLargeBinding;
-import edu.azimjon.project.zamin.model.NewsCategoryModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 
@@ -34,7 +29,7 @@ public class MainNewsPagerAdapter extends PagerAdapter {
 
     Context context;
     int count;
-    public List<NewsSimpleModel> news = new ArrayList<>();
+    public List<SimpleNewsModel> news = new ArrayList<>();
     public ItemNewsMainLargeBinding[] bindings = new ItemNewsMainLargeBinding[10];
 
     public MainNewsPagerAdapter(Context context) {
@@ -55,8 +50,7 @@ public class MainNewsPagerAdapter extends PagerAdapter {
         binding.clicker.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_NEWS_ID, binding.getModel().getNewsId());
-            bundle.putParcelable(KEY_NEWS_MODEL,
-                    Converters.fromSimpleNewstoContentNews(binding.getModel()));
+            bundle.putParcelable(KEY_NEWS_MODEL, binding.getModel());
             Navigation.findNavController(v).navigate(R.id.action_global_fragmentNewsContent, bundle);
         });
 
@@ -95,7 +89,7 @@ public class MainNewsPagerAdapter extends PagerAdapter {
         if (binding.getModel() == null)
             return;
 
-        List<String> allFavouriteIds = NavigationActivity.getFavouritesIds();
+        List<String> allFavouriteIds = NavigationActivity.allFavouriteIds;
         if (allFavouriteIds.contains(binding.getModel().getNewsId())) {
             binding.getModel().setWished(true);
         }else{
@@ -116,7 +110,7 @@ public class MainNewsPagerAdapter extends PagerAdapter {
         super.setPrimaryItem(container, position, object);
     }
 
-    public void init_items(List<NewsSimpleModel> news, int count) {
+    public void init_items(List<SimpleNewsModel> news, int count) {
         this.count = 0;
         notifyDataSetChanged();
 

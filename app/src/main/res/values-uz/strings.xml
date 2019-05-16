@@ -40,5 +40,6 @@
     <string name="text_registration">Ro\'yxatdan o\'tish</string>
     <string name="text_no_items">Yangiliklar topilmadi</string>
     <string name="text_refresh">Takrorlash</string>
+    <string name="toast_login_disabled">Ro\'yxatdan o\'tishning iloji yo\'q</string>
 
 </resources>

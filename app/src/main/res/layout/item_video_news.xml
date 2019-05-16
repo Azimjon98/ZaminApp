@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="edu.azimjon.project.zamin.model.MediaNewsModel" />
+            type="edu.azimjon.project.zamin.model.SimpleNewsModel" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -34,12 +34,11 @@
                 <ImageView
                     android:id="@+id/news_img"
                     giveCornerRadius="@{`give`}"
-                    imageUrl="@{model.imageUrl}"
+                    imageUrlMediumQuality="@{model.imageUrl}"
                     android:layout_width="match_parent"
                     android:layout_height="160dp"
                     android:fitsSystemWindows="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/image_temp" />
+                    android:scaleType="centerCrop" />
 
                 <ImageView
                     android:layout_width="match_parent"

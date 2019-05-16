@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.azimjon.project.zamin.R;
+import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.adapter.AudioNewsAdapter;
 import edu.azimjon.project.zamin.adapter.NewsFeedAdapter;
 import edu.azimjon.project.zamin.adapter.SmallNewsAdapter;
@@ -41,32 +42,27 @@ import edu.azimjon.project.zamin.databinding.WindowNoConnectionBinding;
 import edu.azimjon.project.zamin.events.EventFavouriteChanged;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.events.MyOnMoreNewsEvent;
-import edu.azimjon.project.zamin.events.PlayerStateEvent;
-import edu.azimjon.project.zamin.model.MediaNewsModel;
-import edu.azimjon.project.zamin.model.NewsCategoryModel;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.CategoryNewsModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsFeed;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsFeed;
-import edu.azimjon.project.zamin.parser.ParserSimpleNewsModel;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
 import edu.azimjon.project.zamin.util.MyUtil;
 
 import static com.arlib.floatingsearchview.util.Util.dpToPx;
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.ERROR_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.EVENT_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
-import static edu.azimjon.project.zamin.events.PlayerStateEvent.*;
 
 public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, SwipeRefreshLayout.OnRefreshListener {
 
     //TODO: Constants here
     LinearLayoutManager manager;
-    List<NewsCategoryModel> categoryModels;
     boolean isConnected_to_Net = true;
+    String lastLocale = MySettings.getInstance().getLocale();
 
 
     //TODO: variables here
@@ -136,7 +132,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
         if (manager == null) {
             manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             binding.listLastNewsContinue.setLayoutManager(manager);
-            lastContinueNewsAdapter = new NewsFeedAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+            binding.listLastNewsContinue.setItemAnimator(null);
+            lastContinueNewsAdapter = new NewsFeedAdapter(getContext(), new ArrayList<SimpleNewsModel>());
             binding.listLastNewsContinue.setAdapter(lastContinueNewsAdapter);
 
             bindingHeader = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.header_window_news_feed, binding.listLastNewsContinue, false);
@@ -161,7 +158,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
             //TODO: Header binding initializators
             bindingHeader.listCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-            categoryNewsAdapter = new CategoryNewsAdapter(getContext(), new ArrayList<NewsCategoryModel>());
+            categoryNewsAdapter = new CategoryNewsAdapter(getContext(), new ArrayList<CategoryNewsModel>());
             bindingHeader.listCategory.setAdapter(categoryNewsAdapter);
 
 //            bindingHeader.mainNewsPager.setClipToPadding(false);
@@ -175,15 +172,15 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);
 
             bindingHeader.listLastNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-            smallNewsAdapter = new SmallNewsAdapter(getContext(), new ArrayList<NewsSimpleModel>());
+            smallNewsAdapter = new SmallNewsAdapter(getContext(), new ArrayList<SimpleNewsModel>());
             bindingHeader.listLastNews.setAdapter(smallNewsAdapter);
 
             bindingHeader.listAudioNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-            audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<MediaNewsModel>(), null);
+            audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<SimpleNewsModel>(), null);
             bindingHeader.listAudioNews.setAdapter(audioNewsAdapter);
 
             bindingHeader.listVideoNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-            videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<MediaNewsModel>());
+            videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<SimpleNewsModel>());
             bindingHeader.listVideoNews.setAdapter(videoNewsAdapter);
 
             //TODO: Change locale
@@ -202,25 +199,6 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             reloadContent();
         }
         //####################################################################################
-
-
-        //TODO: categories observable here:
-        CategoryNewsDatabase
-                .getInstance(getContext())
-                .getDao()
-                .getAllEnabledCategoriesLive().
-                observe(this, new Observer<List<NewsCategoryModel>>() {
-                    @Override
-                    public void onChanged(@Nullable List<NewsCategoryModel> categories) {
-                        categoryModels = categories;
-                        initCategories(categoryModels);
-
-                        if (categories.size() == 0)
-                            bindingHeader.listCategory.setVisibility(View.GONE);
-                        else
-                            bindingHeader.listCategory.setVisibility(View.VISIBLE);
-                    }
-                });
 
         //######################################################################################
 
@@ -241,18 +219,62 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
     }
 
+
+    //TODO: Additional methods
+
+    private void updateMainNews(List<SimpleNewsModel> items, int position) {
+        mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
+        bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);
+
+        mainNewsPagerAdapter.init_items(items, items.size());
+        bindingHeader.mainNewsPager.setCurrentItem(position);
+
+        change_dots(items.size(), position);
+    }
+
+    void change_dots(int count, int position) {
+        bindingHeader.mainNewsDots.removeAllViews();
+        for (int i = 0; i < count; i++) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(12), dpToPx(4));
+            params.setMargins(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
+            View view = new View(getContext());
+            view.setLayoutParams(params);
+            if (i == position)
+                view.setBackgroundResource(R.drawable.dots_active);
+            else
+                view.setBackgroundResource(R.drawable.dots_inactive);
+            bindingHeader.mainNewsDots.addView(view);
+        }
+    }
+
     private void reloadContent() {
         if (binding == null || bindingHeader == null || lastContinueNewsAdapter == null)
             return;
 
-        List<NewsSimpleModel> mainItems = mainNewsPagerAdapter.news;
-        int position = bindingHeader.mainNewsPager.getCurrentItem();
-        updateMainNews(mainItems, position);
+        if (!isContentLoaded)
+            return;
 
-        smallNewsAdapter.notifyDataSetChanged();
-        videoNewsAdapter.notifyDataSetChanged();
-        lastContinueNewsAdapter.notifyDataSetChanged();
+        if (!lastLocale.equals(MySettings.getInstance().getLocale())) {
+            binding.swiper.setRefreshing(true);
+            lastContinueNewsAdapter.clearItems();
+            presenterNewsFeed.init();
+
+        } else {
+            initCategories(null, MESSAGE_OK);
+
+            List<SimpleNewsModel> mainItems = mainNewsPagerAdapter.news;
+            int position = bindingHeader.mainNewsPager.getCurrentItem();
+            updateMainNews(mainItems, position);
+
+            smallNewsAdapter.notifyDataSetChanged();
+            videoNewsAdapter.notifyDataSetChanged();
+            lastContinueNewsAdapter.notifyDataSetChanged();
+        }
+
+        lastLocale = MySettings.getInstance().getLocale();
     }
+
+    //#################################################################
 
     //TODO: override methods
 
@@ -284,39 +306,45 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
     //TODO: all methods from interface
 
-    public void initCategories(List<NewsCategoryModel> items) {
-        categoryNewsAdapter.init_items(items);
+//    public void initCategories(List<CategoryNewsModel> items) {
+//        lastContinueNewsAdapter.withHeader(bindingHeader.getRoot());
+//        categoryNewsAdapter.initItems(items);
+//    }
+
+    @Override
+    public void initCategories(List<CategoryNewsModel> items, int messege) {
+        if (messege == MESSAGE_NO_CONNECTION) {
+            binding.swiper.setRefreshing(false);
+            lastContinueNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
+        } else {
+            lastContinueNewsAdapter.withHeader(bindingHeader.getRoot());
+
+            if (NavigationActivity.enabledCategoryModels.size() == 0)
+                bindingHeader.listCategory.setVisibility(View.GONE);
+
+            else {
+                bindingHeader.listCategory.setVisibility(View.VISIBLE);
+                categoryNewsAdapter.initItems(NavigationActivity.enabledCategoryModels);
+            }
+
+        }
     }
 
     @Override
-    public void initMainNews(List<NewsSimpleModel> items, int message) {
-
-        binding.swiper.setRefreshing(false);
+    public void initMainNews(List<SimpleNewsModel> items, int message) {
 
         if (message == MESSAGE_NO_CONNECTION) {
+            binding.swiper.setRefreshing(false);
             lastContinueNewsAdapter.withHeaderNoInternet(bindingNoConnection.getRoot());
-            return;
-        }
 
-        if (message == MESSAGE_OK) {
+        } else if (message == MESSAGE_OK) {
             lastContinueNewsAdapter.withHeader(bindingHeader.getRoot());
             updateMainNews(items, 0);
         }
     }
 
-    private void updateMainNews(List<NewsSimpleModel> items, int position) {
-        mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
-        bindingHeader.mainNewsPager.setAdapter(mainNewsPagerAdapter);
-
-        mainNewsPagerAdapter.init_items(items, items.size());
-        bindingHeader.mainNewsPager.setCurrentItem(position);
-
-        change_dots(items.size(), position);
-    }
-
     @Override
-    public void initLastAndContinueNews(List<NewsSimpleModel> items, int message) {
-
+    public void initLastAndContinueNews(List<SimpleNewsModel> items, int message) {
         binding.swiper.setRefreshing(false);
 
         if (message == MESSAGE_NO_CONNECTION) {
@@ -325,8 +353,9 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
         if (message == MESSAGE_OK) {
             try {
-                smallNewsAdapter.init_items(items.subList(0, 4));
-                lastContinueNewsAdapter.init_items(items.subList(4, 10));
+                smallNewsAdapter.initItems(items.subList(0, 4));
+                lastContinueNewsAdapter.initItems(items.subList(4, 10));
+                isContentLoaded = true;
             } catch (Exception e) {
                 Log.d(ERROR_LOG, "" + e.getMessage());
             }
@@ -334,7 +363,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
     }
 
     @Override
-    public void initAudioNews(List<MediaNewsModel> items, int message) {
+    public void initAudioNews(List<SimpleNewsModel> items, int message) {
 
         if (message == MESSAGE_NO_CONNECTION) {
             bindingHeader.audioLay.setVisibility(View.GONE);
@@ -343,13 +372,13 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
         if (message == MESSAGE_OK) {
             bindingHeader.audioLay.setVisibility(View.VISIBLE);
-            audioNewsAdapter.init_items(items);
+            audioNewsAdapter.initItems(items);
         }
 
     }
 
     @Override
-    public void initVideoNews(List<MediaNewsModel> items, int message) {
+    public void initVideoNews(List<SimpleNewsModel> items, int message) {
 
         if (message == MESSAGE_NO_CONNECTION) {
             bindingHeader.videoLay.setVisibility(View.GONE);
@@ -358,46 +387,26 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
         if (message == MESSAGE_OK) {
             bindingHeader.videoLay.setVisibility(View.VISIBLE);
-            videoNewsAdapter.init_items(items);
+            videoNewsAdapter.initItems(items);
         }
 
 
     }
 
     @Override
-    public void addLastNewsContinue(List<NewsSimpleModel> items, int message) {
-
-        lastContinueNewsAdapter.hideLoading();
+    public void addLastNewsContinue(List<SimpleNewsModel> items, int message) {
         isLoading = false;
+        lastContinueNewsAdapter.hideLoading();
 
         if (message == MESSAGE_NO_CONNECTION) {
             lastContinueNewsAdapter.withFooter(bindingFooter.getRoot());
             return;
         }
 
-        if (message == MESSAGE_OK) {
-            lastContinueNewsAdapter.add_all(items);
+        else if (message == MESSAGE_OK) {
+            lastContinueNewsAdapter.addItems(items);
         }
 
-    }
-
-    //#################################################################
-
-    //TODO: Additional methods
-
-    void change_dots(int count, int position) {
-        bindingHeader.mainNewsDots.removeAllViews();
-        for (int i = 0; i < count; i++) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(12), dpToPx(4));
-            params.setMargins(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
-            View view = new View(getContext());
-            view.setLayoutParams(params);
-            if (i == position)
-                view.setBackgroundResource(R.drawable.dots_active);
-            else
-                view.setBackgroundResource(R.drawable.dots_inactive);
-            bindingHeader.mainNewsDots.addView(view);
-        }
     }
 
     //#################################################################
@@ -407,11 +416,10 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void on_network_changed(NetworkStateChangedEvent event) {
-        Log.d(EVENT_LOG, "subscribe: on_network_changed: " + isContentLoaded + " state: " + (event.state == NETWORK_STATE_CONNECTED));
-        if (event.state == NETWORK_STATE_CONNECTED) {
-            binding.swiper.setRefreshing(true);
-            presenterNewsFeed.init();
-        }
+//        if (event.state == NETWORK_STATE_CONNECTED) {
+//            binding.swiper.setRefreshing(true);
+//            presenterNewsFeed.init();
+//        }
         isConnected_to_Net = (event.state == NETWORK_STATE_CONNECTED);
     }
 
@@ -450,7 +458,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
                 isScrolling = false;
                 isLoading = true;
 
-                lastContinueNewsAdapter.removeFooter();
+
                 lastContinueNewsAdapter.showLoading();
                 presenterNewsFeed.getLastNewsContinue();
             }

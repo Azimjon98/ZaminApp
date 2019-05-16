@@ -2,11 +2,9 @@ package edu.azimjon.project.zamin.mvp.presenter;
 
 import java.util.List;
 
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.model.ModelMedia;
-import edu.azimjon.project.zamin.mvp.model.ModelTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentMedia;
-import edu.azimjon.project.zamin.mvp.view.IFragmentTopNews;
 
 public class PresenterMedia {
 
@@ -27,15 +25,15 @@ public class PresenterMedia {
 
     //TODO: callBack methods from Model to View
 
-    public void initAudio(List<NewsSimpleModel> items){
+    public void initAudio(List<SimpleNewsModel> items){
         mainView.initAudio(items);
     }
 
-    public void initVideo(List<NewsSimpleModel> items){
+    public void initVideo(List<SimpleNewsModel> items){
         mainView.initVideo(items);
     }
 
-    public void initGallery(List<NewsSimpleModel> items){
+    public void initGallery(List<SimpleNewsModel> items){
         mainView.initGallery(items);
     }
 

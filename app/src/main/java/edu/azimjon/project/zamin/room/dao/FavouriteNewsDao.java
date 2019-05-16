@@ -19,6 +19,9 @@ public interface FavouriteNewsDao {
     @Update
     void update(FavouriteNewsModel entity);
 
+    @Query("UPDATE favourites_news SET title = :title WHERE newsId = :newsId")
+    void updateTitle(String newsId, String title);
+
     @Query("DELETE FROM favourites_news WHERE newsId = :id")
     void delete(String id);
 

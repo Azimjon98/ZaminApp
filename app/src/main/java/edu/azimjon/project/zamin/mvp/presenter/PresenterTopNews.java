@@ -2,8 +2,7 @@ package edu.azimjon.project.zamin.mvp.presenter;
 
 import java.util.List;
 
-import edu.azimjon.project.zamin.fragment.FragmentTopNews;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
+import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.model.ModelTopNews;
 import edu.azimjon.project.zamin.mvp.view.IFragmentTopNews;
 
@@ -19,18 +18,18 @@ public class PresenterTopNews {
     }
 
     public void init() {
-        modelTopNews.initTopNews();
+        modelTopNews.getTopNews(true);
     }
 
     public void getContinue() {
-        modelTopNews.getTopNews();
+        modelTopNews.getTopNews(false);
     }
 
-    public void initNews(List<NewsSimpleModel> items, int message) {
+    public void initNews(List<SimpleNewsModel> items, int message) {
         mainView.initNews(items, message);
     }
 
-    public void addNews(List<NewsSimpleModel> items, int message) {
+    public void addNews(List<SimpleNewsModel> items, int message) {
         mainView.addNews(items, message);
     }
 

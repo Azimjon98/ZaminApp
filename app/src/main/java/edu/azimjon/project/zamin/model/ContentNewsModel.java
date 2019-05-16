@@ -3,43 +3,43 @@ package edu.azimjon.project.zamin.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.media.MediaPlayer;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-@Entity(tableName = "media_simple")
-public class MediaNewsModel implements Parcelable {
+@Entity(tableName = "news_content")
+public class ContentNewsModel implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
+    private
     int id;
 
     @ColumnInfo(name = "newsId")
-    String newsId;
+    private String newsId;
 
-    String title;
+    private String title;
 
-    String imageUrl;
+    private String imageUrl;
 
-    String originalUrl;
+    private String originalUrl;
 
-    String categoryId;
+    private String categoryId;
 
-    String categoryName;
+    private String categoryName;
 
-    String date;
+    private String date;
 
-    boolean isWished;
+    private String viewedCount;
 
-    String urlAudioFile;
+    public boolean isWished;
 
-    public String[] titleImages;
+    private String contentUrl;
 
-    public MediaNewsModel() {
+
+    public ContentNewsModel() {
         isWished = false;
-        titleImages = new String[3];
     }
 
-    protected MediaNewsModel(Parcel in) {
+    protected ContentNewsModel(Parcel in) {
         id = in.readInt();
         newsId = in.readString();
         title = in.readString();
@@ -48,22 +48,24 @@ public class MediaNewsModel implements Parcelable {
         categoryId = in.readString();
         categoryName = in.readString();
         date = in.readString();
+        viewedCount = in.readString();
         isWished = in.readByte() != 0;
-        urlAudioFile = in.readString();
-        titleImages = in.createStringArray();
+        contentUrl = in.readString();
     }
 
-    public static final Creator<MediaNewsModel> CREATOR = new Creator<MediaNewsModel>() {
+    public static final Creator<ContentNewsModel> CREATOR = new Creator<ContentNewsModel>() {
         @Override
-        public MediaNewsModel createFromParcel(Parcel in) {
-            return new MediaNewsModel(in);
+        public ContentNewsModel createFromParcel(Parcel in) {
+            return new ContentNewsModel(in);
         }
 
         @Override
-        public MediaNewsModel[] newArray(int size) {
-            return new MediaNewsModel[size];
+        public ContentNewsModel[] newArray(int size) {
+            return new ContentNewsModel[size];
         }
     };
+
+
 
     public void setId(int id) {
         this.id = id;
@@ -89,20 +91,20 @@ public class MediaNewsModel implements Parcelable {
         this.categoryId = categoryId;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public void setViewedCount(String viewedCount) {
+        this.viewedCount = viewedCount;
     }
 
     public void setWished(boolean wished) {
         isWished = wished;
     }
 
-    public void setTitleImages(String[] titleImages) {
-        this.titleImages = titleImages;
+    public void setContentUrl(String contentUrl) {
+        this.contentUrl = contentUrl;
     }
 
     public int getId() {
@@ -129,29 +131,31 @@ public class MediaNewsModel implements Parcelable {
         return categoryId;
     }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
-
     public String getDate() {
         return date;
+    }
+
+    public String getViewedCount() {
+        return viewedCount;
     }
 
     public boolean isWished() {
         return isWished;
     }
 
-    public String[] getTitleImages() {
-        return titleImages;
+    public String getContentUrl() {
+        return contentUrl;
     }
 
-    public void setUrlAudioFile(String urlAudioFile) {
-        this.urlAudioFile = urlAudioFile;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    public String getUrlAudioFile() {
-        return urlAudioFile;
+    public String getCategoryName() {
+        return categoryName;
     }
+
+
 
     @Override
     public int describeContents() {
@@ -168,8 +172,8 @@ public class MediaNewsModel implements Parcelable {
         dest.writeString(categoryId);
         dest.writeString(categoryName);
         dest.writeString(date);
+        dest.writeString(viewedCount);
         dest.writeByte((byte) (isWished ? 1 : 0));
-        dest.writeString(urlAudioFile);
-        dest.writeStringArray(titleImages);
+        dest.writeString(contentUrl);
     }
 }

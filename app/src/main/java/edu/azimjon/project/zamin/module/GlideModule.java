@@ -18,7 +18,7 @@ import edu.azimjon.project.zamin.interfaces.ApplicationContext;
 @Module(includes = {ContextModule.class})
 public class GlideModule {
     @Provides
-    public RequestManager glideRequestManager(@ApplicationContext Context context, CircularProgressDrawable circularProgressDrawable) {
+    public RequestManager glideRequestManager(@ApplicationContext Context context) {
         return Glide.with(context)
                 .setDefaultRequestOptions(new RequestOptions()
 //                        .placeholder(circularProgressDrawable)

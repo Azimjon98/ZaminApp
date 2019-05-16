@@ -82,6 +82,7 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         super.onViewCreated(view, savedInstanceState);
         //set that news content opened from search news
         MySettings.getInstance().setWhichIdCallsContent(R.id.fragmentContent);
+
         navigationView = view.findViewById(R.id.bottom_navigation);
         appBarLayout = view.findViewById(R.id.app_bar);
         searchIcon = view.findViewById(R.id.toolbar_search);
@@ -229,7 +230,6 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
     public void on_more_news(MyOnMoreNewsEvent event) {
         contentPagerAdapter.setPositionOfMediaNews(event.getPosition());
         navigationView.setSelectedItemId(R.id.menu_media);
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

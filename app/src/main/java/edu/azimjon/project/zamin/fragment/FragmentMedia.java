@@ -2,43 +2,25 @@ package edu.azimjon.project.zamin.fragment;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.MediaPagerAdapter;
-import edu.azimjon.project.zamin.adapter.MediumNewsAdapter;
-import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.databinding.WindowMediaBinding;
-import edu.azimjon.project.zamin.databinding.WindowTopNewsBinding;
-import edu.azimjon.project.zamin.events.MyOnMoreNewsEvent;
-import edu.azimjon.project.zamin.model.NewsSimpleModel;
-import edu.azimjon.project.zamin.mvp.presenter.PresenterMedia;
-import edu.azimjon.project.zamin.mvp.presenter.PresenterTopNews;
-import edu.azimjon.project.zamin.mvp.view.IFragmentMedia;
-import timber.log.Timber;
+import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.ERROR_LOG;
 
 public class FragmentMedia extends Fragment {
@@ -64,7 +46,6 @@ public class FragmentMedia extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(CALLBACK_LOG, "FragmentMedia: onCreate");
-
     }
 
     @Nullable
@@ -92,6 +73,12 @@ public class FragmentMedia extends Fragment {
             binding.tabMedia.setupWithViewPager(binding.mediaPager);
             binding.mediaPager.setOffscreenPageLimit(1);
             binding.mediaPager.setCurrentItem(position);
+        }else{
+            String titles0 = MyUtil.getLocalizedString(Objects.requireNonNull(getContext()), R.string.tab_video);
+            String titles1 = MyUtil.getLocalizedString(getContext(), R.string.tab_gallery);
+            Objects.requireNonNull(binding.tabMedia.getTabAt(0)).setText(titles0);
+            Objects.requireNonNull(binding.tabMedia.getTabAt(1)).setText(titles1);
+//            pagerAdapter.notifyDataSetChanged();
         }
 
 

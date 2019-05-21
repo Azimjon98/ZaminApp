@@ -148,7 +148,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
             bindingHeader.contentWeb.setWebChromeClient(new WebChromeClient());
 
-            bindingHeader.contentWeb.getSettings().setDefaultFontSize(15);
+            bindingHeader.contentWeb.getSettings().setDefaultFontSize(MySettings.getInstance().getFontSize());
 
 
             bindingHeader.contentWeb.setWebViewClient(new WebViewClient() {
@@ -208,15 +208,19 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             });
 
             binding.increaseFont.setOnClickListener(v -> {
-                int currentSize = bindingHeader.contentWeb.getSettings().getDefaultFontSize();
-                if (currentSize < 30)
+                int currentSize = MySettings.getInstance().getFontSize();
+                if (currentSize < 30){
+                    MySettings.getInstance().setFontSize(currentSize + 3);
                     bindingHeader.contentWeb.getSettings().setDefaultFontSize(currentSize + 3);
+                }
             });
 
             binding.decreaseFont.setOnClickListener(v -> {
-                int currentSize = bindingHeader.contentWeb.getSettings().getDefaultFontSize();
-                if (currentSize > 15)
+                int currentSize = MySettings.getInstance().getFontSize();
+                if (currentSize > 15){
+                    MySettings.getInstance().setFontSize(currentSize - 3);
                     bindingHeader.contentWeb.getSettings().setDefaultFontSize(currentSize - 3);
+                }
             });
 
             //TODO: Change locale

@@ -43,6 +43,7 @@ public class Constants {
     public static String WEB_URL = "web_url";
     public static String OPEN_CONTENT_FROM_ID = "from_which_content_opened";
     public static String IS_NOTIFICATION_ENABLED = "is_notif_enabled";
+    public static String CONTENT_FONT_SIZE = "content_font_size";
 
     //TODO: KEYS
     public static String KEY_NEWS_ID = "news_id";

@@ -107,6 +107,20 @@ public class MySettings {
         return sharedPreferences.getBoolean(IS_NOTIFICATION_ENABLED, true);
     }
 
+    public void setFontSize(int size) {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(CONTENT_FONT_SIZE, size);
+        editor.apply();
+    }
+
+
+    public int getFontSize() {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);
+
+        return sharedPreferences.getInt(CONTENT_FONT_SIZE, 15);
+    }
+
 
     public void clearSharedPreferences() {
         SharedPreferences sharedPreferences = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE);

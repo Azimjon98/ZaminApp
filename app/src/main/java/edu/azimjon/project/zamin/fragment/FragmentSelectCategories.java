@@ -6,6 +6,7 @@ import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -106,10 +107,10 @@ public class FragmentSelectCategories extends Fragment {
                 false);
 
         //TODO: change locale
-//        bindingDialog.textTitle.setText(MyUtil.getLocalizedString(Objects.requireNonNull(getContext()), R.string.text_choose_language));
-//        bindingDialog.textMessege.setText(MyUtil.getLocalizedString(Objects.requireNonNull(getContext()), R.string.text_choose_language));
+        bindingDialog.textTitle.setText(MyUtil.getLocalizedString(Objects.requireNonNull(getContext()), R.string.text_reset_alert_title));
+        bindingDialog.textMessege.setText(MyUtil.getLocalizedString(Objects.requireNonNull(getContext()), R.string.text_reset_alert_message));
         bindingDialog.btnCancel.setText(MyUtil.getLocalizedString(getContext(), R.string.text_back));
-        bindingDialog.btnSubmit.setText(MyUtil.getLocalizedString(getContext(), R.string.text_submit));
+        bindingDialog.btnSubmit.setText(MyUtil.getLocalizedString(getContext(), R.string.text_yes));
 
         //#######################################
 
@@ -117,6 +118,7 @@ public class FragmentSelectCategories extends Fragment {
                 new android.support.v7.app.AlertDialog.Builder(getContext())
                         .setView(bindingDialog.getRoot())
                         .create();
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         bindingDialog.btnCancel.setOnClickListener(v1 -> dialog.dismiss());
         bindingDialog.btnSubmit

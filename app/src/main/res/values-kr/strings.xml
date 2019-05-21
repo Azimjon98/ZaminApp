@@ -42,4 +42,7 @@
     <string name="text_refresh">Такрорлаш</string>
     <string name="text_no_items">Янгиликлар топилмади</string>
     <string name="toast_login_disabled">Рўйхатдан ўтишнинг иложи йўқ</string>
+    <string name="text_reset_alert_message">ортга қайтишнинг иложи бўлмайди</string>
+    <string name="text_reset_alert_title">Барча ўзгаришларни бекор қилмоқчимисиз</string>
+    <string name="text_yes">Ҳа</string>
 </resources>

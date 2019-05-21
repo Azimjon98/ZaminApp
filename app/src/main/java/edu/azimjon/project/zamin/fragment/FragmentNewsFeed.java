@@ -183,20 +183,13 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<SimpleNewsModel>());
             bindingHeader.listVideoNews.setAdapter(videoNewsAdapter);
 
-            //TODO: Change locale
-            bindingHeader.textMainNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_main_news));
-            bindingHeader.textLastNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_last_news));
-            bindingHeader.textAudioNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_audio_news2));
-            bindingHeader.textVideoNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_video_news));
-            bindingHeader.clickerAllAudio.setText(MyUtil.getLocalizedString(getContext(), R.string.text_all));
-            bindingHeader.clickerAllVideo.setText(MyUtil.getLocalizedString(getContext(), R.string.text_all));
-            bindingNoConnection.textNoConnection.setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_connection));
-            bindingNoConnection.btnRefresh.setText(MyUtil.getLocalizedString(getContext(), R.string.text_refresh));
 
+            changeLanguage();
             binding.swiper.setRefreshing(true);
             presenterNewsFeed.init();
         } else {
             reloadContent();
+            changeLanguage();
         }
         //####################################################################################
 
@@ -274,6 +267,17 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
         lastLocale = MySettings.getInstance().getLocale();
     }
 
+    private void changeLanguage(){
+        //TODO: Change locale
+        bindingHeader.textMainNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_main_news));
+        bindingHeader.textLastNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_last_news));
+        bindingHeader.textAudioNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_audio_news2));
+        bindingHeader.textVideoNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_video_news));
+        bindingHeader.clickerAllAudio.setText(MyUtil.getLocalizedString(getContext(), R.string.text_all));
+        bindingHeader.clickerAllVideo.setText(MyUtil.getLocalizedString(getContext(), R.string.text_all));
+        bindingNoConnection.textNoConnection.setText(MyUtil.getLocalizedString(getContext(), R.string.text_no_connection));
+        bindingNoConnection.btnRefresh.setText(MyUtil.getLocalizedString(getContext(), R.string.text_refresh));
+    }
     //#################################################################
 
     //TODO: override methods

@@ -92,7 +92,7 @@ public class FragmentProfile extends Fragment {
         });
 
         binding.registrationLay.setOnClickListener(v -> {
-            Toast.makeText(getContext(), MyUtil.getLocalizedString(Objects.requireNonNull(getContext()), R.string.text_refresh), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), MyUtil.getLocalizedString(Objects.requireNonNull(getContext()), R.string.toast_login_disabled), Toast.LENGTH_SHORT).show();
         });
 
         binding.categoryLay.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_fragmentProfile_to_fragmentSelectCategories));

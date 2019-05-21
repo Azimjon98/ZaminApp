@@ -75,6 +75,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     MediumNewsAdapter mediumNewsAdapter;
 
     //scrolling variables
+    boolean changeFontVisible = false;
     boolean isScrollingEnabled = false;
     boolean isScrolling = false;
     boolean isLoading = false;
@@ -147,7 +148,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
             bindingHeader.contentWeb.setWebChromeClient(new WebChromeClient());
 
-            bindingHeader.contentWeb.getSettings().setMinimumFontSize(15);
+            bindingHeader.contentWeb.getSettings().setDefaultFontSize(15);
 
 
             bindingHeader.contentWeb.setWebViewClient(new WebViewClient() {
@@ -162,6 +163,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                 public void onPageFinished(WebView view, String url) {
                     super.onPageFinished(view, url);
                     isScrollingEnabled = true;
+                    binding.iconChangeFont.setVisibility(View.VISIBLE);
                     bindingHeader.progress.setVisibility(View.GONE);
                 }
 
@@ -203,6 +205,18 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
             bindingNoConnection.btnRefresh.setOnClickListener(v -> {
                 presenterNewsContent.init(newsId);
+            });
+
+            binding.increaseFont.setOnClickListener(v -> {
+                int currentSize = bindingHeader.contentWeb.getSettings().getDefaultFontSize();
+                if (currentSize < 30)
+                    bindingHeader.contentWeb.getSettings().setDefaultFontSize(currentSize + 3);
+            });
+
+            binding.decreaseFont.setOnClickListener(v -> {
+                int currentSize = bindingHeader.contentWeb.getSettings().getDefaultFontSize();
+                if (currentSize > 15)
+                    bindingHeader.contentWeb.getSettings().setDefaultFontSize(currentSize - 3);
             });
 
             //TODO: Change locale
@@ -401,6 +415,15 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                     MyUtil.getLocalizedString(v.getContext(), R.string.text_share)
             ));
         });
+
+        binding.iconChangeFont.setOnClickListener(v -> {
+            if (changeFontVisible)
+                binding.layChangeFont.setVisibility(View.GONE);
+            else
+                binding.layChangeFont.setVisibility(View.VISIBLE);
+
+            changeFontVisible = !changeFontVisible;
+        });
     }
 
     //#################################################################
@@ -414,6 +437,10 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
             if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                 isScrolling = true;
+                if (changeFontVisible){
+                    changeFontVisible = false;
+                    binding.layChangeFont.setVisibility(View.GONE);
+                }
             }
         }
 

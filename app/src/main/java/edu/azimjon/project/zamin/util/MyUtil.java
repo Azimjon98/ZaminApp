@@ -28,14 +28,13 @@ import android.widget.ImageView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Locale;
+import java.util.Objects;
 
 import edu.azimjon.project.zamin.addition.MySettings;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
 public class MyUtil {
-
-
     public static void showSoftKeyboard(final Context context, final EditText editText) {
 
         new Handler().postDelayed(new Runnable() {
@@ -111,8 +110,8 @@ public class MyUtil {
      * @throws Resources.NotFoundException
      */
     public static Drawable getWrappedDrawable(Context context, @DrawableRes int resId) throws Resources.NotFoundException {
-        return DrawableCompat.wrap(ResourcesCompat.getDrawable(context.getResources(),
-                resId, null));
+        return DrawableCompat.wrap(Objects.requireNonNull(ResourcesCompat.getDrawable(context.getResources(),
+                resId, null)));
     }
 
     public static int getColor(Context context, @ColorRes int resId) throws Resources.NotFoundException {
@@ -120,11 +119,7 @@ public class MyUtil {
     }
 
     public static void removeGlobalLayoutObserver(View view, ViewTreeObserver.OnGlobalLayoutListener layoutListener) {
-        if (Build.VERSION.SDK_INT < 16) {
-            view.getViewTreeObserver().removeGlobalOnLayoutListener(layoutListener);
-        } else {
-            view.getViewTreeObserver().removeOnGlobalLayoutListener(layoutListener);
-        }
+        view.getViewTreeObserver().removeOnGlobalLayoutListener(layoutListener);
     }
 
     public static Activity getHostActivity(Context context) {
@@ -165,7 +160,6 @@ public class MyUtil {
         //there are a connection to net
         if (activeNetwork != null
                 && activeNetwork.isConnectedOrConnecting()) {
-
             return true;
         } else {
             return false;

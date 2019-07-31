@@ -49,13 +49,13 @@
 
 
         <android.support.v4.view.ViewPager
-            android:id="@+id/media_pager"
-            android:background="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme">
+        android:id="@+id/media_pager"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme">
 
-        </android.support.v4.view.ViewPager>
+    </android.support.v4.view.ViewPager>
 
     </LinearLayout>
 </layout>

@@ -68,7 +68,7 @@ public class ImageBindingAdapters {
             MyApplication.getInstance()
                     .getMyApplicationComponent()
                     .getGlideManager()
-                    .load(url + "&width=300&quality=40")
+                    .load(url + "&width=300&quality=50")
                     .into(view);
 
         } catch (ClassNotFoundException e) {
@@ -91,7 +91,7 @@ public class ImageBindingAdapters {
             MyApplication.getInstance()
                     .getMyApplicationComponent()
                     .getGlideManager()
-                    .load(url + "&width=300&quality=70")
+                    .load(url + "&width=300&quality=90")
                     .into(view);
 
         } catch (ClassNotFoundException e) {

@@ -173,7 +173,6 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         super.onStart();
 
         EventBus.getDefault().register(this);
-
     }
 
     @Override

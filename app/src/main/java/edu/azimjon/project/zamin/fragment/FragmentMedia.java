@@ -29,8 +29,6 @@ public class FragmentMedia extends Fragment {
 
 
     //TODO: BaseClass views
-    TabLayout tabLayout;
-    FragmentManager fragmentManager;
 
     //TODO: variables here
     WindowMediaBinding binding;

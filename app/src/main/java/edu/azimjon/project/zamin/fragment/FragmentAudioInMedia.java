@@ -52,7 +52,6 @@ public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMe
     LinearLayoutManager manager;
     boolean isConnected_to_Net = true;
     MediaPlayer mediaPlayer;
-    String lastLocale = MySettings.getInstance().getLocale();
 
 
     //TODO: variables here

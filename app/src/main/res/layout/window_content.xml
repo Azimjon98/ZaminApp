@@ -9,6 +9,7 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:stateListAnimator="@animator/appbar_not_animated"
         android:fitsSystemWindows="true">
 
         <RelativeLayout
@@ -72,7 +73,7 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="top"
         android:translationZ="1dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_anchor="@id/bottom_navigation"
         app:layout_anchorGravity="top">
 

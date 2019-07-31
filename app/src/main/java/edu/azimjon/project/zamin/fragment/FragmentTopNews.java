@@ -228,7 +228,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void on_network_changed(EventFavouriteChanged event) {
+    public void on_navigation_changed(EventFavouriteChanged event) {
             reloadContent();
     }
 

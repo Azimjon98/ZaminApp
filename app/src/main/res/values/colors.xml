@@ -3,15 +3,16 @@
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryDark">#F4F4F4</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="white">#fff</color>
+
     <color name="icon_inactive">#8B8B8B</color>
     <color name="icon_active">#C71923</color>
-    <color name="ripple_color">#DADADA</color>
     <color name="black_transition">#33000000</color>
 
 
     //additional colors from other projects
 
+    <color name="ripple_color">#DADADA</color>
+    <color name="white">#fff</color>
     <color name="black">#000000</color>
     <color name="red">#ff0000</color>
     <color name="green">#008577</color>

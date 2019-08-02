@@ -44,5 +44,6 @@
     <string name="text_reset_alert_message">ortga qaytishning iloji bo\'lmaydi</string>
     <string name="text_reset_alert_title">Barcha o\'zgarishlarni bekor qilmoqchimisiz</string>
     <string name="text_yes">Ha</string>
+    <string name="text_clear_cache">Clear cache</string>
 
 </resources>

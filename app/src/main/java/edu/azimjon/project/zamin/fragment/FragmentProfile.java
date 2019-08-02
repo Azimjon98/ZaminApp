@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.ColorDrawable;
@@ -97,6 +98,28 @@ public class FragmentProfile extends Fragment {
 
         binding.categoryLay.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_fragmentProfile_to_fragmentSelectCategories));
         binding.languageLay.setOnClickListener(languageListener);
+        binding.cacheClearLay.setOnClickListener(v -> {
+            AlertDialog dialog = new AlertDialog.Builder(getContext())
+                    .setTitle("Are you really want to clear cache")
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            MyUtil.deleteCache(getContext());
+                            Toast.makeText(getContext(), "Cache cleared", Toast.LENGTH_SHORT).show();
+                            getActivity().recreate();
+                        }
+                    })
+                    .create();
+
+            dialog.show();
+        });
+
 
         try {
             CategoryNewsDatabase.getInstance(MyApplication.getInstance()).getDao().getAllEnabledCategoriesLive().observe(FragmentProfile.this, new Observer<List<CategoryNewsModel>>() {

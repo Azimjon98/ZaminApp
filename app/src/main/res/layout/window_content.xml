@@ -73,7 +73,7 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="top"
         android:translationZ="1dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_anchor="@id/bottom_navigation"
         app:layout_anchorGravity="top">
 

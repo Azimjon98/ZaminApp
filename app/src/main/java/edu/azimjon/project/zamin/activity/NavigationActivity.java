@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.icu.util.TimeUnit;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -53,12 +54,26 @@ public class NavigationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d(CALLBACK_LOG, "Navigation: onCreate");
+        Thread th = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                allFavouriteIds = FavouriteNewsDatabase.getInstance(getApplicationContext()).getDao().getAllIds();
+                categoryModels = CategoryNewsDatabase.getInstance(getApplicationContext()).getDao().getAll();
+                enabledCategoryModels = CategoryNewsDatabase.getInstance(getApplicationContext()).getDao().getAllEnabledCategories();
+            }
+        });
+
+        th.start();
+        try {
+            th.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
-        allFavouriteIds = getIntent().getStringArrayListExtra(EXTRA_FAVOURITES);
-        categoryModels = getIntent().getParcelableArrayListExtra(EXTRA_CATEGORIES);
-        enabledCategoryModels = getIntent().getParcelableArrayListExtra(EXTRA_ENABLED_CATEGORIES);
 
         //FIXME: fix this for using in thread
         FavouriteNewsDatabase
@@ -100,6 +115,13 @@ public class NavigationActivity extends AppCompatActivity {
                 });
 
     }
+
+
+
+
+
+
+
 
 
 

@@ -2,7 +2,10 @@ package edu.azimjon.project.zamin.fragment;
 
 import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,13 +18,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
+
+import androidx.navigation.Navigation;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +66,7 @@ import static edu.azimjon.project.zamin.addition.Constants.EVENT_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
+import static edu.azimjon.project.zamin.addition.Constants.WEB_URL;
 
 public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, SwipeRefreshLayout.OnRefreshListener {
 
@@ -94,12 +105,6 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
     int total_items, visible_items, scrollout_items;
 
-    @Override
-    public void onAttach(Context context) {
-        Log.d(CALLBACK_LOG, "FragmentNewsFeed: onAttach");
-
-        super.onAttach(context);
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -183,6 +188,9 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             videoNewsAdapter = new VideoNewsAdapter(getContext(), new ArrayList<SimpleNewsModel>());
             bindingHeader.listVideoNews.setAdapter(videoNewsAdapter);
 
+            configureWebViews(bindingHeader.adWebFirst);
+            configureWebViews(bindingHeader.adWebSecond);
+
 
             changeLanguage();
             binding.swiper.setRefreshing(true);
@@ -214,6 +222,29 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
 
     //TODO: Additional methods
+
+    private void configureWebViews(WebView v) {
+        File file = new File(getContext().getCacheDir(), "WebCache");
+        v.getSettings().setJavaScriptEnabled(true);
+        v.getSettings().setLoadWithOverviewMode(true);
+        v.getSettings().setAllowFileAccess(true);
+        v.getSettings().setAppCachePath(file.getAbsolutePath());
+        v.getSettings().setAppCacheEnabled(true);
+
+        v.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Intent tgIntent = new Intent(Intent.ACTION_VIEW);
+                tgIntent.setData(Uri.parse(url));
+                if (getActivity() != null)
+                    getActivity().startActivity(tgIntent);
+                return true;
+
+            }
+
+        });
+    }
 
     private void updateMainNews(List<SimpleNewsModel> items, int position) {
         mainNewsPagerAdapter = new MainNewsPagerAdapter(getContext());
@@ -267,7 +298,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
         lastLocale = MySettings.getInstance().getLocale();
     }
 
-    private void changeLanguage(){
+    private void changeLanguage() {
         //TODO: Change locale
         bindingHeader.textMainNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_main_news));
         bindingHeader.textLastNews.setText(MyUtil.getLocalizedString(getContext(), R.string.text_last_news));
@@ -392,6 +423,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
         if (message == MESSAGE_OK) {
             bindingHeader.videoLay.setVisibility(View.VISIBLE);
             videoNewsAdapter.initItems(items);
+            bindingHeader.adWebFirst.loadUrl("http://m.zamin.uz/api/v1/adv.php?id=23");
+            bindingHeader.adWebSecond.loadUrl("http://m.zamin.uz/api/v1/adv.php?id=24");
         }
 
 
@@ -405,9 +438,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
         if (message == MESSAGE_NO_CONNECTION) {
             lastContinueNewsAdapter.withFooter(bindingFooter.getRoot());
             return;
-        }
-
-        else if (message == MESSAGE_OK) {
+        } else if (message == MESSAGE_OK) {
             lastContinueNewsAdapter.addItems(items);
         }
 

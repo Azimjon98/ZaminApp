@@ -115,7 +115,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         //initialize adapters and append to lists
 
         if (manager == null) {
-            manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false){
+            manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false) {
                 @Override
                 public boolean canScrollVertically() {
                     return isScrollingEnabled;
@@ -138,68 +138,9 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
 
             //TODO: Header binding initializators
-            // Enable Javascript
-            File file = new File(getContext().getCacheDir(), "WebCache");
-            bindingHeader.contentWeb.getSettings().setJavaScriptEnabled(true);
-            bindingHeader.contentWeb.getSettings().setLoadWithOverviewMode(true);
-            bindingHeader.contentWeb.getSettings().setAllowFileAccess(true);
-            bindingHeader.contentWeb.getSettings().setAppCachePath(file.getAbsolutePath());
-            bindingHeader.contentWeb.getSettings().setAppCacheEnabled(true);
-            bindingHeader.contentWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-            bindingHeader.contentWeb.setWebChromeClient(new WebChromeClient());
+            configureWebViews(bindingHeader.contentWeb, 0);
+            configureWebViews(bindingHeader.adWeb, 1);
 
-            bindingHeader.contentWeb.getSettings().setDefaultFontSize(MySettings.getInstance().getFontSize());
-
-
-            bindingHeader.contentWeb.setWebViewClient(new WebViewClient() {
-                @Override
-                public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                    super.onPageStarted(view, url, favicon);
-                    bindingHeader.progress.setVisibility(View.VISIBLE);
-
-                }
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    isScrollingEnabled = true;
-                    binding.iconChangeFont.setVisibility(View.VISIBLE);
-                    bindingHeader.progress.setVisibility(View.GONE);
-                }
-
-
-                @Override
-                public void onLoadResource(WebView view, String url) {
-                    super.onLoadResource(view, url);
-                    if (url.contains("youtube.com")) mShouldPause = true;
-                }
-
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                    System.out.println("url: " + url);
-                    if (url.contains("http://bit.ly/tgzamin") || url.contains("https://t.me")) {
-                        Intent tgIntent = new Intent(Intent.ACTION_VIEW);
-                        tgIntent.setData(Uri.parse(url));
-                        if (getActivity() != null)
-                            getActivity().startActivity(tgIntent);
-                        return true;
-
-                    } else if (url.contains("https://zamin.uz/index.php?do=go")) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(WEB_URL, url);
-                        Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
-                        return true;
-                    } else {
-                        Intent tgIntent = new Intent(Intent.ACTION_VIEW);
-                        tgIntent.setData(Uri.parse(url));
-                        if (getActivity() != null)
-                            getActivity().startActivity(tgIntent);
-                        return true;
-                    }
-                }
-
-
-            });
 
             binding.listLastNews.addOnScrollListener(scrollListener);
 
@@ -209,7 +150,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
             binding.increaseFont.setOnClickListener(v -> {
                 int currentSize = MySettings.getInstance().getFontSize();
-                if (currentSize < 30){
+                if (currentSize < 30) {
                     MySettings.getInstance().setFontSize(currentSize + 3);
                     bindingHeader.contentWeb.getSettings().setDefaultFontSize(currentSize + 3);
                 }
@@ -217,7 +158,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
             binding.decreaseFont.setOnClickListener(v -> {
                 int currentSize = MySettings.getInstance().getFontSize();
-                if (currentSize > 15){
+                if (currentSize > 15) {
                     MySettings.getInstance().setFontSize(currentSize - 3);
                     bindingHeader.contentWeb.getSettings().setDefaultFontSize(currentSize - 3);
                 }
@@ -234,6 +175,73 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
         }
 
 
+    }
+
+    private void configureWebViews(WebView v, int position) {
+        File file = new File(getContext().getCacheDir(), "WebCache");
+        v.getSettings().setJavaScriptEnabled(true);
+        v.getSettings().setLoadWithOverviewMode(true);
+        v.getSettings().setAllowFileAccess(true);
+        v.getSettings().setAppCachePath(file.getAbsolutePath());
+        v.getSettings().setAppCacheEnabled(true);
+        v.setWebChromeClient(new WebChromeClient());
+        if (position == 0) {
+            v.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            v.getSettings().setDefaultFontSize(MySettings.getInstance().getFontSize());
+        }
+
+        v.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                if (position == 0)
+                    bindingHeader.progress.setVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if (position == 0) {
+                    isScrollingEnabled = true;
+                    binding.iconChangeFont.setVisibility(View.VISIBLE);
+                    bindingHeader.progress.setVisibility(View.GONE);
+                }
+            }
+
+
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                super.onLoadResource(view, url);
+                if (url.contains("youtube.com")) mShouldPause = true;
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                    System.out.println("url: " + url);
+                if (url.contains("http://bit.ly/tgzamin") || url.contains("https://t.me")) {
+                    Intent tgIntent = new Intent(Intent.ACTION_VIEW);
+                    tgIntent.setData(Uri.parse(url));
+                    if (getActivity() != null)
+                        getActivity().startActivity(tgIntent);
+                    return true;
+
+                } else if (url.contains("https://zamin.uz/index.php?do=go")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(WEB_URL, url);
+                    Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
+                    return true;
+                } else {
+                    Intent tgIntent = new Intent(Intent.ACTION_VIEW);
+                    tgIntent.setData(Uri.parse(url));
+                    if (getActivity() != null)
+                        getActivity().startActivity(tgIntent);
+                    return true;
+                }
+            }
+
+
+        });
     }
 
     private void reloadContent() {
@@ -284,6 +292,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
             contentModel = model;
             initIcons();
             bindingHeader.contentWeb.loadUrl(model.getContentUrl());
+            bindingHeader.adWeb.loadUrl("http://m.zamin.uz/api/v1/adv.php?id=22");
         }
 
 
@@ -441,7 +450,7 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
 
             if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                 isScrolling = true;
-                if (changeFontVisible){
+                if (changeFontVisible) {
                     changeFontVisible = false;
                     binding.layChangeFont.setVisibility(View.GONE);
                 }

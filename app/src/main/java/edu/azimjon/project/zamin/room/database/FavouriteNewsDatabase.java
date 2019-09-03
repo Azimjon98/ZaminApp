@@ -9,7 +9,7 @@ import edu.azimjon.project.zamin.model.FavouriteNewsModel;
 import edu.azimjon.project.zamin.room.dao.FavouriteNewsDao;
 
 
-@Database(entities = FavouriteNewsModel.class, version = 1)
+@Database(entities = FavouriteNewsModel.class, version = 2)
 public abstract class FavouriteNewsDatabase extends RoomDatabase {
     private static FavouriteNewsDatabase instance;
 

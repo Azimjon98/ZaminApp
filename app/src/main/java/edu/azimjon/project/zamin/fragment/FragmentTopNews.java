@@ -111,6 +111,7 @@ public class FragmentTopNews extends Fragment implements IFragmentTopNews, Swipe
             reloadContent();
         }
 
+
         //*****************************************************************************
         binding.swiper.setOnRefreshListener(this);
         binding.listTopNews.addOnScrollListener(scrollListener);

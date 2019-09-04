@@ -211,7 +211,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
                 post(new MyOnMoreNewsEvent(0)));
 
         bindingHeader.clickerAllVideo.setOnClickListener(v -> EventBus.getDefault().
-                post(new MyOnMoreNewsEvent(1)));
+                post(new MyOnMoreNewsEvent(0)));
 
         bindingNoConnection.btnRefresh.setOnClickListener(v -> {
             binding.swiper.setRefreshing(true);

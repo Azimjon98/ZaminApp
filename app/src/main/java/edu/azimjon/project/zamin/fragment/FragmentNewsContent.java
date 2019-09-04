@@ -206,9 +206,10 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                     isScrollingEnabled = true;
                     binding.iconChangeFont.setVisibility(View.VISIBLE);
                     bindingHeader.progress.setVisibility(View.GONE);
+                }else if(position == 1){
+                    bindingHeader.separator.setVisibility(View.VISIBLE);
                 }
             }
-
 
             @Override
             public void onLoadResource(WebView view, String url) {

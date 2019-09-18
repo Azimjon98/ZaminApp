@@ -235,10 +235,11 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Intent tgIntent = new Intent(Intent.ACTION_VIEW);
-                tgIntent.setData(Uri.parse(url));
-                if (getActivity() != null)
-                    getActivity().startActivity(tgIntent);
+
+                Bundle bundle = new Bundle();
+                bundle.putString(WEB_URL, url);
+                Navigation.findNavController(view).navigate(R.id.action_fragmentContent_to_fragmentWebView, bundle);
+
                 return true;
 
             }

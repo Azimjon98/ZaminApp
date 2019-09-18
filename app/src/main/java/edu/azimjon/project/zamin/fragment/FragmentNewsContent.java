@@ -233,10 +233,9 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
                     Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
                     return true;
                 } else {
-                    Intent tgIntent = new Intent(Intent.ACTION_VIEW);
-                    tgIntent.setData(Uri.parse(url));
-                    if (getActivity() != null)
-                        getActivity().startActivity(tgIntent);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(WEB_URL, url);
+                    Navigation.findNavController(view).navigate(R.id.action_fragmentNewsContent_to_fragmentWebView, bundle);
                     return true;
                 }
             }
@@ -382,6 +381,10 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     //#################################################################
 
     //TODO: Additional methods
+
+
+
+
     private void initIcons() {
 
         if (NavigationActivity.allFavouriteIds.contains(contentModel.getNewsId())) {

@@ -20,6 +20,9 @@
             app:destination="@id/fragmentSearchNews"
             app:enterAnim="@anim/in_from_left"
             app:popExitAnim="@anim/out_to_left" />
+        <action
+            android:id="@+id/action_fragmentContent_to_fragmentWebView"
+            app:destination="@id/fragmentWebView" />
     </fragment>
     <fragment
         android:id="@+id/fragmentNewsContent"

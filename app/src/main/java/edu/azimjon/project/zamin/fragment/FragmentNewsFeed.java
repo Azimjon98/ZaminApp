@@ -19,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -214,6 +216,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
                 post(new MyOnMoreNewsEvent(0)));
 
         bindingNoConnection.btnRefresh.setOnClickListener(v -> {
+            bindingHeader.adWebFirst.setVisibility(View.VISIBLE);
+            bindingHeader.adWebSecond.setVisibility(View.VISIBLE);
             binding.swiper.setRefreshing(true);
             presenterNewsFeed.init();
         });
@@ -232,6 +236,19 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
         v.getSettings().setAppCacheEnabled(true);
 
         v.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+
+                v.loadUrl("about:blank");
+                v.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+            }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

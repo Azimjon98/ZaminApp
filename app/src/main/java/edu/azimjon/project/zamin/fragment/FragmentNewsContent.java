@@ -23,6 +23,7 @@ import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -265,12 +266,19 @@ public class FragmentNewsContent extends Fragment implements IFragmentNewsConten
     public void onPause() {
         super.onPause();
 
-//        if (mShouldPause) {
-//            bindingHeader.contentWeb.onPause();
-//        }
-//        mShouldPause = false;
-    }
+        //pause video in webview when exiting
+        if (bindingHeader == null || bindingHeader.contentWeb == null){
+            System.out.println("in pause");
+            return;
+        }
+        try {
+            Class.forName("android.webkit.WebView")
+                    .getMethod("onPause", (Class[]) null)
+                    .invoke(bindingHeader.contentWeb, (Object[]) null);
 
+        } catch(ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {
+        }
+    }
 
     //#################################################################
 

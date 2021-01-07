@@ -1,17 +1,16 @@
 package edu.azimjon.project.zamin.fragment;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import java.util.Objects;
 
@@ -65,7 +64,7 @@ public class FragmentMedia extends Fragment {
 
         //initialize adapters and append to lists or pagers
         if (pagerAdapter == null) {
-            pagerAdapter = new MediaPagerAdapter(getContext(), getChildFragmentManager(), 2);
+            pagerAdapter = new MediaPagerAdapter(getContext(), getChildFragmentManager(), 3);
             binding.mediaPager.setAdapter(pagerAdapter);
 //        binding.mediaPager.addOnPageChangeListener(this);
             binding.tabMedia.setupWithViewPager(binding.mediaPager);

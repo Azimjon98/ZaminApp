@@ -1,33 +1,24 @@
 package edu.azimjon.project.zamin.fragment;
 
-import android.app.AlertDialog;
-import android.app.Application;
-import android.arch.lifecycle.Observer;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.databinding.DataBindingUtil;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -35,17 +26,19 @@ import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.adapter.SelectCategoriesAdapter;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
-import edu.azimjon.project.zamin.databinding.DialogLanguageBinding;
 import edu.azimjon.project.zamin.databinding.DialogResetCategoriesBinding;
 import edu.azimjon.project.zamin.databinding.WindowSelectCategoriesBinding;
 import edu.azimjon.project.zamin.model.CategoryNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
-import edu.azimjon.project.zamin.room.dao.CategoryNewsDao;
 import edu.azimjon.project.zamin.room.database.CategoryNewsDatabase;
 import edu.azimjon.project.zamin.util.MyUtil;
 import retrofit2.Call;
@@ -114,8 +107,8 @@ public class FragmentSelectCategories extends Fragment {
 
         //#######################################
 
-        android.support.v7.app.AlertDialog dialog =
-                new android.support.v7.app.AlertDialog.Builder(getContext())
+        AlertDialog dialog =
+                new AlertDialog.Builder(getContext())
                         .setView(bindingDialog.getRoot())
                         .create();
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));

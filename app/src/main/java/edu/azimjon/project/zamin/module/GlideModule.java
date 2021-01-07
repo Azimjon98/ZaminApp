@@ -1,13 +1,11 @@
 package edu.azimjon.project.zamin.module;
 
 import android.content.Context;
-import android.support.constraint.Placeholder;
-import android.support.v4.widget.CircularProgressDrawable;
+
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
 import dagger.Module;

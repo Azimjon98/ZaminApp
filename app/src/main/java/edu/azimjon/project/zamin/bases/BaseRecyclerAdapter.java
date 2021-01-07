@@ -1,14 +1,20 @@
 package edu.azimjon.project.zamin.bases;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static edu.azimjon.project.zamin.addition.Constants.*;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_ITEM;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_ITEM;
+import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 //*///////////////////////
 //All rights are reserved Numonov Azimjon© 2019

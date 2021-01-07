@@ -3,8 +3,6 @@ package edu.azimjon.project.zamin.module;
 import android.content.Context;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,12 +11,8 @@ import edu.azimjon.project.zamin.interfaces.CacheInterceptor;
 import edu.azimjon.project.zamin.interfaces.MyApplicationScope;
 import edu.azimjon.project.zamin.interfaces.OfflineCacheInterceptor;
 import okhttp3.Cache;
-import okhttp3.CacheControl;
-import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import timber.log.Timber;
 

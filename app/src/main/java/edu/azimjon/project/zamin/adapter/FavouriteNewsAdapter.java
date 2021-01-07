@@ -1,20 +1,19 @@
 package edu.azimjon.project.zamin.adapter;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.navigation.Navigation;
+
+import java.util.ArrayList;
+
 import edu.azimjon.project.zamin.R;
-import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.addition.Converters;
 import edu.azimjon.project.zamin.bases.BaseRecyclerAdapter;
 import edu.azimjon.project.zamin.bases.MyBaseHolder;
@@ -24,11 +23,8 @@ import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
-import static edu.azimjon.project.zamin.addition.Constants.TYPE_FOOTER;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER;
-import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_INTERNET;
 import static edu.azimjon.project.zamin.addition.Constants.TYPE_HEADER_NO_ITEM;
-import static edu.azimjon.project.zamin.addition.Constants.TYPE_LOADING;
 
 public class FavouriteNewsAdapter extends BaseRecyclerAdapter<FavouriteNewsModel> {
 

@@ -13,7 +13,7 @@
 
     </data>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"/>
 
-            <android.support.design.chip.ChipGroup
+            <com.google.android.material.chip.ChipGroup
                 android:id="@+id/tags_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -139,7 +139,7 @@
                 app:chipSpacingVertical="8dp">
 
 
-            </android.support.design.chip.ChipGroup>
+            </com.google.android.material.chip.ChipGroup>
 
 
             <View
@@ -194,6 +194,6 @@
 
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </layout>

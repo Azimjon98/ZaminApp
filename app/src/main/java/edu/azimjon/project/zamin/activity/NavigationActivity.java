@@ -1,18 +1,18 @@
 package edu.azimjon.project.zamin.activity;
 
-import android.arch.lifecycle.Observer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.icu.util.TimeUnit;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -38,9 +38,6 @@ import retrofit2.Response;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.EXTRA_CATEGORIES;
-import static edu.azimjon.project.zamin.addition.Constants.EXTRA_ENABLED_CATEGORIES;
-import static edu.azimjon.project.zamin.addition.Constants.EXTRA_FAVOURITES;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_NO_CONNECTION;
 import static edu.azimjon.project.zamin.addition.Constants.STATE_LOG;

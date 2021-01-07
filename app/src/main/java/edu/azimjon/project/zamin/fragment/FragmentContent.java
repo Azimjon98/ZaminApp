@@ -1,12 +1,6 @@
 package edu.azimjon.project.zamin.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -14,16 +8,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import androidx.navigation.Navigation;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.adapter.ContentPagerAdapter;
@@ -34,8 +34,18 @@ import edu.azimjon.project.zamin.events.PlayerStateEvent;
 import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
-import static edu.azimjon.project.zamin.events.PlayerStateEvent.*;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_HIDE;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_NEXT;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_OPENED_GET_HEIGHT;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_PAUSE_ICON;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_PLAY;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_PLAY_ICON;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_PREV;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_PROGRESS_CHANGED;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_RESET;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_STOP;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_TITLE;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_UPDATE;
 
 public class FragmentContent extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener {
 

@@ -3,7 +3,11 @@ package edu.azimjon.project.zamin.addition;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import static edu.azimjon.project.zamin.addition.Constants.*;
+import static edu.azimjon.project.zamin.addition.Constants.CONTENT_FONT_SIZE;
+import static edu.azimjon.project.zamin.addition.Constants.IS_FIRST_ENTER;
+import static edu.azimjon.project.zamin.addition.Constants.IS_NOTIFICATION_ENABLED;
+import static edu.azimjon.project.zamin.addition.Constants.MY_LOCALE;
+import static edu.azimjon.project.zamin.addition.Constants.OPEN_CONTENT_FROM_ID;
 
 public class MySettings {
     static private Context appContext;

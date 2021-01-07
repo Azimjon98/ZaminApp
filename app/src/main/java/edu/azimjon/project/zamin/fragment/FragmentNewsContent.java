@@ -1,18 +1,14 @@
 package edu.azimjon.project.zamin.fragment;
 
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.chip.Chip;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +18,17 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.navigation.Navigation;
+
+import com.google.android.material.chip.Chip;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.activity.NavigationActivity;
@@ -45,11 +45,9 @@ import edu.azimjon.project.zamin.model.SimpleNewsModel;
 import edu.azimjon.project.zamin.mvp.presenter.PresenterNewsContent;
 import edu.azimjon.project.zamin.mvp.view.IFragmentNewsContent;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
-import edu.azimjon.project.zamin.util.MyChromeClient;
 import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_ID;
-import static edu.azimjon.project.zamin.addition.Constants.KEY_NEWS_MODEL;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_ID;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_TOOLBAR_NAME;
 import static edu.azimjon.project.zamin.addition.Constants.KEY_SEARCH_WHERE;

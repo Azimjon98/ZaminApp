@@ -3,7 +3,6 @@ package edu.azimjon.project.zamin.application;
 import android.app.Application;
 import android.util.Log;
 
-
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.component.DaggerMyApplicationComponent;

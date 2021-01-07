@@ -7,8 +7,8 @@ import com.google.gson.JsonObject;
 import java.util.List;
 
 import edu.azimjon.project.zamin.activity.NavigationActivity;
-import edu.azimjon.project.zamin.model.ContentNewsModel;
 import edu.azimjon.project.zamin.model.CategoryNewsModel;
+import edu.azimjon.project.zamin.model.ContentNewsModel;
 
 import static edu.azimjon.project.zamin.addition.Constants.ERROR_LOG;
 

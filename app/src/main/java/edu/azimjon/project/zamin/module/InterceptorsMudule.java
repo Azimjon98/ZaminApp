@@ -18,7 +18,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
 import static edu.azimjon.project.zamin.addition.Constants.ERROR_LOG;
 
 @Module(includes = ContextModule.class)

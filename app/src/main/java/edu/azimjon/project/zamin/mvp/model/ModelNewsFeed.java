@@ -1,11 +1,8 @@
 package edu.azimjon.project.zamin.mvp.model;
 
-import android.icu.util.TimeUnit;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.util.TimeUtils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -13,7 +10,6 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NavigableMap;
 
 import edu.azimjon.project.zamin.activity.NavigationActivity;
 import edu.azimjon.project.zamin.addition.MySettings;

@@ -2,28 +2,18 @@ package edu.azimjon.project.zamin.adapter;
 
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 
-import org.greenrobot.eventbus.EventBus;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
-import edu.azimjon.project.zamin.events.PlayerStateEvent;
-import edu.azimjon.project.zamin.fragment.FragmentAudioInMedia;
 import edu.azimjon.project.zamin.fragment.FragmentFavourites;
-import edu.azimjon.project.zamin.fragment.FragmentGalleryInMedia;
 import edu.azimjon.project.zamin.fragment.FragmentMedia;
 import edu.azimjon.project.zamin.fragment.FragmentNewsFeed;
 import edu.azimjon.project.zamin.fragment.FragmentTopNews;
-import edu.azimjon.project.zamin.fragment.FragmentVideoInMedia;
 
 import static edu.azimjon.project.zamin.addition.Constants.CALLBACK_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.DELETE_LOG;
-import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_STOP;
 
 public class ContentPagerAdapter extends FragmentPagerAdapter {
 

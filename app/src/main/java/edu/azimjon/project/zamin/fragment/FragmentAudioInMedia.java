@@ -1,22 +1,23 @@
 package edu.azimjon.project.zamin.fragment;
 
-import android.databinding.DataBindingUtil;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -43,7 +44,21 @@ import edu.azimjon.project.zamin.mvp.view.IFragmentAudioInMedia;
 import edu.azimjon.project.zamin.util.MyUtil;
 
 import static edu.azimjon.project.zamin.addition.Constants.*;
-import static edu.azimjon.project.zamin.events.PlayerStateEvent.*;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_ITEMS;
+import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
+import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_HIDE;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_NEXT;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_OPENED_GET_HEIGHT;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_PAUSE_ICON;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_PLAY;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_PLAY_ICON;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_PREV;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_PROGRESS_CHANGED;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_RESET;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_STOP;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_TITLE;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_UPDATE;
 
 public class FragmentAudioInMedia extends Fragment implements IFragmentAudioInMedia, MediaPlayer.OnErrorListener, SwipeRefreshLayout.OnRefreshListener, AudioNewsAdapter.IMyPlayer {
 

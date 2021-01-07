@@ -1,18 +1,18 @@
 package edu.azimjon.project.zamin.fragment;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.JsonObject;
 
@@ -30,11 +30,9 @@ import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.databinding.WindowFavouritesBinding;
 import edu.azimjon.project.zamin.events.EventFavouriteChanged;
-import edu.azimjon.project.zamin.model.CategoryNewsModel;
 import edu.azimjon.project.zamin.model.FavouriteNewsModel;
 import edu.azimjon.project.zamin.mvp.view.IFragmentFavouriteNews;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
-import edu.azimjon.project.zamin.room.dao.FavouriteNewsDao;
 import edu.azimjon.project.zamin.room.database.FavouriteNewsDatabase;
 import edu.azimjon.project.zamin.util.MyUtil;
 import retrofit2.Call;
@@ -42,7 +40,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static edu.azimjon.project.zamin.addition.Constants.API_LOG;
-import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_NO_CONNECTION;
 
 public class FragmentFavourites extends Fragment implements IFragmentFavouriteNews {
 

@@ -1,21 +1,15 @@
 package edu.azimjon.project.zamin.bindingadapter;
 
-import android.databinding.BindingAdapter;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.ImageView;
 
+import androidx.databinding.BindingAdapter;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.application.MyApplication;
-import edu.azimjon.project.zamin.component.MyApplicationComponent;
 
 
 public class ImageBindingAdapters {

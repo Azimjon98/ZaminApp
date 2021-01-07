@@ -1,10 +1,7 @@
 package edu.azimjon.project.zamin.addition;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import edu.azimjon.project.zamin.model.FavouriteNewsModel;
 import edu.azimjon.project.zamin.model.ContentNewsModel;
+import edu.azimjon.project.zamin.model.FavouriteNewsModel;
 import edu.azimjon.project.zamin.model.SimpleNewsModel;
 
 public class Converters {

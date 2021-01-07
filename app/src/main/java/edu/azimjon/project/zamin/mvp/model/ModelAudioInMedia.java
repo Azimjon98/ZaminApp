@@ -5,7 +5,6 @@ import android.util.Log;
 import com.google.gson.JsonObject;
 
 import java.util.List;
-import java.util.SimpleTimeZone;
 
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;

@@ -1,8 +1,9 @@
 package edu.azimjon.project.zamin.bindingadapter;
 
 import android.content.Context;
-import android.databinding.BindingAdapter;
 import android.widget.TextView;
+
+import androidx.databinding.BindingAdapter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

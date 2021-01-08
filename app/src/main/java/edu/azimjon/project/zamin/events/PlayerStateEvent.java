@@ -14,6 +14,7 @@ public class PlayerStateEvent {
     public static final int PLAYER_PAUSE_ICON = 2104;
     public static final int PLAYER_TITLE = 2105;
     public static final int PLAYER_UPDATE = 2106;
+    public static final int PLAYER_UPDATE_TIME = 2107;
 
     public final int state;
     public final String value;

@@ -46,6 +46,7 @@ import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_RESET;
 import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_STOP;
 import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_TITLE;
 import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_UPDATE;
+import static edu.azimjon.project.zamin.events.PlayerStateEvent.PLAYER_UPDATE_TIME;
 
 public class FragmentContent extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -106,6 +107,8 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         playIcon = view.findViewById(R.id.player_play);
         nextIcon = view.findViewById(R.id.player_next);
         playerProgress = view.findViewById(R.id.player_seek_bar);
+        playerProgress.setProgress(0);
+        playerProgress.setMax(100);
         initPlayerIcons();
 
         if (contentPagerAdapter == null)
@@ -160,7 +163,10 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
         playerProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                EventBus.getDefault().post(new PlayerStateEvent(PLAYER_PROGRESS_CHANGED, "" + progress));
+                if (fromUser)
+                    EventBus.getDefault().post(new PlayerStateEvent(PLAYER_PROGRESS_CHANGED, "" + progress));
+//                playerStartTime.setText(event.startTime);
+//                playerEndTime.setText(event.endTime);
             }
 
             @Override
@@ -171,7 +177,7 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 //call event seek to that position
-                EventBus.getDefault().post(new PlayerStateEvent(PLAYER_PROGRESS_CHANGED, "" + playerProgress.getProgress()));
+//                EventBus.getDefault().post(new PlayerStateEvent(PLAYER_PROGRESS_CHANGED, "" + playerProgress.getProgress()));
             }
         });
     }
@@ -248,8 +254,6 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
                 playerStartTime.setText("00:00");
                 playerEndTime.setText("00:00");
                 playerView.setVisibility(View.VISIBLE);
-                playerProgress.setProgress(0);
-                playerProgress.setMax(100);
                 playIcon.setImageResource(R.drawable.micon_player_pause);
                 playerProgress.setEnabled(true);
                 EventBus.getDefault().post(new PlayerStateEvent(PLAYER_OPENED_GET_HEIGHT, String.valueOf(playerView.getMeasuredHeight())));
@@ -272,6 +276,9 @@ public class FragmentContent extends Fragment implements BottomNavigationView.On
                 playerStartTime.setText(event.startTime);
                 playerEndTime.setText(event.endTime);
                 playerProgress.setProgress(Integer.valueOf(event.value));
+            case PLAYER_UPDATE_TIME:
+                playerStartTime.setText(event.startTime);
+                playerEndTime.setText(event.endTime);
 
         }
 

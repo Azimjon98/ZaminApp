@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -26,6 +27,7 @@ import java.util.List;
 import edu.azimjon.project.zamin.R;
 import edu.azimjon.project.zamin.addition.MySettings;
 import edu.azimjon.project.zamin.application.MyApplication;
+import edu.azimjon.project.zamin.component.MyApplicationComponent;
 import edu.azimjon.project.zamin.events.NetworkStateChangedEvent;
 import edu.azimjon.project.zamin.model.CategoryNewsModel;
 import edu.azimjon.project.zamin.retrofit.MyRestService;
@@ -112,16 +114,6 @@ public class NavigationActivity extends AppCompatActivity {
                 });
 
     }
-
-
-
-
-
-
-
-
-
-
 
     //TODO: NETWORKING STATES
     BroadcastReceiver myConnectivityReceiver = new BroadcastReceiver() {
@@ -272,4 +264,12 @@ public class NavigationActivity extends AppCompatActivity {
         unregisterReceiver(myConnectivityReceiver);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        MediaPlayer mediaPlayer = ((MyApplication)getApplication()).getMyApplicationComponent().getMediaPlayer();
+        mediaPlayer.release();
+        mediaPlayer = null;
+    }
 }

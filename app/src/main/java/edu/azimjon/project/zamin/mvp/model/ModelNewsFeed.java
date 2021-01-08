@@ -284,7 +284,7 @@ public class ModelNewsFeed {
 
         //sending data to view
         presenterNewsFeed.initLastNews(items, MESSAGE_OK);
-        getVideoNews();
+        getAudioNews();
     }
 
     //parsing top news(pager news)
@@ -292,6 +292,7 @@ public class ModelNewsFeed {
         List<SimpleNewsModel> items = ParserSimpleNewsModel.parse(json, 3);
 
         presenterNewsFeed.initAudioNews(items, MESSAGE_OK);
+        getVideoNews();
     }
 
     //parsing top news(pager news)

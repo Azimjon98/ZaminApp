@@ -180,7 +180,7 @@
                 android:layout_centerVertical="true"
                 android:paddingStart="0dp"
                 android:paddingEnd="0dp"
-                android:progress="15"
+                android:progress="0"
                 android:progressDrawable="@drawable/thumb"
                 android:thumb="@drawable/custom_thumb" />
 

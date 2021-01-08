@@ -1,12 +1,12 @@
 package edu.azimjon.project.zamin.fragment;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebResourceError;
-import androidx.recyclerview.widget.RecyclerView;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -19,6 +19,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -27,6 +28,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +42,7 @@ import edu.azimjon.project.zamin.adapter.SmallNewsAdapter;
 import edu.azimjon.project.zamin.adapter.VideoNewsAdapter;
 import edu.azimjon.project.zamin.addition.Constants;
 import edu.azimjon.project.zamin.addition.MySettings;
+import edu.azimjon.project.zamin.application.MyApplication;
 import edu.azimjon.project.zamin.databinding.FooterNoConnectionBinding;
 import edu.azimjon.project.zamin.databinding.HeaderWindowNewsFeedBinding;
 import edu.azimjon.project.zamin.databinding.WindowNewsFeedBinding;
@@ -61,7 +64,7 @@ import static edu.azimjon.project.zamin.addition.Constants.MESSAGE_OK;
 import static edu.azimjon.project.zamin.addition.Constants.NETWORK_STATE_CONNECTED;
 import static edu.azimjon.project.zamin.addition.Constants.WEB_URL;
 
-public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, SwipeRefreshLayout.OnRefreshListener {
+public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, SwipeRefreshLayout.OnRefreshListener, AudioNewsAdapter.IMyPlayer, MediaPlayer.OnErrorListener {
 
     //TODO: Constants here
     LinearLayoutManager manager;
@@ -122,8 +125,8 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Log.d(Constants.CALLBACK_LOG, "FragmentNewsFeed onViewCreated: ");
-
         super.onViewCreated(view, savedInstanceState);
+        mediaPlayer = ((MyApplication) getActivity().getApplication()).getMyApplicationComponent().getMediaPlayer();
 
         //initialize adapters and append to lists
 
@@ -174,7 +177,7 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             bindingHeader.listLastNews.setAdapter(smallNewsAdapter);
 
             bindingHeader.listAudioNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-            audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<SimpleNewsModel>(), null);
+            audioNewsAdapter = new AudioNewsAdapter(getContext(), new ArrayList<SimpleNewsModel>(), this);
             bindingHeader.listAudioNews.setAdapter(audioNewsAdapter);
 
             bindingHeader.listVideoNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -291,7 +294,6 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             binding.swiper.setRefreshing(true);
             lastContinueNewsAdapter.clearItems();
             presenterNewsFeed.init();
-
         } else {
             initCategories(null, MESSAGE_OK);
 
@@ -302,6 +304,12 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
             smallNewsAdapter.notifyDataSetChanged();
             videoNewsAdapter.notifyDataSetChanged();
             lastContinueNewsAdapter.notifyDataSetChanged();
+
+            if (!mediaPlayer.isPlaying()) {
+                audioNewsAdapter.isPlaying = false;
+                audioNewsAdapter.playingMusicId = "-100";
+                audioNewsAdapter.notifyDataSetChanged();
+            }
         }
 
         lastLocale = MySettings.getInstance().getLocale();
@@ -528,5 +536,89 @@ public class FragmentNewsFeed extends Fragment implements IFragmentNewsFeed, Swi
         }
     };
 
+    MediaPlayer mediaPlayer;
+    int musicPosition = -1;
+    boolean isPrepared = true;
+    String currentTrackUrl = "https://muz11.z1.fm/e/ac/via_marokand_via_marokand_-_tarnov_tarnov_2016_(zf.fm).mp3";
+    int musicDuration = -1;
+    SimpleNewsModel currentModel;
 
+    //Player interface functions
+    @Override
+    public void playPressed(SimpleNewsModel m) {
+        currentModel = m;
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
+    }
+
+    @Override
+    public void pausePressed(SimpleNewsModel m) {
+        currentModel = m;
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+        }
+
+    }
+
+    @Override
+    public void updateItems(SimpleNewsModel m, int positionTo) {
+        currentModel = m;
+        currentTrackUrl = m.getUrlAudioFile();
+        mediaPlayer.reset();
+
+        //mediaPlayer prepare listener
+        mediaPlayer.setOnPreparedListener(prepareListenter);
+        mediaPlayer.setOnErrorListener(this);
+        mediaPlayer.setOnCompletionListener(onCompletionListener);
+
+        //TODO: Init media player
+
+        try {
+            mediaPlayer.setDataSource(currentTrackUrl);
+            mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public MediaPlayer.OnPreparedListener prepareListenter = new MediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+            isPrepared = true;
+            musicDuration = mediaPlayer.getDuration();
+            mediaPlayer.start();
+        }
+    };
+
+    public MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            try {
+                mediaPlayer.setDataSource(currentTrackUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+        }
+    };
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        mediaPlayer.reset();
+        try {
+            mediaPlayer.setDataSource(currentTrackUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+
+        return false;
+    }
 }

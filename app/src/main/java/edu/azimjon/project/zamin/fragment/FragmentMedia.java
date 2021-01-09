@@ -72,8 +72,8 @@ public class FragmentMedia extends Fragment {
             binding.mediaPager.setCurrentItem(position);
         }else{
             String titles0 = MyUtil.getLocalizedString(Objects.requireNonNull(getContext()), R.string.tab_audio);
-            String titles2 = MyUtil.getLocalizedString(getContext(), R.string.tab_gallery);
-            String titles3 = MyUtil.getLocalizedString(getContext(), R.string.tab_video);
+            String titles2 = MyUtil.getLocalizedString(getContext(), R.string.tab_video);
+            String titles3 = MyUtil.getLocalizedString(getContext(), R.string.tab_gallery);
             Objects.requireNonNull(binding.tabMedia.getTabAt(0)).setText(titles0);
             Objects.requireNonNull(binding.tabMedia.getTabAt(1)).setText(titles2);
             Objects.requireNonNull(binding.tabMedia.getTabAt(2)).setText(titles3);
